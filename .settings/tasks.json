@@ -1,0 +1,37 @@
+{
+	"version": "0.1.0",
+	"command": "tsc",
+	"isShellCommand": true,
+	"showOutput": "silent",
+	"tasks": [	
+		{
+			"taskName": "build",
+			"isBuildCommand": true,
+			"suppressTaskName": true,
+			"args": [
+				"src/Kikaku.ts",
+				"-d",
+				"--out", "dest/Kikaku.jsx",
+				"-t", "es3",
+				"-noLib"
+			],
+			"problemMatcher": "$tsc"
+		},
+		{
+			"taskName": "watch",
+			"isBuildCommand": true,
+			"showOutput": "always",
+			"isWatching": true,
+			"suppressTaskName": true,
+			"args": [
+				"src/Kikaku.ts",
+				"-d",
+				"-w",
+				"--out", "dest/Kikaku.jsx",
+				"-t", "es3",
+				"-noLib"
+			],
+			"problemMatcher": "$tsc"
+		}
+	]
+}
