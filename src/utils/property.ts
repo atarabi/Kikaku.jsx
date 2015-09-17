@@ -25,6 +25,24 @@ namespace KIKAKU.Utils {
 		return hidden;
 	}
 
+	export function getPropertyDimensions(property: Property) {
+		switch (property.propertyValueType) {
+			case PropertyValueType.ThreeD_SPATIAL:
+			case PropertyValueType.ThreeD:
+				return 3;
+			case PropertyValueType.TwoD_SPATIAL:
+			case PropertyValueType.TwoD:
+				return 2;
+			case PropertyValueType.COLOR:
+				return 4;
+			case PropertyValueType.OneD:
+			case PropertyValueType.LAYER_INDEX:
+			case PropertyValueType.MASK_INDEX:
+				return 1;
+		}
+		return 0;
+	}
+
 	export const PROPERTY_FILTER = {
 		NONE: 'none',
 		ALL: 'all',
@@ -145,21 +163,8 @@ namespace KIKAKU.Utils {
 			case PROPERTY_FILTER.DIMENSIONS:
 				fn = (function(dimensions: number) {
 					return function(property: PropertyBase) {
-						switch ((<Property>property).propertyValueType) {
-							case PropertyValueType.ThreeD_SPATIAL:
-							case PropertyValueType.ThreeD:
-								return dimensions === 3;
-							case PropertyValueType.TwoD_SPATIAL:
-							case PropertyValueType.TwoD:
-								return dimensions === 2;
-							case PropertyValueType.COLOR:
-								return dimensions === 4;
-							case PropertyValueType.OneD:
-							case PropertyValueType.LAYER_INDEX:
-							case PropertyValueType.MASK_INDEX:
-								return dimensions === 1;
-						}
-						return false;
+						const property_dimensions = getPropertyDimensions(<Property>property);
+						return property_dimensions > 0 && property_dimensions === dimensions;
 					};
 				})(~~args[0]);
 				fn = _Impl.and(isProperty, fn);
@@ -312,13 +317,13 @@ namespace KIKAKU.Utils {
 		if (!property) {
 			return null;
 		}
-		
+
 		return getPathOfProperty(property, match_name);
 	}
-	
+
 	export function getPropertyFromPath(layer: Layer, path: string[]): PropertyBase {
 		let property: PropertyBase = <PropertyGroup>(<any>layer);
-		
+
 		for (let i = 0, l = path.length; i < l; i++) {
 			let name = path[i];
 			if (isString(name) && /^\d+$/.test(<string>name)) {
@@ -327,15 +332,15 @@ namespace KIKAKU.Utils {
 			} else {
 				property = (<PropertyGroup>property).property(name);
 			}
-			
+
 			if (!property) {
 				return null;
 			}
 		}
-		
+
 		return property;
 	}
-	
+
 	export function getLayerOfProperty(property: PropertyBase): Layer {
 		let parent: PropertyBase;
 		while (parent = property.parentProperty) {
@@ -343,5 +348,5 @@ namespace KIKAKU.Utils {
 		}
 		return <Layer>(<any>property);
 	}
-	
+
 }
