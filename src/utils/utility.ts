@@ -30,9 +30,29 @@ namespace KIKAKU.Utils {
 		return typeof arg === 'undefined';
 	}
 
+	export function keys(obj: Object) {
+		const arr = [];
+		for (let key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				arr.push(key);
+			}
+		}
+		return arr;
+	}
+
+	export function values(obj: Object) {
+		const arr = [];
+		for (let key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				arr.push(obj[key]);
+			}
+		}
+		return arr;
+	}
+
 	export function forEach(obj, fn: ((value, index?: number) => any) | ((value, key?: string) => any), ctx?) {
 		if (isArray(obj) || isString(obj)) {
-			for (let i = 0, l = (<any[]|string>obj).length; i < l; i++) {
+			for (let i = 0, l = (<any[] | string>obj).length; i < l; i++) {
 				fn.call(ctx, obj[i], i);
 			}
 		} else if (isObject(obj)) {
@@ -132,7 +152,7 @@ namespace KIKAKU.Utils {
 		return true;
 	}
 
-	export function inArray<T>(arr: T[], fn: (T)|((v: T) => boolean), ctx ?) {
+	export function inArray<T>(arr: T[], fn: (T) | ((v: T) => boolean), ctx?) {
 		let _fn: (v: T) => boolean = isFunction(fn) ? <(v: T) => boolean>fn : (v: T) => { return v === fn; };
 		for (let i = 0, l = arr.length; i < l; i++) {
 			if (_fn.call(ctx, arr[i])) {
