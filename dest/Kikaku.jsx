@@ -46,6 +46,26 @@ var KIKAKU;
             return typeof arg === 'undefined';
         }
         Utils.isUndefined = isUndefined;
+        function keys(obj) {
+            var arr = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    arr.push(key);
+                }
+            }
+            return arr;
+        }
+        Utils.keys = keys;
+        function values(obj) {
+            var arr = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    arr.push(obj[key]);
+                }
+            }
+            return arr;
+        }
+        Utils.values = values;
         function forEach(obj, fn, ctx) {
             if (isArray(obj) || isString(obj)) {
                 for (var i = 0, l = obj.length; i < l; i++) {
@@ -199,6 +219,10 @@ var KIKAKU;
 (function (KIKAKU) {
     var Utils;
     (function (Utils) {
+        function getProjectFile() {
+            return app.project.file;
+        }
+        Utils.getProjectFile = getProjectFile;
         function createFolder(path) {
             var folder = new Folder(path);
             var folders = [];
@@ -954,6 +978,24 @@ var KIKAKU;
             return hidden;
         }
         Utils.isHiddenProperty = isHiddenProperty;
+        function getPropertyDimensions(property) {
+            switch (property.propertyValueType) {
+                case PropertyValueType.ThreeD_SPATIAL:
+                case PropertyValueType.ThreeD:
+                    return 3;
+                case PropertyValueType.TwoD_SPATIAL:
+                case PropertyValueType.TwoD:
+                    return 2;
+                case PropertyValueType.COLOR:
+                    return 4;
+                case PropertyValueType.OneD:
+                case PropertyValueType.LAYER_INDEX:
+                case PropertyValueType.MASK_INDEX:
+                    return 1;
+            }
+            return 0;
+        }
+        Utils.getPropertyDimensions = getPropertyDimensions;
         Utils.PROPERTY_FILTER = {
             NONE: 'none',
             ALL: 'all',
@@ -1075,21 +1117,8 @@ var KIKAKU;
                 case Utils.PROPERTY_FILTER.DIMENSIONS:
                     fn = (function (dimensions) {
                         return function (property) {
-                            switch (property.propertyValueType) {
-                                case PropertyValueType.ThreeD_SPATIAL:
-                                case PropertyValueType.ThreeD:
-                                    return dimensions === 3;
-                                case PropertyValueType.TwoD_SPATIAL:
-                                case PropertyValueType.TwoD:
-                                    return dimensions === 2;
-                                case PropertyValueType.COLOR:
-                                    return dimensions === 4;
-                                case PropertyValueType.OneD:
-                                case PropertyValueType.LAYER_INDEX:
-                                case PropertyValueType.MASK_INDEX:
-                                    return dimensions === 1;
-                            }
-                            return false;
+                            var property_dimensions = getPropertyDimensions(property);
+                            return property_dimensions > 0 && property_dimensions === dimensions;
                         };
                     })(~~args[0]);
                     fn = Utils._Impl.and(isProperty, fn);

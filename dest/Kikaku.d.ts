@@ -16,6 +16,8 @@ declare namespace KIKAKU.Utils {
     function isNumber(arg: any): boolean;
     function isBoolean(arg: any): boolean;
     function isUndefined(arg: any): boolean;
+    function keys(obj: Object): any[];
+    function values(obj: Object): any[];
     function forEach(obj: any, fn: ((value, index?: number) => any) | ((value, key?: string) => any), ctx?: any): void;
     function inherits(child: any, parent: any): void;
     function assign(obj: any, ...args: any[]): any;
@@ -31,6 +33,7 @@ declare namespace KIKAKU.Utils {
     function trim(str: string): string;
 }
 declare namespace KIKAKU.Utils {
+    function getProjectFile(): File;
     function createFolder(path: string): void;
 }
 declare namespace KIKAKU.Utils._Impl {
@@ -101,7 +104,7 @@ declare namespace KIKAKU.Utils {
     function isStillLayer(layer: Layer): boolean;
     function isCompLayer(layer: Layer): boolean;
     function forEachLayer(comp: CompItem, fn: (layer: Layer, index?: number) => any, ctx?: any): void;
-    function forEachPropertyGroup(property_group: PropertyGroup, fn: (property: PropertyBase, index?: number) => any, ctx?: any): void;
+    function forEachPropertyGroup(property_group: PropertyGroup | Layer, fn: (property: PropertyBase, index?: number) => any, ctx?: any): void;
     function forEachEffect(layer: Layer, fn: (effect: PropertyGroup, index?: number) => any, ctx?: any): void;
     var LAYER_FILTER: {
         NONE: string;
@@ -166,6 +169,7 @@ declare namespace KIKAKU.Utils {
     function isProperty(property: PropertyBase): boolean;
     function isPropertyGroup(property: PropertyBase): boolean;
     function isHiddenProperty(property: PropertyBase): boolean;
+    function getPropertyDimensions(property: Property): number;
     const PROPERTY_FILTER: {
         NONE: string;
         ALL: string;
