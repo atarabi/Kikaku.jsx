@@ -51,7 +51,7 @@ namespace KIKAKU.Utils {
 		}
 	}
 
-	export function forEachPropertyGroup(property_group: PropertyGroup, fn: (property: PropertyBase, index?: number) => any, ctx?) {
+	export function forEachPropertyGroup(property_group: PropertyGroup | Layer, fn: (property: PropertyBase, index?: number) => any, ctx?) {
 		for (var i = 1, l = property_group.numProperties; i <= l; i++) {
 			fn.call(ctx, property_group.property(i), i);
 		}
