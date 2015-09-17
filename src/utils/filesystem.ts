@@ -2,6 +2,10 @@
 
 namespace KIKAKU.Utils {
 	
+	export function getProjectFile() {
+		return app.project.file;
+	}
+	
 	export function createFolder(path: string) {
 		let folder = new Folder(path);
 		let folders: Folder[] = [];
