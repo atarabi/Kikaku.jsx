@@ -83,6 +83,24 @@
 			assert.notOk(fn(true));
 			assert.notOk(fn('text'));
 		},
+		'keys': function (assert) {
+			var obj = {
+				hoge: null,
+				3: 0,
+				test: 'hoge'
+			};
+			assert.equal(Utils.keys(obj), ['hoge', '3', 'test']);
+		},
+		'values': function (assert) {
+			var obj = {
+				a: null,
+				b: undefined,
+				c: 100,
+				d: 'hoge',
+				e: function () {}
+			};
+			assert.equal(Utils.values(obj), [null, undefined, 100, 'hoge', function () {}]);
+		},
 		'forEach': function (assert) {
 			var arr = [1, 2, 3, 4];
 			var result = [];
