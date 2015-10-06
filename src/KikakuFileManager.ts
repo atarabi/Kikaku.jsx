@@ -48,7 +48,7 @@ namespace KIKAKU {
 			}
 			this._cd = directory_path + path;
 		}
-		getFiles(options?: {path?: string; mask?: string;}): File[] {
+		getFilesAndFolders(options?: {path?: string; mask?: string;}): (File|Folder)[] {
 			let options_ = Utils.assign({
 				path: null,
 				mask: '*'
@@ -56,24 +56,32 @@ namespace KIKAKU {
 			
 			let folder_path = options_.path ? this._cd + '/' + options_.path : this._cd;
 			let folder = new Folder(folder_path);
-			let files = folder.exists ? Utils.filter(folder.getFiles(options_.mask), (file: File|Folder) => {
-				return file instanceof File;
-			}) : [];
-			
+			let files = folder.exists ? folder.getFiles(options_.mask) : [];
 			return files;
+		}
+		getFiles(options?: {path?: string; mask?: string;}): File[] {
+			return <File[]>Utils.filter(this.getFilesAndFolders(options), (file: File|Folder) => {
+				return file instanceof File;
+			});
 		}
 		getFile(file_name: string) {
 			let file = new File(this._cd + '/' + file_name);
 			return file;
 		}
 		getFileNames(options?: {path?: string; mask?: string;}) {
-			let files = this.getFiles(options);
-			let file_names: string[] = [];
-			
-			Utils.forEach(files, (file: File) => {
-				file_names.push(file.displayName);
+			return Utils.map(this.getFiles(options), (file: File) => file.displayName);
+		}
+		getFolders(options?: {path?: string; mask?: string;}): Folder[] {
+			return <Folder[]>Utils.filter(this.getFilesAndFolders(options), (file: File|Folder) => {
+				return file instanceof Folder;
 			});
-			return file_names;
+		}
+		getFolder(folder_name: string) {
+			let file = folder_name ? new Folder(this._cd + '/' + folder_name) : new Folder(this._cd);
+			return file;
+		}
+		getFolderNames(options?: {path?: string; mask?: string;}) {
+			return Utils.map(this.getFolders(options), (folder: Folder) => folder.displayName);
 		}
 		exists(file_name: string) {
 			return this.getFile(file_name).exists;
