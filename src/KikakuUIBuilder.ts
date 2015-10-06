@@ -36,6 +36,9 @@ namespace KIKAKU {
 		callback?: Function|Function[];
 		onDoubleClick?: Function|Function[];
 		onChanging?: Function|Function[];
+		onEnterKey?: Function|Function[];
+		onActivate?: Function|Function[];
+		onDeactivate?: Function|Function[];
 	}
 
 	class ParameterBase {
@@ -289,6 +292,9 @@ namespace KIKAKU {
 			}
 			text_ui.onChange = () => { this.onChange(); };
 			text_ui.onChanging = () => { this.on('onChanging', false); };
+			text_ui.onEnterKey = () => { this.on('onEnterKey', false); };
+			text_ui.onActivate = () => { this.on('onActivate', false); };
+			text_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 		}
 		get() {
 			return this._ui.text;
@@ -323,6 +329,15 @@ namespace KIKAKU {
 				})(i);
 				ui.onChanging = ((index: number) => {
 					return () => { this.on(index, 'onChanging', false); };
+				})(i);
+				ui.onEnterKey = ((index: number) => {
+					return () => { this.on(index, 'onEnterKey', false); };
+				})(i);
+				ui.onActivate = ((index: number) => {
+					return () => { this.on(index, 'onActivate', false); };
+				})(i);
+				ui.onDeactivate = ((index: number) => {
+					return () => { this.on(index, 'onDeactivate', false); };
 				})(i);
 				this._uis.push(ui);
 			});
@@ -492,6 +507,9 @@ namespace KIKAKU {
 				minvalue: this._minvalue,
 				maxvalue: this._maxvalue
 			});
+			number_ui.onEnterKey = () => { this.on('onEnterKey', false); };
+			number_ui.onActivate = () => { this.on('onActivate', false); };
+			number_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 		}
 		get() {
 			return parseFloat(this._ui.text);
@@ -527,6 +545,16 @@ namespace KIKAKU {
 					maxvalue: minmax.maxvalue,
 					index: i
 				});
+				ui.onEnterKey = ((index: number) => {
+					return () => { this.on(index, 'onEnterKey', false); };
+				})(i);
+				ui.onActivate = ((index: number) => {
+					return () => { this.on(index, 'onActivate', false); };
+				})(i);
+				ui.onDeactivate = ((index: number) => {
+					return () => { this.on(index, 'onDeactivate', false); };
+				})(i);
+				
 				this._default_values.push(minmax.value);
 				this._minvalues.push(minmax.minvalue);
 				this._maxvalues.push(minmax.maxvalue);
@@ -627,13 +655,12 @@ namespace KIKAKU {
 				number_ui.helpTip = <string>this._options.helpTip;
 			}
 
-			slider_ui.onChange = () => {
-				this.onChange();
-			};
-
 			slider_ui.onChange = function() {
 				number_ui.text = this.value;
+				self.onChange();
 			};
+			slider_ui.onActivate = () => { this.on('onActivate', false); };
+			slider_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 
 			number_ui.onChange = function() {
 				let value = Utils.clamp(parseNumber(this.text), self._minvalue, self._maxvalue);
@@ -641,6 +668,9 @@ namespace KIKAKU {
 				slider_ui.value = value;
 				self.onChange();
 			};
+			number_ui.onEnterKey = () => { this.on('onEnterKey', false); };
+			number_ui.onActivate = () => { this.on('onActivate', false); };
+			number_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 		}
 		get() {
 			return this._ui.value;
@@ -681,6 +711,9 @@ namespace KIKAKU {
 					ui.helpTip = <string>this._options.helpTip;
 				}
 				ui.onChange = numberOnChange(this);
+				ui.onEnterKey = () => { this.on('onEnterKey', false); };
+				ui.onActivate = () => { this.on('onActivate', false); };
+				ui.onDeactivate = () => { this.on('onDeactivate', false); };
 				this._uis.push(ui);
 			}
 		}
@@ -737,12 +770,15 @@ namespace KIKAKU {
 				path_ui.helpTip = <string>this._options.helpTip;
 			}
 			path_ui.onChange = () => { this.onChange(); }
+			path_ui.onEnterKey = () => { this.on('onEnterKey', false); };
+			path_ui.onActivate = () => { this.on('onActivate', false); };
+			path_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 
 			let filter = this._options.filter;
 			let browse_ui: Button = group.add('button', undefined, '...');
 			browse_ui.maximumSize = [20, height];
 			browse_ui.alignment = ['right', 'fill'];
-			browse_ui.onClick = () => {
+			browse_ui.onClick = browse_ui.onEnterKey = () => {
 				let file: File = File.openDialog(undefined, filter, false);
 				if (file) {
 					if (path_ui.text !== file.absoluteURI) {
@@ -765,11 +801,14 @@ namespace KIKAKU {
 				path_ui.helpTip = <string>this._options.helpTip;
 			}
 			path_ui.onChange = () => { this.onChange(); }
+			path_ui.onEnterKey = () => { this.on('onEnterKey', false); };
+			path_ui.onActivate = () => { this.on('onActivate', false); };
+			path_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 
 			let browse_ui: Button = group.add('button', undefined, '...');
 			browse_ui.maximumSize = [20, height];
 			browse_ui.alignment = ['right', 'fill'];
-			browse_ui.onClick = () => {
+			browse_ui.onClick = browse_ui.onEnterKey = () => {
 				let folder: Folder = Folder.selectDialog();
 				if (folder) {
 					if (path_ui.text !== folder.absoluteURI) {
@@ -818,6 +857,8 @@ namespace KIKAKU {
 			checkbox_ui.onClick = () => {
 				this.onChange();
 			};
+			checkbox_ui.onActivate = () => { this.on('onActivate', false); };
+			checkbox_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 		}
 		get() {
 			return this._ui.value;
@@ -849,6 +890,12 @@ namespace KIKAKU {
 				ui.value = value;
 				ui.onClick = ((index: number) => {
 					return () => { this.onChange(index); };
+				})(i);
+				ui.onActivate = ((index: number) => {
+					return () => { this.on(index, 'onActivate', false); };
+				})(i);
+				ui.onDeactivate = ((index: number) => {
+					return () => { this.on(index, 'onDeactivate', false); };
 				})(i);
 				this._texts.push(check.text);
 				this._uis.push(ui);
@@ -1006,13 +1053,15 @@ namespace KIKAKU {
 					graphics.fillPath(graphics.newBrush(graphics.BrushType.SOLID_COLOR, [0, 0, 0, 0.3]));
 				}
 			};
-			color_ui.onClick = () => {
+			color_ui.onClick = color_ui.onEnterKey = () => {
 				let hex = $.colorPicker(rgbToHex(this._color));
 				if (hex !== -1) {
 					this._color = hexToRgb(hex);
 					this.onChange();
 				}
 			};
+			color_ui.onActivate = () => { this.on('onActivate', false); };
+			color_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 		}
 		onChange() {
 			super.onChange();
@@ -1055,7 +1104,7 @@ namespace KIKAKU {
 						}
 					};
 				})(i);
-				ui.onClick = ((index: number) => {
+				ui.onClick = ui.onEnterKey = ((index: number) => {
 					return () => {
 						let hex = $.colorPicker(rgbToHex(this._colors[i]));
 						if (hex !== -1) {
@@ -1063,6 +1112,12 @@ namespace KIKAKU {
 							this.onChange(i);
 						}
 					};
+				})(i);
+				ui.onActivate = ((index: number) => {
+					return () => { this.on(index, 'onActivate', false); };
+				})(i);
+				ui.onDeactivate = ((index: number) => {
+					return () => { this.on(index, 'onDeactivate', false); };
 				})(i);
 				this._colors.push(color);
 				this._uis.push(ui);
@@ -1379,6 +1434,8 @@ namespace KIKAKU {
 					this.onChange();
 				}
 			};
+			popup_ui.onActivate = () => { this.on('onActivate', false); };
+			popup_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 		}
 	}
 
@@ -1401,6 +1458,12 @@ namespace KIKAKU {
 							this.onChange(index);
 						}
 					};
+				})(i);
+				ui.onActivate = ((index: number) => {
+					return () => { this.on(index, 'onActivate', false); };
+				})(i);
+				ui.onDeactivate = ((index: number) => {
+					return () => { this.on(index, 'onDeactivate', false); };
 				})(i);
 				this._default_values.push(default_value);
 				this._locks.push({ lock: false });
@@ -1436,6 +1499,8 @@ namespace KIKAKU {
 					this.on('onDoubleClick', false);
 				}
 			};
+			listbox_ui.onActivate = () => { this.on('onActivate', false); };
+			listbox_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 		}
 	}
 
@@ -1474,6 +1539,12 @@ namespace KIKAKU {
 						}
 					};
 				})(i);
+				ui.onActivate = ((index: number) => {
+					return () => { this.on(index, 'onActivate', false); };
+				})(i);
+				ui.onDeactivate = ((index: number) => {
+					return () => { this.on(index, 'onDeactivate', false); };
+				})(i);
 				this._default_values.push(default_value);
 				this._locks.push({ lock: false });
 				this._uis.push(ui);
@@ -1486,6 +1557,7 @@ namespace KIKAKU {
 		protected _ui: Button;
 		protected _title: string;
 		protected _callback: Function;
+		protected _undo: boolean = true;
 		buildUI() {
 			let group = this._group;
 			let builder = this._builder;
@@ -1505,6 +1577,9 @@ namespace KIKAKU {
 				}
 				if (value.helpTip) {
 					help_tip = value.helpTip;
+				}
+				if (Utils.isBoolean(value.undo)) {
+					this._undo = value.undo;
 				}
 			}
 
@@ -1528,13 +1603,13 @@ namespace KIKAKU {
 				ui.helpTip = help_tip;
 			}
 			ui.onClick = () => {
-				this.execute(true);
+				this.execute();
 			};
 		}
 		init() {
 			this._ui.text = this._title;
 		}
-		execute(undo = true, ...args) {
+		execute(undo = this._undo, ...args) {
 			let builder = this._builder;
 			let callback = this._callback;
 			let value;
@@ -1774,7 +1849,7 @@ namespace KIKAKU {
 
 	export class UIBuilder {
 		static LIBRARY_NAME = 'KikakuUIBuilder';
-		static VERSION = '2.1.0';
+		static VERSION = '2.1.1';
 		static AUTHOR = 'Kareobana';
 		static ALIAS = 'Atarabi';
 		static PARAMETER_TYPE = {
@@ -2000,9 +2075,9 @@ namespace KIKAKU {
 			this._parameters[name].set(arg1, arg2);
 			return this;
 		}
-		execute(name: string, undo = true, ...args) {
+		execute(name: string, undo?: boolean, ...args) {
 			this.validateParameter(name);
-			return this._parameters[name].execute.apply(this, [undo].concat(args));
+			return this._parameters[name].execute.apply(this._parameters[name], [undo].concat(args));
 		}
 		enable(...names: string[]) {
 			Utils.forEach(names, (name: string) => {
