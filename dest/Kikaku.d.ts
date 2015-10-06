@@ -34,7 +34,8 @@ declare namespace KIKAKU.Utils {
 }
 declare namespace KIKAKU.Utils {
     function getProjectFile(): File;
-    function createFolder(path: string): void;
+    function createFolder(path: string | Folder): void;
+    function removeFolder(path: string | Folder): void;
 }
 declare namespace KIKAKU.Utils._Impl {
     function not(fn: any, ctx?: any): () => boolean;
@@ -279,12 +280,25 @@ declare namespace KIKAKU {
         static validateFileName(file_name: string): boolean;
         private _cd;
         constructor(path: string, type?: string);
+        getFilesAndFolders(options?: {
+            path?: string;
+            mask?: string;
+        }): (File | Folder)[];
         getFiles(options?: {
             path?: string;
             mask?: string;
         }): File[];
         getFile(file_name: string): File;
         getFileNames(options?: {
+            path?: string;
+            mask?: string;
+        }): string[];
+        getFolders(options?: {
+            path?: string;
+            mask?: string;
+        }): Folder[];
+        getFolder(folder_name: string): Folder;
+        getFolderNames(options?: {
             path?: string;
             mask?: string;
         }): string[];
@@ -315,6 +329,9 @@ declare namespace KIKAKU {
         callback?: Function | Function[];
         onDoubleClick?: Function | Function[];
         onChanging?: Function | Function[];
+        onEnterKey?: Function | Function[];
+        onActivate?: Function | Function[];
+        onDeactivate?: Function | Function[];
     }
     interface UIAPI {
         (script_name: string, api_name: string, ...args: any[]): any;
@@ -405,28 +422,28 @@ declare namespace KIKAKU {
         getUrl(): string;
         getTitleWidth(): number;
         getWidth(): number;
-        add(type: string, name: string, value?: any, options?: ParameterOptions | Function): UIBuilder;
-        api(name: string, fn: Function): UIBuilder;
-        on(type: string, fn: Function): UIBuilder;
-        off(type: string, fn: Function): UIBuilder;
-        trigger(type: string): UIBuilder;
+        add(type: string, name: string, value?: any, options?: ParameterOptions | Function): this;
+        api(name: string, fn: Function): this;
+        on(type: string, fn: Function): this;
+        off(type: string, fn: Function): this;
+        trigger(type: string): this;
         private validateParameter(name);
         get(name: string, index?: number): any;
-        set(name: string, arg1?: any, arg2?: any): UIBuilder;
+        set(name: string, arg1?: any, arg2?: any): this;
         execute(name: string, undo?: boolean, ...args: any[]): any;
-        enable(...names: string[]): UIBuilder;
-        disable(...names: string[]): UIBuilder;
+        enable(...names: string[]): this;
+        disable(...names: string[]): this;
         getItems(name: string, index?: number): string[] | string[][];
-        replaceItems(name: string, items_or_index: string[] | string[][] | number, items2?: string[]): UIBuilder;
-        addItems(name: string, items_or_index: string | string[] | (string | string[])[] | number, items2?: string | string[]): UIBuilder;
-        removeItem(name: string, item_or_index: string | string[] | number, item2?: string): UIBuilder;
+        replaceItems(name: string, items_or_index: string[] | string[][] | number, items2?: string[]): this;
+        addItems(name: string, items_or_index: string | string[] | (string | string[])[] | number, items2?: string | string[]): this;
+        removeItem(name: string, item_or_index: string | string[] | number, item2?: string): this;
         getSetting(key: string, default_value: any): any;
-        saveSetting(key: string, value: any): UIBuilder;
-        deleteSetting(key: string): UIBuilder;
+        saveSetting(key: string, value: any): this;
+        deleteSetting(key: string): this;
         getFileNames(): string[];
         existsFile(filename: string): boolean;
         getFile(filename: string): any;
-        saveFile(filename: string, data: any): UIBuilder;
+        saveFile(filename: string, data: any): this;
         deleteFile(filename: string): boolean;
         update(): void;
         close(): void;

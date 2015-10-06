@@ -215,6 +215,7 @@ var KIKAKU;
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
 /// <reference path="../../typings/aftereffects/ae.d.ts" />
+/// <reference path="utility.ts" />
 var KIKAKU;
 (function (KIKAKU) {
     var Utils;
@@ -224,7 +225,7 @@ var KIKAKU;
         }
         Utils.getProjectFile = getProjectFile;
         function createFolder(path) {
-            var folder = new Folder(path);
+            var folder = Utils.isString(path) ? new Folder(path) : path;
             var folders = [];
             while (!folder.exists) {
                 folders.push(folder);
@@ -237,6 +238,25 @@ var KIKAKU;
             }
         }
         Utils.createFolder = createFolder;
+        function removeFolder(path) {
+            function _removeFolder(folder) {
+                var files = folder.getFiles() || [];
+                Utils.forEach(files, function (file) {
+                    if (file instanceof Folder) {
+                        _removeFolder(file);
+                    }
+                    else {
+                        file.remove();
+                    }
+                });
+                folder.remove();
+            }
+            var folder = Utils.isString(path) ? new Folder(path) : path;
+            if (folder.exists) {
+                _removeFolder(folder);
+            }
+        }
+        Utils.removeFolder = removeFolder;
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
@@ -1583,29 +1603,39 @@ var KIKAKU;
             }
             return file_name.match(/[:;\/|,*?"'<>]/) === null;
         };
-        FileManager.prototype.getFiles = function (options) {
+        FileManager.prototype.getFilesAndFolders = function (options) {
             var options_ = Utils.assign({
                 path: null,
                 mask: '*'
             }, options);
             var folder_path = options_.path ? this._cd + '/' + options_.path : this._cd;
             var folder = new Folder(folder_path);
-            var files = folder.exists ? Utils.filter(folder.getFiles(options_.mask), function (file) {
-                return file instanceof File;
-            }) : [];
+            var files = folder.exists ? folder.getFiles(options_.mask) : [];
             return files;
+        };
+        FileManager.prototype.getFiles = function (options) {
+            return Utils.filter(this.getFilesAndFolders(options), function (file) {
+                return file instanceof File;
+            });
         };
         FileManager.prototype.getFile = function (file_name) {
             var file = new File(this._cd + '/' + file_name);
             return file;
         };
         FileManager.prototype.getFileNames = function (options) {
-            var files = this.getFiles(options);
-            var file_names = [];
-            Utils.forEach(files, function (file) {
-                file_names.push(file.displayName);
+            return Utils.map(this.getFiles(options), function (file) { return file.displayName; });
+        };
+        FileManager.prototype.getFolders = function (options) {
+            return Utils.filter(this.getFilesAndFolders(options), function (file) {
+                return file instanceof Folder;
             });
-            return file_names;
+        };
+        FileManager.prototype.getFolder = function (folder_name) {
+            var file = folder_name ? new Folder(this._cd + '/' + folder_name) : new Folder(this._cd);
+            return file;
+        };
+        FileManager.prototype.getFolderNames = function (options) {
+            return Utils.map(this.getFolders(options), function (folder) { return folder.displayName; });
         };
         FileManager.prototype.exists = function (file_name) {
             return this.getFile(file_name).exists;
@@ -2010,6 +2040,9 @@ var KIKAKU;
             }
             text_ui.onChange = function () { _this.onChange(); };
             text_ui.onChanging = function () { _this.on('onChanging', false); };
+            text_ui.onEnterKey = function () { _this.on('onEnterKey', false); };
+            text_ui.onActivate = function () { _this.on('onActivate', false); };
+            text_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
         TextParameter.prototype.get = function () {
             return this._ui.text;
@@ -2049,6 +2082,15 @@ var KIKAKU;
                 })(i);
                 ui.onChanging = (function (index) {
                     return function () { _this.on(index, 'onChanging', false); };
+                })(i);
+                ui.onEnterKey = (function (index) {
+                    return function () { _this.on(index, 'onEnterKey', false); };
+                })(i);
+                ui.onActivate = (function (index) {
+                    return function () { _this.on(index, 'onActivate', false); };
+                })(i);
+                ui.onDeactivate = (function (index) {
+                    return function () { _this.on(index, 'onDeactivate', false); };
                 })(i);
                 _this._uis.push(ui);
             });
@@ -2217,6 +2259,7 @@ var KIKAKU;
             _super.apply(this, arguments);
         }
         NumberParameter.prototype.buildParameter = function (width) {
+            var _this = this;
             var group = this._group;
             var minmax = extractNumberValue(this._value);
             this._minvalue = minmax.minvalue;
@@ -2229,6 +2272,9 @@ var KIKAKU;
                 minvalue: this._minvalue,
                 maxvalue: this._maxvalue
             });
+            number_ui.onEnterKey = function () { _this.on('onEnterKey', false); };
+            number_ui.onActivate = function () { _this.on('onActivate', false); };
+            number_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
         NumberParameter.prototype.get = function () {
             return parseFloat(this._ui.text);
@@ -2269,6 +2315,15 @@ var KIKAKU;
                     maxvalue: minmax.maxvalue,
                     index: i
                 });
+                ui.onEnterKey = (function (index) {
+                    return function () { _this.on(index, 'onEnterKey', false); };
+                })(i);
+                ui.onActivate = (function (index) {
+                    return function () { _this.on(index, 'onActivate', false); };
+                })(i);
+                ui.onDeactivate = (function (index) {
+                    return function () { _this.on(index, 'onDeactivate', false); };
+                })(i);
                 _this._default_values.push(minmax.value);
                 _this._minvalues.push(minmax.minvalue);
                 _this._maxvalues.push(minmax.maxvalue);
@@ -2364,17 +2419,20 @@ var KIKAKU;
                 number_ui.helpTip = this._options.helpTip;
             }
             slider_ui.onChange = function () {
-                _this.onChange();
-            };
-            slider_ui.onChange = function () {
                 number_ui.text = this.value;
+                self.onChange();
             };
+            slider_ui.onActivate = function () { _this.on('onActivate', false); };
+            slider_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
             number_ui.onChange = function () {
                 var value = KIKAKU.Utils.clamp(parseNumber(this.text), self._minvalue, self._maxvalue);
                 this.text = value;
                 slider_ui.value = value;
                 self.onChange();
             };
+            number_ui.onEnterKey = function () { _this.on('onEnterKey', false); };
+            number_ui.onActivate = function () { _this.on('onActivate', false); };
+            number_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
         SliderParameter.prototype.get = function () {
             return this._ui.value;
@@ -2400,6 +2458,7 @@ var KIKAKU;
             return 2;
         };
         PointParameterBase.prototype.buildParameter = function () {
+            var _this = this;
             if (!KIKAKU.Utils.isArray(this._value)) {
                 this._value = [];
                 for (var i = 0; i < this.getDimensions(); i++) {
@@ -2418,6 +2477,9 @@ var KIKAKU;
                     ui.helpTip = this._options.helpTip;
                 }
                 ui.onChange = numberOnChange(this);
+                ui.onEnterKey = function () { _this.on('onEnterKey', false); };
+                ui.onActivate = function () { _this.on('onActivate', false); };
+                ui.onDeactivate = function () { _this.on('onDeactivate', false); };
                 this._uis.push(ui);
             }
         };
@@ -2487,11 +2549,14 @@ var KIKAKU;
                 path_ui.helpTip = this._options.helpTip;
             }
             path_ui.onChange = function () { _this.onChange(); };
+            path_ui.onEnterKey = function () { _this.on('onEnterKey', false); };
+            path_ui.onActivate = function () { _this.on('onActivate', false); };
+            path_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
             var filter = this._options.filter;
             var browse_ui = group.add('button', undefined, '...');
             browse_ui.maximumSize = [20, height];
             browse_ui.alignment = ['right', 'fill'];
-            browse_ui.onClick = function () {
+            browse_ui.onClick = browse_ui.onEnterKey = function () {
                 var file = File.openDialog(undefined, filter, false);
                 if (file) {
                     if (path_ui.text !== file.absoluteURI) {
@@ -2518,10 +2583,13 @@ var KIKAKU;
                 path_ui.helpTip = this._options.helpTip;
             }
             path_ui.onChange = function () { _this.onChange(); };
+            path_ui.onEnterKey = function () { _this.on('onEnterKey', false); };
+            path_ui.onActivate = function () { _this.on('onActivate', false); };
+            path_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
             var browse_ui = group.add('button', undefined, '...');
             browse_ui.maximumSize = [20, height];
             browse_ui.alignment = ['right', 'fill'];
-            browse_ui.onClick = function () {
+            browse_ui.onClick = browse_ui.onEnterKey = function () {
                 var folder = Folder.selectDialog();
                 if (folder) {
                     if (path_ui.text !== folder.absoluteURI) {
@@ -2571,6 +2639,8 @@ var KIKAKU;
             checkbox_ui.onClick = function () {
                 _this.onChange();
             };
+            checkbox_ui.onActivate = function () { _this.on('onActivate', false); };
+            checkbox_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
         CheckboxParameter.prototype.get = function () {
             return this._ui.value;
@@ -2607,6 +2677,12 @@ var KIKAKU;
                 ui.value = value;
                 ui.onClick = (function (index) {
                     return function () { _this.onChange(index); };
+                })(i);
+                ui.onActivate = (function (index) {
+                    return function () { _this.on(index, 'onActivate', false); };
+                })(i);
+                ui.onDeactivate = (function (index) {
+                    return function () { _this.on(index, 'onDeactivate', false); };
                 })(i);
                 _this._texts.push(check.text);
                 _this._uis.push(ui);
@@ -2764,13 +2840,15 @@ var KIKAKU;
                     graphics.fillPath(graphics.newBrush(graphics.BrushType.SOLID_COLOR, [0, 0, 0, 0.3]));
                 }
             };
-            color_ui.onClick = function () {
+            color_ui.onClick = color_ui.onEnterKey = function () {
                 var hex = $.colorPicker(rgbToHex(_this._color));
                 if (hex !== -1) {
                     _this._color = hexToRgb(hex);
                     _this.onChange();
                 }
             };
+            color_ui.onActivate = function () { _this.on('onActivate', false); };
+            color_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
         ColorParameter.prototype.onChange = function () {
             _super.prototype.onChange.call(this);
@@ -2818,7 +2896,7 @@ var KIKAKU;
                         }
                     };
                 })(i);
-                ui.onClick = (function (index) {
+                ui.onClick = ui.onEnterKey = (function (index) {
                     return function () {
                         var hex = $.colorPicker(rgbToHex(_this._colors[i]));
                         if (hex !== -1) {
@@ -2826,6 +2904,12 @@ var KIKAKU;
                             _this.onChange(i);
                         }
                     };
+                })(i);
+                ui.onActivate = (function (index) {
+                    return function () { _this.on(index, 'onActivate', false); };
+                })(i);
+                ui.onDeactivate = (function (index) {
+                    return function () { _this.on(index, 'onDeactivate', false); };
                 })(i);
                 _this._colors.push(color);
                 _this._uis.push(ui);
@@ -3159,6 +3243,8 @@ var KIKAKU;
                     _this.onChange();
                 }
             };
+            popup_ui.onActivate = function () { _this.on('onActivate', false); };
+            popup_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
         return PopupParameter;
     })(ItemParameter);
@@ -3186,6 +3272,12 @@ var KIKAKU;
                             _this.onChange(index);
                         }
                     };
+                })(i);
+                ui.onActivate = (function (index) {
+                    return function () { _this.on(index, 'onActivate', false); };
+                })(i);
+                ui.onDeactivate = (function (index) {
+                    return function () { _this.on(index, 'onDeactivate', false); };
                 })(i);
                 _this._default_values.push(default_value);
                 _this._locks.push({ lock: false });
@@ -3225,6 +3317,8 @@ var KIKAKU;
                     _this.on('onDoubleClick', false);
                 }
             };
+            listbox_ui.onActivate = function () { _this.on('onActivate', false); };
+            listbox_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
         ListboxParameter.DEFAULT_HEIGHT = 80;
         return ListboxParameter;
@@ -3268,6 +3362,12 @@ var KIKAKU;
                         }
                     };
                 })(i);
+                ui.onActivate = (function (index) {
+                    return function () { _this.on(index, 'onActivate', false); };
+                })(i);
+                ui.onDeactivate = (function (index) {
+                    return function () { _this.on(index, 'onDeactivate', false); };
+                })(i);
                 _this._default_values.push(default_value);
                 _this._locks.push({ lock: false });
                 _this._uis.push(ui);
@@ -3281,6 +3381,7 @@ var KIKAKU;
         __extends(ScriptParameter, _super);
         function ScriptParameter() {
             _super.apply(this, arguments);
+            this._undo = true;
         }
         ScriptParameter.prototype.buildUI = function () {
             var _this = this;
@@ -3304,6 +3405,9 @@ var KIKAKU;
                 if (value.helpTip) {
                     help_tip = value.helpTip;
                 }
+                if (KIKAKU.Utils.isBoolean(value.undo)) {
+                    this._undo = value.undo;
+                }
             }
             this._title = title;
             this._callback = callback;
@@ -3324,14 +3428,14 @@ var KIKAKU;
                 ui.helpTip = help_tip;
             }
             ui.onClick = function () {
-                _this.execute(true);
+                _this.execute();
             };
         };
         ScriptParameter.prototype.init = function () {
             this._ui.text = this._title;
         };
         ScriptParameter.prototype.execute = function (undo) {
-            if (undo === void 0) { undo = true; }
+            if (undo === void 0) { undo = this._undo; }
             var args = [];
             for (var _i = 1; _i < arguments.length; _i++) {
                 args[_i - 1] = arguments[_i];
@@ -3707,13 +3811,12 @@ var KIKAKU;
             return this;
         };
         UIBuilder.prototype.execute = function (name, undo) {
-            if (undo === void 0) { undo = true; }
             var args = [];
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
             this.validateParameter(name);
-            return this._parameters[name].execute.apply(this, [undo].concat(args));
+            return this._parameters[name].execute.apply(this._parameters[name], [undo].concat(args));
         };
         UIBuilder.prototype.enable = function () {
             var _this = this;
@@ -3943,7 +4046,7 @@ var KIKAKU;
             }
         };
         UIBuilder.LIBRARY_NAME = 'KikakuUIBuilder';
-        UIBuilder.VERSION = '2.1.0';
+        UIBuilder.VERSION = '2.1.1';
         UIBuilder.AUTHOR = 'Kareobana';
         UIBuilder.ALIAS = 'Atarabi';
         UIBuilder.PARAMETER_TYPE = {
