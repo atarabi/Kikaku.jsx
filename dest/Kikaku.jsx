@@ -2674,7 +2674,7 @@ var KIKAKU;
                 else if (KIKAKU.Utils.isArray(help_tip) && KIKAKU.Utils.isString(help_tip[i])) {
                     ui.helpTip = help_tip[i];
                 }
-                ui.value = value;
+                ui.value = check.value;
                 ui.onClick = (function (index) {
                     return function () { _this.onChange(index); };
                 })(i);
