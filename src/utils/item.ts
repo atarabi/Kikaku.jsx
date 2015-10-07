@@ -233,13 +233,13 @@ namespace KIKAKU.Utils {
 	}
 	
 	export function getCompByName(name: string) {
-		return getItem([(item: Item) => {
+		return <CompItem>getItem([(item: Item) => {
 			return isCompItem(item) && item.name === name;
 		}]);
 	}
 	
 	export function getAVItemByName(name: string) {
-		return getItem([(item: Item) => {
+		return <AVItem>getItem([(item: Item) => {
 			return isAVItem(item) && item.name === name;
 		}]);
 	}
