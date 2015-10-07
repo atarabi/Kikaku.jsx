@@ -358,5 +358,12 @@ namespace KIKAKU.Utils {
 		let layers = getSelectedLayers(comp);
 		return layers.length ? layers[0] : null;
 	}
+	
+	export function removeAllLayers(comp: CompItem = getActiveComp()) {
+		if (!comp) {
+			return;
+		}
+		forEach(Utils.getLayers(['all'], comp), (layer: Layer) => layer.remove());
+	}
 
 }

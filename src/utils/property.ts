@@ -349,4 +349,14 @@ namespace KIKAKU.Utils {
 		return <Layer>(<any>property);
 	}
 
+	export function removeAllKeys(property: Property) {
+		let num_keys = property.numKeys;
+		if (!num_keys) {
+			return;
+		}
+		for (let i = num_keys; i >= 1; i--) {
+			property.removeKey(i);
+		}
+	}
+
 }
