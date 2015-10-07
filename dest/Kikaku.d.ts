@@ -90,8 +90,8 @@ declare namespace KIKAKU.Utils {
     function getItem(filters?: any[]): Item;
     function getActiveItem(): Item;
     function getActiveComp(): CompItem;
-    function getCompByName(name: string): Item;
-    function getAVItemByName(name: string): Item;
+    function getCompByName(name: string): CompItem;
+    function getAVItemByName(name: string): AVItem;
 }
 declare namespace KIKAKU.Utils {
     function isTextLayer(layer: Layer): boolean;
@@ -165,6 +165,7 @@ declare namespace KIKAKU.Utils {
     function deselectLayers(comp?: CompItem): void;
     function getSelectedLayers(comp?: CompItem): Layer[];
     function getSelectedLayer(comp?: CompItem): Layer;
+    function removeAllLayers(comp?: CompItem): void;
 }
 declare namespace KIKAKU.Utils {
     function isProperty(property: PropertyBase): boolean;
@@ -236,6 +237,7 @@ declare namespace KIKAKU.Utils {
     function getPathOfSelectedProperty(match_name?: boolean): string[];
     function getPropertyFromPath(layer: Layer, path: string[]): PropertyBase;
     function getLayerOfProperty(property: PropertyBase): Layer;
+    function removeAllKeys(property: Property): void;
 }
 declare namespace KIKAKU.Utils {
     type Color = [number, number, number, number];
@@ -254,6 +256,11 @@ declare namespace KIKAKU {
         stringify(value: any, replacer: any[], space: any): string;
     }
     var JSON: JSON;
+}
+declare namespace KIKAKU.Utils.Comment {
+    function get(layer_or_item: Layer | Item, key: string): any;
+    function set(layer_or_item: Layer | Item, key: string, value: any): void;
+    function remove(layer_or_item: Layer | Item, key: string): void;
 }
 declare namespace KIKAKU {
     class EventDispatcher {

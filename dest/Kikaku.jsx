@@ -1,7 +1,7 @@
 /// <reference path="../typings/aftereffects/ae.d.ts" />
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.0.0';
+    KIKAKU.VERSION = '0.1.0';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -9,7 +9,7 @@ var KIKAKU;
 (function (KIKAKU) {
     var Utils;
     (function (Utils) {
-        Utils.VERSION = '1.1.0';
+        Utils.VERSION = '1.2.0';
         Utils.AUTHOR = 'Kareobana';
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
@@ -967,6 +967,14 @@ var KIKAKU;
             return layers.length ? layers[0] : null;
         }
         Utils.getSelectedLayer = getSelectedLayer;
+        function removeAllLayers(comp) {
+            if (comp === void 0) { comp = Utils.getActiveComp(); }
+            if (!comp) {
+                return;
+            }
+            Utils.forEach(Utils.getLayers(['all'], comp), function (layer) { return layer.remove(); });
+        }
+        Utils.removeAllLayers = removeAllLayers;
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
 /// <reference path="../../typings/aftereffects/ae.d.ts" />
@@ -1315,6 +1323,16 @@ var KIKAKU;
             return property;
         }
         Utils.getLayerOfProperty = getLayerOfProperty;
+        function removeAllKeys(property) {
+            var num_keys = property.numKeys;
+            if (!num_keys) {
+                return;
+            }
+            for (var i = num_keys; i >= 1; i--) {
+                property.removeKey(i);
+            }
+        }
+        Utils.removeAllKeys = removeAllKeys;
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
 /// <reference path="../../typings/aftereffects/ae.d.ts" />
@@ -1412,13 +1430,6 @@ var KIKAKU;
         Utils.yuvToRgb = yuvToRgb;
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
-/// <reference path="utils/config.ts" />
-/// <reference path="utils/utility.ts" />
-/// <reference path="utils/filesystem.ts" />
-/// <reference path="utils/item.ts" />
-/// <reference path="utils/layer.ts" />
-/// <reference path="utils/property.ts" />
-/// <reference path="utils/color.ts" /> 
 /// <reference path="../typings/aftereffects/ae.d.ts" />
 var KIKAKU;
 (function (KIKAKU) {
@@ -1519,6 +1530,78 @@ var KIKAKU;
         }
     })();
 })(KIKAKU || (KIKAKU = {}));
+/// <reference path="../../typings/aftereffects/ae.d.ts" />
+/// <reference path="../KikakuJSON.ts" />
+/// <reference path="utility.ts" />
+var KIKAKU;
+(function (KIKAKU) {
+    var Utils;
+    (function (Utils) {
+        var Comment;
+        (function (Comment) {
+            var JSON = KIKAKU.JSON;
+            var COMMENT_KEY = 'comment';
+            function parseComment(layer_or_item) {
+                var comment = layer_or_item.comment;
+                var parsed_comment;
+                try {
+                    parsed_comment = JSON.parse(comment);
+                }
+                catch (e) {
+                    parsed_comment = (_a = {}, _a[COMMENT_KEY] = comment, _a);
+                }
+                return parsed_comment;
+                var _a;
+            }
+            function stringifyComment(layer_or_item, parsed_comment) {
+                var has_comment_key = false;
+                var has_not_comment_key = false;
+                for (var key in parsed_comment) {
+                    if (key === COMMENT_KEY) {
+                        has_comment_key = true;
+                    }
+                    else {
+                        has_not_comment_key = true;
+                    }
+                    if (has_comment_key && has_not_comment_key) {
+                        break;
+                    }
+                }
+                if (!has_not_comment_key) {
+                    layer_or_item.comment = has_comment_key ? parsed_comment[COMMENT_KEY] : '';
+                }
+                else {
+                    layer_or_item.comment = JSON.stringify(parsed_comment);
+                }
+            }
+            function get(layer_or_item, key) {
+                var parsed_comment = parseComment(layer_or_item);
+                return Utils.isUndefined(parsed_comment[key]) ? null : parsed_comment[key];
+            }
+            Comment.get = get;
+            function set(layer_or_item, key, value) {
+                var parsed_comment = parseComment(layer_or_item);
+                parsed_comment[key] = value;
+                stringifyComment(layer_or_item, parsed_comment);
+            }
+            Comment.set = set;
+            function remove(layer_or_item, key) {
+                var parsed_comment = parseComment(layer_or_item);
+                delete parsed_comment[key];
+                stringifyComment(layer_or_item, parsed_comment);
+            }
+            Comment.remove = remove;
+        })(Comment = Utils.Comment || (Utils.Comment = {}));
+    })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
+})(KIKAKU || (KIKAKU = {}));
+/// <reference path="utils/config.ts" />
+/// <reference path="utils/utility.ts" />
+/// <reference path="utils/filesystem.ts" />
+/// <reference path="utils/item.ts" />
+/// <reference path="utils/layer.ts" />
+/// <reference path="utils/property.ts" />
+/// <reference path="utils/color.ts" />
+/// <reference path="utils/comment.ts" /> 
 /// <reference path="../typings/aftereffects/ae.d.ts" />
 var KIKAKU;
 (function (KIKAKU) {
