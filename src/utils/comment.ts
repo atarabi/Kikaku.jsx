@@ -14,7 +14,7 @@ namespace KIKAKU.Utils.Comment {
 		try {
 			parsed_comment = JSON.parse(comment);
 		} catch (e) {
-			parsed_comment = { [COMMENT_KEY]: comment };
+			parsed_comment = comment ? { [COMMENT_KEY]: comment } : {};
 		}
 		return parsed_comment;
 	}
