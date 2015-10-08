@@ -359,4 +359,112 @@ namespace KIKAKU.Utils {
 		}
 	}
 
+	export function scaleOneDProperty(property: Property, scale: number) {
+		type ValueType = number;
+		function scaleValue(value: ValueType): ValueType {
+			return clamp(value * scale, minvalue, maxvalue);
+		}
+
+		if (property.propertyValueType !== PropertyValueType.OneD) {
+			throw new Error('PropertyValueType is not matched');
+		}
+
+		var minvalue = property.hasMin ? property.minValue : -Infinity;
+		var maxvalue = property.hasMax ? property.maxValue : Infinity;
+
+		if (property.numKeys === 0) {
+			property.setValue(scaleValue(<ValueType>property.value));
+		} else {
+			for (let i = 1, l = property.numKeys; i <= l; i++) {
+				const value = <ValueType>property.keyValue(i);
+				property.setValueAtKey(i, scaleValue(value));
+			}
+		}
+	}
+
+	export function scaleTwoDProperty(property: Property, scale: [number, number], tangent: boolean = true) {
+		type ValueType = [number, number];
+		function scaleValue(value: ValueType): ValueType {
+			return [value[0] * scale[0], value[1] * scale[1]];
+		}
+
+		if (!(property.propertyValueType === PropertyValueType.TwoD || property.propertyValueType === PropertyValueType.TwoD_SPATIAL)) {
+			throw new Error('PropertyValueType is not matched');
+		}
+
+		if (property.numKeys === 0) {
+			property.setValue(scaleValue(<ValueType>property.value));
+		} else {
+			const do_tangent = property.propertyValueType === PropertyValueType.TwoD_SPATIAL && tangent;
+			for (let i = 1, l = property.numKeys; i <= l; i++) {
+				const value = <ValueType>property.keyValue(i);
+				property.setValueAtKey(i, scaleValue(value));
+				if (do_tangent) {
+					property.setSpatialTangentsAtKey(i,
+						scaleValue(<ValueType>property.keyInSpatialTangent(i)),
+						scaleValue(<ValueType>property.keyOutSpatialTangent(i))
+					);
+				}
+			}
+		}
+	}
+
+	export function scaleThreeDProperty(property: Property, scale: [number, number, number], tangent: boolean = true) {
+		type ValueType = [number, number, number];
+		function scaleValue(value: ValueType): ValueType {
+			return [value[0] * scale[0], value[1] * scale[1], value[2] * scale[2]];
+		}
+
+		if (!(property.propertyValueType === PropertyValueType.ThreeD || property.propertyValueType === PropertyValueType.ThreeD_SPATIAL)) {
+			throw new Error('PropertyValueType is not matched');
+		}
+
+		if (property.numKeys === 0) {
+			property.setValue(scaleValue(<ValueType>property.value));
+		} else {
+			const do_tangent = property.propertyValueType === PropertyValueType.ThreeD_SPATIAL && tangent;
+			for (let i = 1, l = property.numKeys; i <= l; i++) {
+				const value = <ValueType>property.keyValue(i);
+				property.setValueAtKey(i, scaleValue(value));
+				if (do_tangent) {
+					property.setSpatialTangentsAtKey(i,
+						scaleValue(<ValueType>property.keyInSpatialTangent(i)),
+						scaleValue(<ValueType>property.keyOutSpatialTangent(i))
+					);
+				}
+			}
+		}
+	}
+
+	export function scaleShapeProperty(property: Property, scale: [number, number], src_origin: [number, number] = [0, 0], dst_origin: [number, number] = src_origin) {
+		type ValueType = Shape;
+		type VectorType = [number, number];
+		function scaleVector(vector: VectorType, use_origin: boolean = true): VectorType {
+			if (use_origin) {
+				return [(vector[0] - src_origin[0]) * scale[0] + dst_origin[0], (vector[1] - src_origin[1]) * scale[1] + dst_origin[1]]
+			}
+			return [vector[0] * scale[0], vector[1] * scale[1]];
+		}
+
+		function scaleValue(value: ValueType): ValueType {
+			value.vertices = map(value.vertices, (vertex: VectorType) => scaleVector(vertex));
+			value.inTangents = map(value.inTangents, (vertex: VectorType) => scaleVector(vertex, false));
+			value.outTangents = map(value.outTangents, (vertex: VectorType) => scaleVector(vertex, false));
+			return value;
+		}
+
+		if (property.propertyValueType !== PropertyValueType.SHAPE) {
+			throw new Error('PropertyValueType is not matched');
+		}
+
+		if (property.numKeys === 0) {
+			property.setValue(scaleValue(<ValueType>property.value));
+		} else {
+			for (let i = 1, l = property.numKeys; i <= l; i++) {
+				const value = <ValueType>property.keyValue(i);
+				property.setValueAtKey(i, scaleValue(value));
+			}
+		}
+	}
+
 }
