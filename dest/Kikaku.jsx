@@ -1333,6 +1333,102 @@ var KIKAKU;
             }
         }
         Utils.removeAllKeys = removeAllKeys;
+        function scaleOneDProperty(property, scale) {
+            function scaleValue(value) {
+                return Utils.clamp(value * scale, minvalue, maxvalue);
+            }
+            if (property.propertyValueType !== PropertyValueType.OneD) {
+                throw new Error('PropertyValueType is not matched');
+            }
+            var minvalue = property.hasMin ? property.minValue : -Infinity;
+            var maxvalue = property.hasMax ? property.maxValue : Infinity;
+            if (property.numKeys === 0) {
+                property.setValue(scaleValue(property.value));
+            }
+            else {
+                for (var i = 1, l = property.numKeys; i <= l; i++) {
+                    var value = property.keyValue(i);
+                    property.setValueAtKey(i, scaleValue(value));
+                }
+            }
+        }
+        Utils.scaleOneDProperty = scaleOneDProperty;
+        function scaleTwoDProperty(property, scale, tangent) {
+            if (tangent === void 0) { tangent = true; }
+            function scaleValue(value) {
+                return [value[0] * scale[0], value[1] * scale[1]];
+            }
+            if (!(property.propertyValueType === PropertyValueType.TwoD || property.propertyValueType === PropertyValueType.TwoD_SPATIAL)) {
+                throw new Error('PropertyValueType is not matched');
+            }
+            if (property.numKeys === 0) {
+                property.setValue(scaleValue(property.value));
+            }
+            else {
+                var do_tangent = property.propertyValueType === PropertyValueType.TwoD_SPATIAL && tangent;
+                for (var i = 1, l = property.numKeys; i <= l; i++) {
+                    var value = property.keyValue(i);
+                    property.setValueAtKey(i, scaleValue(value));
+                    if (do_tangent) {
+                        property.setSpatialTangentsAtKey(i, scaleValue(property.keyInSpatialTangent(i)), scaleValue(property.keyOutSpatialTangent(i)));
+                    }
+                }
+            }
+        }
+        Utils.scaleTwoDProperty = scaleTwoDProperty;
+        function scaleThreeDProperty(property, scale, tangent) {
+            if (tangent === void 0) { tangent = true; }
+            function scaleValue(value) {
+                return [value[0] * scale[0], value[1] * scale[1], value[2] * scale[2]];
+            }
+            if (!(property.propertyValueType === PropertyValueType.ThreeD || property.propertyValueType === PropertyValueType.ThreeD_SPATIAL)) {
+                throw new Error('PropertyValueType is not matched');
+            }
+            if (property.numKeys === 0) {
+                property.setValue(scaleValue(property.value));
+            }
+            else {
+                var do_tangent = property.propertyValueType === PropertyValueType.ThreeD_SPATIAL && tangent;
+                for (var i = 1, l = property.numKeys; i <= l; i++) {
+                    var value = property.keyValue(i);
+                    property.setValueAtKey(i, scaleValue(value));
+                    if (do_tangent) {
+                        property.setSpatialTangentsAtKey(i, scaleValue(property.keyInSpatialTangent(i)), scaleValue(property.keyOutSpatialTangent(i)));
+                    }
+                }
+            }
+        }
+        Utils.scaleThreeDProperty = scaleThreeDProperty;
+        function scaleShapeProperty(property, scale, src_origin, dst_origin) {
+            if (src_origin === void 0) { src_origin = [0, 0]; }
+            if (dst_origin === void 0) { dst_origin = src_origin; }
+            function scaleVector(vector, use_origin) {
+                if (use_origin === void 0) { use_origin = true; }
+                if (use_origin) {
+                    return [(vector[0] - src_origin[0]) * scale[0] + dst_origin[0], (vector[1] - src_origin[1]) * scale[1] + dst_origin[1]];
+                }
+                return [vector[0] * scale[0], vector[1] * scale[1]];
+            }
+            function scaleValue(value) {
+                value.vertices = Utils.map(value.vertices, function (vertex) { return scaleVector(vertex); });
+                value.inTangents = Utils.map(value.inTangents, function (vertex) { return scaleVector(vertex, false); });
+                value.outTangents = Utils.map(value.outTangents, function (vertex) { return scaleVector(vertex, false); });
+                return value;
+            }
+            if (property.propertyValueType !== PropertyValueType.SHAPE) {
+                throw new Error('PropertyValueType is not matched');
+            }
+            if (property.numKeys === 0) {
+                property.setValue(scaleValue(property.value));
+            }
+            else {
+                for (var i = 1, l = property.numKeys; i <= l; i++) {
+                    var value = property.keyValue(i);
+                    property.setValueAtKey(i, scaleValue(value));
+                }
+            }
+        }
+        Utils.scaleShapeProperty = scaleShapeProperty;
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
 /// <reference path="../../typings/aftereffects/ae.d.ts" />
@@ -1548,7 +1644,7 @@ var KIKAKU;
                     parsed_comment = JSON.parse(comment);
                 }
                 catch (e) {
-                    parsed_comment = (_a = {}, _a[COMMENT_KEY] = comment, _a);
+                    parsed_comment = comment ? (_a = {}, _a[COMMENT_KEY] = comment, _a) : {};
                 }
                 return parsed_comment;
                 var _a;

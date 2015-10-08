@@ -238,6 +238,10 @@ declare namespace KIKAKU.Utils {
     function getPropertyFromPath(layer: Layer, path: string[]): PropertyBase;
     function getLayerOfProperty(property: PropertyBase): Layer;
     function removeAllKeys(property: Property): void;
+    function scaleOneDProperty(property: Property, scale: number): void;
+    function scaleTwoDProperty(property: Property, scale: [number, number], tangent?: boolean): void;
+    function scaleThreeDProperty(property: Property, scale: [number, number, number], tangent?: boolean): void;
+    function scaleShapeProperty(property: Property, scale: [number, number], src_origin?: [number, number], dst_origin?: [number, number]): void;
 }
 declare namespace KIKAKU.Utils {
     type Color = [number, number, number, number];
