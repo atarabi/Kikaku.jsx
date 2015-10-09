@@ -16,12 +16,16 @@ namespace KIKAKU.Utils {
 		return isCompItem(item) || isFootageItem(item);
 	}
 
+	export function isSolidItem(item: Item) {
+		return isFootageItem(item) && (<FootageItem>item).mainSource instanceof SolidSource;
+	}
+
 	export function isFolderItem(item: Item) {
 		return item instanceof FolderItem;
 	}
 
 	export function forEachItem(fn: (item: Item, index?: number) => any, ctx?) {
-		for(let i = 1, l = app.project.numItems; i <= l; i++) {
+		for (let i = 1, l = app.project.numItems; i <= l; i++) {
 			fn.call(ctx, app.project.items[i], i);
 		}
 	}
@@ -39,6 +43,7 @@ namespace KIKAKU.Utils {
 		FOOTAGE: 'footage',
 		COMP: 'comp',
 		AV: 'av',
+		SOLID: 'solid',
 		FOLDER: 'folder',
 		NAME: 'name',
 		COMMENT: 'comment',
@@ -94,6 +99,9 @@ namespace KIKAKU.Utils {
 				break;
 			case ITEM_FILTER.AV:
 				fn = isAVItem;
+				break;
+			case ITEM_FILTER.SOLID:
+				fn = isSolidItem;
 				break;
 			case ITEM_FILTER.FOLDER:
 				fn = isFolderItem;
@@ -194,7 +202,7 @@ namespace KIKAKU.Utils {
 		});
 		return fns.length > 0 ? _Impl.and(fns) : getItemFilter(ITEM_FILTER.ALL);
 	}
-	
+
 	export function getItems(filters = []): Item[] {
 		let filter = createItemFilter(...filters);
 		let project = app.project;
@@ -207,7 +215,7 @@ namespace KIKAKU.Utils {
 		}
 		return items;
 	}
-	
+
 	export function getItem(filters = []): Item {
 		let filter = createItemFilter(...filters);
 		let project = app.project;
@@ -219,11 +227,11 @@ namespace KIKAKU.Utils {
 		}
 		return null;
 	}
-	
+
 	export function getActiveItem(): Item {
 		return app.project.activeItem;
 	}
-	
+
 	export function getActiveComp(): CompItem {
 		let item = getActiveItem();
 		if (!item || !isCompItem(item)) {
@@ -231,17 +239,17 @@ namespace KIKAKU.Utils {
 		}
 		return <CompItem>item;
 	}
-	
+
 	export function getCompByName(name: string) {
 		return <CompItem>getItem([(item: Item) => {
 			return isCompItem(item) && item.name === name;
 		}]);
 	}
-	
+
 	export function getAVItemByName(name: string) {
 		return <AVItem>getItem([(item: Item) => {
 			return isAVItem(item) && item.name === name;
 		}]);
 	}
-  
+
 }

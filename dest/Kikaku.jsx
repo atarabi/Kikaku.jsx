@@ -356,6 +356,10 @@ var KIKAKU;
             return isCompItem(item) || isFootageItem(item);
         }
         Utils.isAVItem = isAVItem;
+        function isSolidItem(item) {
+            return isFootageItem(item) && item.mainSource instanceof SolidSource;
+        }
+        Utils.isSolidItem = isSolidItem;
         function isFolderItem(item) {
             return item instanceof FolderItem;
         }
@@ -379,6 +383,7 @@ var KIKAKU;
             FOOTAGE: 'footage',
             COMP: 'comp',
             AV: 'av',
+            SOLID: 'solid',
             FOLDER: 'folder',
             NAME: 'name',
             COMMENT: 'comment',
@@ -435,6 +440,9 @@ var KIKAKU;
                     break;
                 case Utils.ITEM_FILTER.AV:
                     fn = isAVItem;
+                    break;
+                case Utils.ITEM_FILTER.SOLID:
+                    fn = isSolidItem;
                     break;
                 case Utils.ITEM_FILTER.FOLDER:
                     fn = isFolderItem;

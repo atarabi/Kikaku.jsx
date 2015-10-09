@@ -48,6 +48,7 @@ declare namespace KIKAKU.Utils {
     function isFootageItem(item: Item): boolean;
     function isCompItem(item: Item): boolean;
     function isAVItem(item: Item): boolean;
+    function isSolidItem(item: Item): boolean;
     function isFolderItem(item: Item): boolean;
     function forEachItem(fn: (item: Item, index?: number) => any, ctx?: any): void;
     function forEachItemInFolderItem(folder: FolderItem, fn: (item: Item, index?: number) => any, ctx?: any): void;
@@ -57,6 +58,7 @@ declare namespace KIKAKU.Utils {
         FOOTAGE: string;
         COMP: string;
         AV: string;
+        SOLID: string;
         FOLDER: string;
         NAME: string;
         COMMENT: string;
