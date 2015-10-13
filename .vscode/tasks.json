@@ -19,7 +19,6 @@
 		},
 		{
 			"taskName": "watch",
-			"isBuildCommand": true,
 			"showOutput": "always",
 			"isWatching": true,
 			"suppressTaskName": true,
