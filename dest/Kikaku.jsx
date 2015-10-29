@@ -1,7 +1,7 @@
 /// <reference path="../typings/aftereffects/ae.d.ts" />
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.1.0';
+    KIKAKU.VERSION = '0.2.0';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -1976,8 +1976,8 @@ var KIKAKU;
                 args[_i - 1] = arguments[_i];
             }
         };
-        ParameterBase.prototype.enable = function () { };
-        ParameterBase.prototype.disable = function () { };
+        ParameterBase.prototype.enable = function (index) { };
+        ParameterBase.prototype.disable = function (index) { };
         ParameterBase.prototype.getItems = function (index) { return []; };
         ParameterBase.prototype.addItems = function (items_or_index, items2) { };
         ParameterBase.prototype.removeItem = function (item_or_index, item2) { };
@@ -2071,6 +2071,7 @@ var KIKAKU;
         __extends(MultipleParameter, _super);
         function MultipleParameter() {
             _super.apply(this, arguments);
+            this._uis = [];
         }
         MultipleParameter.prototype.onChange = function (index) {
             this.on(index, 'callback', true);
@@ -2093,6 +2094,22 @@ var KIKAKU;
             }
             if (done && update) {
                 builder.update();
+            }
+        };
+        MultipleParameter.prototype.enable = function (index) {
+            if (KIKAKU.Utils.isNumber(index)) {
+                this._uis[index].enabled = true;
+            }
+            else {
+                _super.prototype.enable.call(this);
+            }
+        };
+        MultipleParameter.prototype.disable = function (index) {
+            if (KIKAKU.Utils.isNumber(index)) {
+                this._uis[index].enabled = false;
+            }
+            else {
+                _super.prototype.disable.call(this);
             }
         };
         return MultipleParameter;
@@ -2247,7 +2264,6 @@ var KIKAKU;
         __extends(TextsParameter, _super);
         function TextsParameter() {
             _super.apply(this, arguments);
-            this._uis = [];
         }
         TextsParameter.prototype.getCreationProperties = function () {
             return {};
@@ -2479,7 +2495,6 @@ var KIKAKU;
         __extends(NumbersParameter, _super);
         function NumbersParameter() {
             _super.apply(this, arguments);
-            this._uis = [];
             this._default_values = [];
             this._minvalues = [];
             this._maxvalues = [];
@@ -2845,7 +2860,6 @@ var KIKAKU;
         __extends(CheckboxesParameter, _super);
         function CheckboxesParameter() {
             _super.apply(this, arguments);
-            this._uis = [];
             this._texts = [];
         }
         CheckboxesParameter.prototype.buildParameter = function () {
@@ -3057,7 +3071,6 @@ var KIKAKU;
         __extends(ColorsParameter, _super);
         function ColorsParameter() {
             _super.apply(this, arguments);
-            this._uis = [];
             this._colors = [];
         }
         ColorsParameter.prototype.buildParameter = function () {
@@ -3256,7 +3269,6 @@ var KIKAKU;
         __extends(ItemsParameter, _super);
         function ItemsParameter() {
             _super.apply(this, arguments);
-            this._uis = [];
             this._default_values = [];
             this._locks = [];
         }
@@ -4005,28 +4017,14 @@ var KIKAKU;
             this.validateParameter(name);
             return this._parameters[name].execute.apply(this._parameters[name], [undo].concat(args));
         };
-        UIBuilder.prototype.enable = function () {
-            var _this = this;
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            KIKAKU.Utils.forEach(names, function (name) {
-                _this.validateParameter(name);
-                _this._parameters[name].enable();
-            });
+        UIBuilder.prototype.enable = function (name, index) {
+            this.validateParameter(name);
+            this._parameters[name].enable(index);
             return this;
         };
-        UIBuilder.prototype.disable = function () {
-            var _this = this;
-            var names = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                names[_i - 0] = arguments[_i];
-            }
-            KIKAKU.Utils.forEach(names, function (name) {
-                _this.validateParameter(name);
-                _this._parameters[name].disable();
-            });
+        UIBuilder.prototype.disable = function (name, index) {
+            this.validateParameter(name);
+            this._parameters[name].disable(index);
             return this;
         };
         UIBuilder.prototype.getItems = function (name, index) {
@@ -4233,7 +4231,7 @@ var KIKAKU;
             }
         };
         UIBuilder.LIBRARY_NAME = 'KikakuUIBuilder';
-        UIBuilder.VERSION = '2.1.1';
+        UIBuilder.VERSION = '2.2.0';
         UIBuilder.AUTHOR = 'Kareobana';
         UIBuilder.ALIAS = 'Atarabi';
         UIBuilder.PARAMETER_TYPE = {

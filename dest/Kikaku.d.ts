@@ -444,8 +444,8 @@ declare namespace KIKAKU {
         get(name: string, index?: number): any;
         set(name: string, arg1?: any, arg2?: any): this;
         execute(name: string, undo?: boolean, ...args: any[]): any;
-        enable(...names: string[]): this;
-        disable(...names: string[]): this;
+        enable(name: string, index?: number): this;
+        disable(name: string, index?: number): this;
         getItems(name: string, index?: number): string[] | string[][];
         replaceItems(name: string, items_or_index: string[] | string[][] | number, items2?: string[]): this;
         addItems(name: string, items_or_index: string | string[] | (string | string[])[] | number, items2?: string | string[]): this;
