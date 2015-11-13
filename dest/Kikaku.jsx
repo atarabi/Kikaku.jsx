@@ -1,7 +1,7 @@
 /// <reference path="../typings/aftereffects/ae.d.ts" />
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.2.0';
+    KIKAKU.VERSION = '0.2.1';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -94,8 +94,8 @@ var KIKAKU;
                 args[_i - 1] = arguments[_i];
             }
             obj = Object(obj);
-            for (var _a = 0; _a < args.length; _a++) {
-                var arg = args[_a];
+            for (var _a = 0, args_1 = args; _a < args_1.length; _a++) {
+                var arg = args_1[_a];
                 if (!isObject(arg)) {
                     continue;
                 }
@@ -1742,8 +1742,8 @@ var KIKAKU;
                 return;
             }
             var args = Array.prototype.slice.call(arguments, 1);
-            for (var _i = 0; _i < listeners.length; _i++) {
-                var listener = listeners[_i];
+            for (var _i = 0, listeners_1 = listeners; _i < listeners_1.length; _i++) {
+                var listener = listeners_1[_i];
                 listener.fn.apply(listener.ctx, args);
             }
         };
@@ -3237,8 +3237,8 @@ var KIKAKU;
         ItemParameter.prototype.replaceItems = function (items) {
             processItemUI(this._ui, this._lock, this._builder, function (ui) {
                 ui.removeAll();
-                for (var _i = 0; _i < items.length; _i++) {
-                    var item = items[_i];
+                for (var _i = 0, items_1 = items; _i < items_1.length; _i++) {
+                    var item = items_1[_i];
                     ui.add('item', item);
                 }
             });
@@ -3341,12 +3341,12 @@ var KIKAKU;
                     throw new RangeError;
                 }
                 var ui = this._uis[index];
-                var items_1 = [];
+                var items_2 = [];
                 for (var _i = 0, _a = ui.items; _i < _a.length; _i++) {
                     var item = _a[_i];
-                    items_1.push(item.text);
+                    items_2.push(item.text);
                 }
-                return items_1;
+                return items_2;
             }
             var items = [];
             KIKAKU.Utils.forEach(this._uis, function (ui, i) {
@@ -3364,8 +3364,8 @@ var KIKAKU;
                 var items = items2;
                 processItemUI(this._uis[index], this._locks[index], this._builder, function (ui) {
                     ui.removeAll();
-                    for (var _i = 0; _i < items.length; _i++) {
-                        var item = items[_i];
+                    for (var _i = 0, items_3 = items; _i < items_3.length; _i++) {
+                        var item = items_3[_i];
                         ui.add('item', item);
                     }
                 });
@@ -3384,8 +3384,8 @@ var KIKAKU;
                 }
                 var items = KIKAKU.Utils.isArray(items2) ? items2 : [items2];
                 processItemUI(this._uis[index], this._locks[index], this._builder, function (ui) {
-                    for (var _i = 0; _i < items.length; _i++) {
-                        var item = items[_i];
+                    for (var _i = 0, items_4 = items; _i < items_4.length; _i++) {
+                        var item = items_4[_i];
                         ui.add('item', item);
                     }
                 });
@@ -3663,6 +3663,16 @@ var KIKAKU;
         };
         ScriptParameter.prototype.disable = function () {
             this._ui.enabled = false;
+        };
+        ScriptParameter.prototype.get = function () {
+            return this._ui.text;
+        };
+        ScriptParameter.prototype.set = function (value) {
+            var text = String(value);
+            if (text !== this.get()) {
+                this._ui.text = text;
+                this._builder.update();
+            }
         };
         ScriptParameter.prototype.toJSON = function () {
             return {};
@@ -4231,7 +4241,7 @@ var KIKAKU;
             }
         };
         UIBuilder.LIBRARY_NAME = 'KikakuUIBuilder';
-        UIBuilder.VERSION = '2.2.0';
+        UIBuilder.VERSION = '2.2.1';
         UIBuilder.AUTHOR = 'Kareobana';
         UIBuilder.ALIAS = 'Atarabi';
         UIBuilder.PARAMETER_TYPE = {
