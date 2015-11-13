@@ -1643,6 +1643,16 @@ namespace KIKAKU {
     disable() {
       this._ui.enabled = false;
     }
+    get() {
+      return this._ui.text;
+    }
+    set(value) {
+      let text = String(value);
+      if (text !== this.get()) {
+        this._ui.text = text;
+        this._builder.update();
+      }
+    }
     toJSON() {
       return {};
     }
@@ -1859,7 +1869,7 @@ namespace KIKAKU {
 
   export class UIBuilder {
     static LIBRARY_NAME = 'KikakuUIBuilder';
-    static VERSION = '2.2.0';
+    static VERSION = '2.2.1';
     static AUTHOR = 'Kareobana';
     static ALIAS = 'Atarabi';
     static PARAMETER_TYPE = {
