@@ -31,6 +31,8 @@ declare namespace KIKAKU.Utils {
     function unique<T>(arr: T[]): T[];
     function clamp(value: number, mn?: number, mx?: number): number;
     function trim(str: string): string;
+    function startsWith(str: string, search: string, position?: number): boolean;
+    function endsWith(str: string, search: string, position?: number): boolean;
 }
 declare namespace KIKAKU.Utils {
     function getProjectFile(): File;
@@ -96,6 +98,7 @@ declare namespace KIKAKU.Utils {
     function getAVItemByName(name: string): AVItem;
 }
 declare namespace KIKAKU.Utils {
+    function isLayer(layer: Layer): boolean;
     function isTextLayer(layer: Layer): boolean;
     function isShapeLayer(layer: Layer): boolean;
     function isAVLayer(layer: Layer, strict?: boolean): boolean;
@@ -339,6 +342,7 @@ declare namespace KIKAKU {
         helpTip?: string | string[];
         height?: number;
         filter?: string;
+        stack?: boolean;
         callback?: Function | Function[];
         onDoubleClick?: Function | Function[];
         onChanging?: Function | Function[];
@@ -386,6 +390,8 @@ declare namespace KIKAKU {
             SPACE: string;
             PANEL: string;
             PANEL_END: string;
+            GROUP: string;
+            GROUP_END: string;
             TEXT: string;
             TEXTS: string;
             TEXTAREA: string;
@@ -446,6 +452,7 @@ declare namespace KIKAKU {
         execute(name: string, undo?: boolean, ...args: any[]): any;
         enable(name: string, index?: number): this;
         disable(name: string, index?: number): this;
+        visiblize(name: string, index: number): this;
         getItems(name: string, index?: number): string[] | string[][];
         replaceItems(name: string, items_or_index: string[] | string[][] | number, items2?: string[]): this;
         addItems(name: string, items_or_index: string | string[] | (string | string[])[] | number, items2?: string | string[]): this;

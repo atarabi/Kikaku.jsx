@@ -1,7 +1,7 @@
 /// <reference path="../typings/aftereffects/ae.d.ts" />
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.2.1';
+    KIKAKU.VERSION = '0.3.0';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -9,7 +9,7 @@ var KIKAKU;
 (function (KIKAKU) {
     var Utils;
     (function (Utils) {
-        Utils.VERSION = '1.2.0';
+        Utils.VERSION = '1.3.0';
         Utils.AUTHOR = 'Kareobana';
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
@@ -212,6 +212,17 @@ var KIKAKU;
             return str.replace(/(^\s+)|(\s+$)/g, '');
         }
         Utils.trim = trim;
+        function startsWith(str, search, position) {
+            if (position === void 0) { position = 0; }
+            return str.lastIndexOf(search, position) === position;
+        }
+        Utils.startsWith = startsWith;
+        function endsWith(str, search, position) {
+            if (position === void 0) { position = str.length; }
+            position = position - search.length;
+            return str.lastIndexOf(search) === position;
+        }
+        Utils.endsWith = endsWith;
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
 /// <reference path="../../typings/aftereffects/ae.d.ts" />
@@ -608,6 +619,10 @@ var KIKAKU;
 (function (KIKAKU) {
     var Utils;
     (function (Utils) {
+        function isLayer(layer) {
+            return isAVLayer(layer) || isCameraLayer(layer) || isLightLayer(layer);
+        }
+        Utils.isLayer = isLayer;
         function isTextLayer(layer) {
             return layer instanceof TextLayer;
         }
@@ -1978,6 +1993,7 @@ var KIKAKU;
         };
         ParameterBase.prototype.enable = function (index) { };
         ParameterBase.prototype.disable = function (index) { };
+        ParameterBase.prototype.visiblize = function (index) { };
         ParameterBase.prototype.getItems = function (index) { return []; };
         ParameterBase.prototype.addItems = function (items_or_index, items2) { };
         ParameterBase.prototype.removeItem = function (item_or_index, item2) { };
@@ -2194,6 +2210,7 @@ var KIKAKU;
         __extends(PanelParameter, _super);
         function PanelParameter() {
             _super.apply(this, arguments);
+            this._stack = false;
         }
         PanelParameter.prototype.buildUI = function () {
             var group = this._group;
@@ -2204,7 +2221,21 @@ var KIKAKU;
             else if (KIKAKU.Utils.isString(this._options.title)) {
                 text = this._options.title;
             }
+            if (KIKAKU.Utils.isBoolean(this._options.stack)) {
+                this._stack = this._options.stack;
+                if (this._stack) {
+                    this._group.orientation = 'stack';
+                }
+            }
             group.text = text;
+        };
+        PanelParameter.prototype.init = function () {
+            if (this._stack) {
+                var children = this._group.children;
+                for (var i = 1, l = children.length; i < l; ++i) {
+                    children[i].visible = false;
+                }
+            }
         };
         PanelParameter.prototype.get = function () {
             return this._group.text;
@@ -2216,6 +2247,23 @@ var KIKAKU;
                 this._builder.update();
             }
         };
+        PanelParameter.prototype.visiblize = function (index) {
+            if (this._stack) {
+                var children = this._group.children;
+                var children_num = children.length;
+                if (index < 0 || index >= children_num) {
+                    throw new RangeError;
+                }
+                for (var i = 0; i < children_num; ++i) {
+                    if (i === index) {
+                        children[i].visible = true;
+                    }
+                    else {
+                        children[i].visible = false;
+                    }
+                }
+            }
+        };
         return PanelParameter;
     })(Parameter);
     var PanelEndParameter = (function (_super) {
@@ -2224,6 +2272,21 @@ var KIKAKU;
             _super.apply(this, arguments);
         }
         return PanelEndParameter;
+    })(ParameterBase);
+    var GroupParameter = (function (_super) {
+        __extends(GroupParameter, _super);
+        function GroupParameter() {
+            _super.apply(this, arguments);
+        }
+        GroupParameter.prototype.buildUI = function () { };
+        return GroupParameter;
+    })(Parameter);
+    var GroupEndParameter = (function (_super) {
+        __extends(GroupEndParameter, _super);
+        function GroupEndParameter() {
+            _super.apply(this, arguments);
+        }
+        return GroupEndParameter;
     })(ParameterBase);
     //text parameter
     var TextParameter = (function (_super) {
@@ -3896,12 +3959,18 @@ var KIKAKU;
                     this._parameters[name] = new PanelParameter(name, value, options);
                     this._layer++;
                     if (this._options.width < this._layer * 2 * (UIBuilder.SPACING_SIZE + UIBuilder.MARGINS_SIZE)) {
-                        throw new Error('Too many panels');
+                        throw new Error('Too many panels or groups');
                     }
                     break;
                 case UIBuilder.PARAMETER_TYPE.PANEL_END:
                     this._parameters[name] = new PanelEndParameter(name, value, options);
                     this._layer--;
+                    break;
+                case UIBuilder.PARAMETER_TYPE.GROUP:
+                    this._parameters[name] = new GroupParameter(name, value, options);
+                    break;
+                case UIBuilder.PARAMETER_TYPE.GROUP_END:
+                    this._parameters[name] = new GroupEndParameter(name, value, options);
                     break;
                 case UIBuilder.PARAMETER_TYPE.TEXT:
                     this._parameters[name] = new TextParameter(name, value, options);
@@ -4037,6 +4106,11 @@ var KIKAKU;
             this._parameters[name].disable(index);
             return this;
         };
+        UIBuilder.prototype.visiblize = function (name, index) {
+            this.validateParameter(name);
+            this._parameters[name].visiblize(index);
+            return this;
+        };
         UIBuilder.prototype.getItems = function (name, index) {
             this.validateParameter(name);
             return this._parameters[name].getItems(index);
@@ -4127,7 +4201,7 @@ var KIKAKU;
                     this.layout.resize();
                 };
             }
-            var current_panel = w;
+            var current_container = w;
             var current_width = width - 2 * UIBuilder.MARGINS_SIZE;
             var script_index = 0;
             var script_columns = this._options.numberOfScriptColumns;
@@ -4135,19 +4209,34 @@ var KIKAKU;
             for (var name in this._parameters) {
                 var parameter = this._parameters[name];
                 if (parameter instanceof PanelParameter) {
-                    current_panel = current_panel.add('panel');
-                    current_panel.minimumSize = [current_width, undefined];
-                    current_panel.spacing = UIBuilder.SPACING_SIZE;
-                    current_panel.margins = UIBuilder.MARGINS_SIZE;
-                    current_panel.alignment = ['fill', 'top'];
-                    current_panel.alignChildren = ['fill', 'fill'];
+                    current_container = current_container.add('panel');
+                    current_container.minimumSize = [current_width, undefined];
+                    current_container.spacing = UIBuilder.SPACING_SIZE;
+                    current_container.margins = UIBuilder.MARGINS_SIZE;
+                    current_container.alignment = ['fill', 'top'];
+                    current_container.alignChildren = ['fill', 'fill'];
                     current_width -= 2 * (UIBuilder.SPACING_SIZE + UIBuilder.MARGINS_SIZE);
                     script_index = 0;
-                    parameter.build(current_panel, this);
+                    parameter.build(current_container, this);
                 }
                 else if (parameter instanceof PanelEndParameter) {
-                    current_panel = current_panel.parent;
+                    current_container = current_container.parent;
                     current_width += 2 * (UIBuilder.SPACING_SIZE + UIBuilder.MARGINS_SIZE);
+                    script_index = 0;
+                }
+                else if (parameter instanceof GroupParameter) {
+                    current_container = current_container.add('group');
+                    current_container.orientation = 'column';
+                    current_container.minimumSize = [current_width, undefined];
+                    current_container.spacing = 0;
+                    current_container.margins = 0;
+                    current_container.alignment = ['fill', 'top'];
+                    current_container.alignChildren = ['fill', 'fill'];
+                    script_index = 0;
+                    parameter.build(current_container, this);
+                }
+                else if (parameter instanceof GroupEndParameter) {
+                    current_container = current_container.parent;
                     script_index = 0;
                 }
                 else {
@@ -4165,7 +4254,7 @@ var KIKAKU;
                         script_index = 0;
                     }
                     if (create_group) {
-                        group = current_panel.add('group', [0, 0, current_width, parameter.getHeight()]);
+                        group = current_container.add('group', [0, 0, current_width, parameter.getHeight()]);
                         group.minimumSize = [current_width, parameter.getHeight()];
                         group.spacing = 1;
                         group.margins = 0;
@@ -4241,7 +4330,7 @@ var KIKAKU;
             }
         };
         UIBuilder.LIBRARY_NAME = 'KikakuUIBuilder';
-        UIBuilder.VERSION = '2.2.1';
+        UIBuilder.VERSION = '2.3.0';
         UIBuilder.AUTHOR = 'Kareobana';
         UIBuilder.ALIAS = 'Atarabi';
         UIBuilder.PARAMETER_TYPE = {
@@ -4250,6 +4339,8 @@ var KIKAKU;
             SPACE: 'space',
             PANEL: 'panel',
             PANEL_END: 'panelend',
+            GROUP: 'group',
+            GROUP_END: 'groupend',
             TEXT: 'text',
             TEXTS: 'texts',
             TEXTAREA: 'textarea',
