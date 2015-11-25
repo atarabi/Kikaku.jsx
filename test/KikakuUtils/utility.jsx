@@ -217,6 +217,18 @@
 		'trim': function (assert) {
 			var text = ' asad  asda ';
 			assert.equal(Utils.trim(text), 'asad  asda');
+		},
+    'startsWith': function (assert) {
+			var text = '0123456789';
+			assert.equal(Utils.startsWith(text, '0123'), true);
+			assert.equal(Utils.startsWith(text, '2345'), false);
+			assert.equal(Utils.startsWith(text, '2345', 2), true);
+		},
+    'endsWith': function (assert) {
+			var text = '0123456789';
+			assert.equal(Utils.endsWith(text, '6789'), true);
+			assert.equal(Utils.endsWith(text, '4567'), false);
+			assert.equal(Utils.endsWith(text, '4567', 8), true);
 		}
 	});
 
