@@ -2,7 +2,7 @@
 	"version": "0.1.0",
 	"command": "tsc",
 	"isShellCommand": true,
-	"showOutput": "silent",
+	"showOutput": "always",
 	"tasks": [	
 		{
 			"taskName": "build",
@@ -19,7 +19,6 @@
 		},
 		{
 			"taskName": "watch",
-			"showOutput": "always",
 			"isWatching": true,
 			"suppressTaskName": true,
 			"args": [
