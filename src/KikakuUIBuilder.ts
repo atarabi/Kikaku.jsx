@@ -33,6 +33,7 @@ namespace KIKAKU {
     helpTip?: string | string[];
     height?: number;
     filter?: string;
+    stack?: boolean;
     callback?: Function | Function[];
     onDoubleClick?: Function | Function[];
     onChanging?: Function | Function[];
@@ -74,6 +75,7 @@ namespace KIKAKU {
     execute(undo = true, ...args): void { }
     enable(index?: number): void { }
     disable(index?: number): void { }
+    visiblize(index: number): void { }
     getItems(index?: number): string[] | string[][] { return []; }
     addItems(items_or_index: string | string[] | (string | string[])[] | number, items2?: string | string[]): void { }
     removeItem(item_or_index: string | string[] | number, item2?: string): void { }
@@ -158,7 +160,7 @@ namespace KIKAKU {
       }
     }
   }
-  
+
   class MultipleParameter<T extends _Control> extends Parameter {
     protected _uis: T[] = [];
     protected onChange(index: number) {
@@ -267,6 +269,7 @@ namespace KIKAKU {
   }
 
   class PanelParameter extends Parameter {
+    private _stack: boolean = false;
     buildUI() {
       let group = <Panel>this._group;
       let text = this._name;
@@ -275,7 +278,21 @@ namespace KIKAKU {
       } else if (Utils.isString(this._options.title)) {
         text = <string>this._options.title;
       }
+      if (Utils.isBoolean(this._options.stack)) {
+        this._stack = this._options.stack;
+        if (this._stack) {
+          this._group.orientation = 'stack';
+        }
+      }
       group.text = text;
+    }
+    init() {
+      if (this._stack) {
+        let children = this._group.children;
+        for (let i = 1, l = children.length; i < l; ++i) {
+          children[i].visible = false;
+        }
+      }
     }
     get() {
       return (<Panel>this._group).text;
@@ -287,10 +304,32 @@ namespace KIKAKU {
         this._builder.update();
       }
     }
+    visiblize(index: number) {
+      if (this._stack) {
+        let children = this._group.children;
+        let children_num = children.length;
+        if (index < 0 || index >= children_num) {
+          throw new RangeError;
+        }
+        for (let i = 0; i < children_num; ++i) {
+          if (i === index) {
+            children[i].visible = true;
+          } else {
+            children[i].visible = false;
+          }
+        }
+      }
+    }
   }
 
   class PanelEndParameter extends ParameterBase { }
-	
+
+  class GroupParameter extends Parameter {
+    buildUI() { }
+  }
+
+  class GroupEndParameter extends ParameterBase { }
+  
   //text parameter
   class TextParameter extends SingleParameter {
     protected _ui: EditText | StaticText;
@@ -1869,7 +1908,7 @@ namespace KIKAKU {
 
   export class UIBuilder {
     static LIBRARY_NAME = 'KikakuUIBuilder';
-    static VERSION = '2.2.1';
+    static VERSION = '2.3.0';
     static AUTHOR = 'Kareobana';
     static ALIAS = 'Atarabi';
     static PARAMETER_TYPE = {
@@ -1878,6 +1917,8 @@ namespace KIKAKU {
       SPACE: 'space',
       PANEL: 'panel',
       PANEL_END: 'panelend',
+      GROUP: 'group',
+      GROUP_END: 'groupend',
       TEXT: 'text',
       TEXTS: 'texts',
       TEXTAREA: 'textarea',
@@ -1970,12 +2011,18 @@ namespace KIKAKU {
           this._parameters[name] = new PanelParameter(name, value, options);
           this._layer++;
           if (this._options.width < this._layer * 2 * (UIBuilder.SPACING_SIZE + UIBuilder.MARGINS_SIZE)) {
-            throw new Error('Too many panels');
+            throw new Error('Too many panels or groups');
           }
           break;
         case UIBuilder.PARAMETER_TYPE.PANEL_END:
           this._parameters[name] = new PanelEndParameter(name, value, options);
           this._layer--;
+          break;
+        case UIBuilder.PARAMETER_TYPE.GROUP:
+          this._parameters[name] = new GroupParameter(name, value, options);
+          break;
+        case UIBuilder.PARAMETER_TYPE.GROUP_END:
+          this._parameters[name] = new GroupEndParameter(name, value, options);
           break;
         case UIBuilder.PARAMETER_TYPE.TEXT:
           this._parameters[name] = new TextParameter(name, value, options);
@@ -2109,6 +2156,11 @@ namespace KIKAKU {
       this._parameters[name].disable(index);
       return this;
     }
+    visiblize(name: string, index: number) {
+      this.validateParameter(name);
+      this._parameters[name].visiblize(index);
+      return this;
+    }
     getItems(name: string, index?: number) {
       this.validateParameter(name);
       return this._parameters[name].getItems(index);
@@ -2205,7 +2257,7 @@ namespace KIKAKU {
         };
       }
 
-      let current_panel: Panel = <Panel>w;
+      let current_container: Panel | Group = <Panel>w;
       let current_width = width - 2 * UIBuilder.MARGINS_SIZE;
       let script_index = 0;
       let script_columns = this._options.numberOfScriptColumns;
@@ -2215,18 +2267,31 @@ namespace KIKAKU {
         let parameter = this._parameters[name];
 
         if (parameter instanceof PanelParameter) {
-          current_panel = <Panel>current_panel.add('panel');
-          current_panel.minimumSize = [current_width, undefined];
-          current_panel.spacing = UIBuilder.SPACING_SIZE;
-          current_panel.margins = UIBuilder.MARGINS_SIZE;
-          current_panel.alignment = ['fill', 'top'];
-          current_panel.alignChildren = ['fill', 'fill'];
+          current_container = <Panel>current_container.add('panel');
+          current_container.minimumSize = [current_width, undefined];
+          current_container.spacing = UIBuilder.SPACING_SIZE;
+          current_container.margins = UIBuilder.MARGINS_SIZE;
+          current_container.alignment = ['fill', 'top'];
+          current_container.alignChildren = ['fill', 'fill'];
           current_width -= 2 * (UIBuilder.SPACING_SIZE + UIBuilder.MARGINS_SIZE);
           script_index = 0;
-          parameter.build(current_panel, this);
+          parameter.build(current_container, this);
         } else if (parameter instanceof PanelEndParameter) {
-          current_panel = current_panel.parent;
+          current_container = current_container.parent;
           current_width += 2 * (UIBuilder.SPACING_SIZE + UIBuilder.MARGINS_SIZE);
+          script_index = 0;
+        } else if (parameter instanceof GroupParameter) {
+          current_container = <Group>current_container.add('group');
+          current_container.orientation = 'column';
+          current_container.minimumSize = [current_width, undefined];
+          current_container.spacing = 0;
+          current_container.margins = 0;
+          current_container.alignment = ['fill', 'top'];
+          current_container.alignChildren = ['fill', 'fill'];
+          script_index = 0;
+          parameter.build(current_container, this);
+        } else if (parameter instanceof GroupEndParameter) {
+          current_container = current_container.parent;
           script_index = 0;
         } else {
           let create_group = true;
@@ -2243,7 +2308,7 @@ namespace KIKAKU {
           }
 
           if (create_group) {
-            group = current_panel.add('group', [0, 0, current_width, parameter.getHeight()]);
+            group = current_container.add('group', [0, 0, current_width, parameter.getHeight()]);
             group.minimumSize = [current_width, parameter.getHeight()];
             group.spacing = 1;
             group.margins = 0;
