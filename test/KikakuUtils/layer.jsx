@@ -29,6 +29,17 @@
 			utility.removeAll();
 		}
 	}, {
+      'isLayer': function (assert, utility) {
+				var fn = Utils.isLayer;
+				assert.ok(fn(utility.getLayer('Text Layer')));
+				assert.ok(fn(utility.getLayer('Shape Layer')));
+				assert.ok(fn(utility.getLayer('Footage Layer')));
+				assert.ok(fn(utility.getLayer('Camera Layer')));
+				assert.ok(fn(utility.getLayer('Light Layer')));
+				assert.ok(fn(utility.getLayer('Null Layer')));
+				assert.ok(fn(utility.getLayer('Solid Layer')));
+				assert.ok(fn(utility.getLayer('Comp Layer')));
+			},
 			'isTextLayer': function (assert, utility) {
 				var fn = Utils.isTextLayer;
 				assert.ok(fn(utility.getLayer('Text Layer')));
