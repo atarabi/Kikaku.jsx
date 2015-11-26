@@ -426,6 +426,8 @@ declare class FootageItem extends AVItem {
 	/** Opens the footage in a Footage panel. */
 	openInViewer(): Viewer;
 } 
+
+declare class PlaceholderItem extends FootageItem {}
  
 /** The FootageSource object holds information describing the source of some footage. It is used as the mainSource of a FootageItem, or the proxySource of a CompItem or FootageItem. */
 declare class FootageSource {
@@ -766,7 +768,33 @@ declare class OutputModule {
 	
 	getSetting(key: string): string | number;
 	
-	getSettings(format: GetSettingsFormat): Object;
+	getSettings(format?: GetSettingsFormat): {
+    'Audio Bit Depth';
+    'Audio Channels';
+    'Audio Sample Rate';
+    'Channels';
+    'Color';
+    'Crop';
+    'Crop Bottom';
+    'Crop Left';
+    'Crop Right';
+    'Crop Top';
+    'Depth';
+    'Format';
+    'Include Project Link';
+    'Include Source XMP Metadata';
+    'Lock Aspect Ratio';
+    'Output Audio';
+    'Output File Info';
+    'Post-Render Action';
+    'Resize';
+    'Resize Quality';
+    'Resize to';
+    'Starting #';
+    'Use Comp Frame Number';
+    'Use Region of Interest';
+    'Video Output';
+  };
 	
 	setSetting(key: string, value: string | number): void;
 	
@@ -851,7 +879,7 @@ declare class Project {
 	saveWithDialog(): boolean;
 	
 	/** Imports a placeholder into the project. */
-	importPlaceholder(name: string, width: number, height: number, frameRate: number, duration: number): PlaceholderSource;
+	importPlaceholder(name: string, width: number, height: number, frameRate: number, duration: number): PlaceholderItem;
 	
 	/** Imports a file into the project. */
 	importFile(importOptions: ImportOptions): FootageItem;
