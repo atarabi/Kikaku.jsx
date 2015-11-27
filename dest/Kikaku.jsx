@@ -1,7 +1,7 @@
 /// <reference path="../typings/aftereffects/ae.d.ts" />
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.3.0';
+    KIKAKU.VERSION = '0.3.1';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -2899,7 +2899,7 @@ var KIKAKU;
             if (this._options.helpTip) {
                 checkbox_ui.helpTip = this._options.helpTip;
             }
-            checkbox_ui.alignment = ['left', 'top'];
+            checkbox_ui.alignment = ['fill', 'bottom'];
             checkbox_ui.value = check.value;
             checkbox_ui.onClick = function () {
                 _this.onChange();
@@ -2932,6 +2932,7 @@ var KIKAKU;
             KIKAKU.Utils.forEach(this._value, function (value, i) {
                 var check = extractCheckboxValue(value);
                 var ui = group.add('checkbox', undefined, check.text);
+                ui.alignment = ['fill', 'bottom'];
                 if (KIKAKU.Utils.isString(help_tip)) {
                     ui.helpTip = help_tip;
                 }
@@ -4330,7 +4331,7 @@ var KIKAKU;
             }
         };
         UIBuilder.LIBRARY_NAME = 'KikakuUIBuilder';
-        UIBuilder.VERSION = '2.3.0';
+        UIBuilder.VERSION = '2.3.1';
         UIBuilder.AUTHOR = 'Kareobana';
         UIBuilder.ALIAS = 'Atarabi';
         UIBuilder.PARAMETER_TYPE = {

@@ -904,7 +904,7 @@ namespace KIKAKU {
       if (this._options.helpTip) {
         checkbox_ui.helpTip = <string>this._options.helpTip;
       }
-      checkbox_ui.alignment = ['left', 'top'];
+      checkbox_ui.alignment = ['fill', 'bottom'];
       checkbox_ui.value = check.value;
       checkbox_ui.onClick = () => {
         this.onChange();
@@ -933,6 +933,7 @@ namespace KIKAKU {
       Utils.forEach(this._value, (value, i: number) => {
         let check = extractCheckboxValue(value);
         let ui = <Checkbox>group.add('checkbox', undefined, check.text);
+        ui.alignment = ['fill', 'bottom'];
         if (Utils.isString(help_tip)) {
           ui.helpTip = <string>help_tip;
         } else if (Utils.isArray(help_tip) && Utils.isString(help_tip[i])) {
@@ -1908,7 +1909,7 @@ namespace KIKAKU {
 
   export class UIBuilder {
     static LIBRARY_NAME = 'KikakuUIBuilder';
-    static VERSION = '2.3.0';
+    static VERSION = '2.3.1';
     static AUTHOR = 'Kareobana';
     static ALIAS = 'Atarabi';
     static PARAMETER_TYPE = {
