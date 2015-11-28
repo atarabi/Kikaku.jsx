@@ -470,6 +470,30 @@ declare namespace KIKAKU {
         build(): void;
     }
 }
+declare namespace KIKAKU.Request {
+    var VERSION: string;
+    var ContentType: {
+        JSON: string;
+        FORM: string;
+    };
+    type PostOptions = {
+        type: string;
+        data: {
+            [name: string]: any;
+        };
+    };
+    type Response = {
+        statusCode: number;
+        reasonPhrase: string;
+        headers: {
+            [key: string]: string;
+        };
+        body: string;
+    };
+    type ResponseCallback = (response: Response) => void;
+    function get(url: string, fn: ResponseCallback): void;
+    function post(url: string, options: PostOptions, fn: ResponseCallback): void;
+}
 declare namespace KIKAKU.Unit {
     type Hooks = {
         before?: (utility?: Utility) => any;

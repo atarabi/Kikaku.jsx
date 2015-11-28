@@ -5,4 +5,5 @@
 /// <reference path="KikakuFileManager.ts" />
 /// <reference path="KikakuSettingManager.ts" />
 /// <reference path="KikakuUIBuilder.ts" />
+/// <reference path="KikakuRequest.ts" />
 /// <reference path="KikakuUnit.ts" />
