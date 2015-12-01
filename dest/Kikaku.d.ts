@@ -337,7 +337,7 @@ declare namespace KIKAKU {
     }
 }
 declare namespace KIKAKU {
-    interface ParameterOptions {
+    interface UIParameterOptions {
         title?: boolean | string;
         helpTip?: string | string[];
         height?: number;
@@ -416,7 +416,6 @@ declare namespace KIKAKU {
             LISTBOXES: string;
             SCRIPT: string;
             HELP: string;
-            CUSTOM: string;
         };
         private static PARAMETERS_KEY;
         private static SPACING_SIZE;
@@ -441,7 +440,7 @@ declare namespace KIKAKU {
         getUrl(): string;
         getTitleWidth(): number;
         getWidth(): number;
-        add(type: string, name: string, value?: any, options?: ParameterOptions | Function): this;
+        add(type: string, name: string, value?: any, options?: UIParameterOptions | Function): this;
         api(name: string, fn: Function): this;
         on(type: string, fn: Function): this;
         off(type: string, fn: Function): this;

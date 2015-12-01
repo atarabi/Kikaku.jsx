@@ -28,7 +28,7 @@ namespace KIKAKU {
     return value;
   }
 
-  export interface ParameterOptions {
+  export interface UIParameterOptions {
     title?: boolean | string;
     helpTip?: string | string[];
     height?: number;
@@ -46,8 +46,8 @@ namespace KIKAKU {
     static DEFAULT_HEIGHT = 24;
     protected _name: string;
     protected _value;
-    protected _options: ParameterOptions;
-    private _default_options: ParameterOptions = {
+    protected _options: UIParameterOptions;
+    private _default_options: UIParameterOptions = {
       title: true,
       helpTip: null,
       height: null,
@@ -56,7 +56,7 @@ namespace KIKAKU {
       onDoubleClick: noop,
       onChanging: noop
     };
-    constructor(name: string, value?, options?: ParameterOptions | Function) {
+    constructor(name: string, value?, options?: UIParameterOptions | Function) {
       this._name = name;
       this._value = value;
       if (Utils.isFunction(options)) {
@@ -1909,7 +1909,7 @@ namespace KIKAKU {
 
   export class UIBuilder {
     static LIBRARY_NAME = 'KikakuUIBuilder';
-    static VERSION = '2.3.1';
+    static VERSION = '2.3.2';
     static AUTHOR = 'Kareobana';
     static ALIAS = 'Atarabi';
     static PARAMETER_TYPE = {
@@ -1944,7 +1944,6 @@ namespace KIKAKU {
       LISTBOXES: 'listboxes',
       SCRIPT: 'script',
       HELP: 'help',
-      CUSTOM: 'custom'
     };
     private static PARAMETERS_KEY = '__parameters__';
     private static SPACING_SIZE = 2;
@@ -1991,7 +1990,7 @@ namespace KIKAKU {
     getTitleWidth() { return this._options.titleWidth; }
     getWidth() { return this._options.width; }
 
-    add(type: string, name: string, value?, options?: ParameterOptions | Function) {
+    add(type: string, name: string, value?, options?: UIParameterOptions | Function) {
       if (this._built()) {
         throw new Error('Has been built');
       } else if (this._parameters[name]) {

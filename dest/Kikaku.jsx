@@ -4365,8 +4365,7 @@ var KIKAKU;
             LISTBOX: 'listbox',
             LISTBOXES: 'listboxes',
             SCRIPT: 'script',
-            HELP: 'help',
-            CUSTOM: 'custom'
+            HELP: 'help'
         };
         UIBuilder.PARAMETERS_KEY = '__parameters__';
         UIBuilder.SPACING_SIZE = 2;
