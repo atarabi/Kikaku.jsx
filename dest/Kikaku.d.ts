@@ -1,4 +1,349 @@
-/// <reference path="../typings/aftereffects/ae.d.ts" />
+declare namespace KIKAKU {
+    class KArray<T> {
+        protected _arr: T[];
+        static from<U>(arr: U[]): KArray<U>;
+        static of<U>(...items: U[]): KArray<U>;
+        constructor(_arr: T[]);
+        get(): T[];
+        at(index: number): T;
+        length(): number;
+        copyWithin(target: number, start: number, end?: number): this;
+        fill(value: T, start?: number, end?: number): this;
+        pop(): T;
+        push(...items: T[]): number;
+        reverse(): this;
+        shift(): T;
+        sort(cmp?: (lhs: T, rhs: T) => number): this;
+        splice(start?: number, deleteCount?: number, ...items: T[]): this;
+        unshift(...items: T[]): number;
+        concat(...items: T[]): KArray<T>;
+        includes(searchElement: T, fromIndex?: number): boolean;
+        join(sepqrator?: string): string;
+        slice(start?: number, end?: number): KArray<T>;
+        toSource(): string;
+        toString(): string;
+        toLocaleString(): string;
+        indexOf(searchElement: T, fromIndex?: number): number;
+        lastIndexOf(searchElement: T, fromIndex?: number): number;
+        forEach(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any): void;
+        entries(): KArray<[number, T]>;
+        every(callbackfn: (value: T, index: number, array: T[]) => boolean, thisArg?: any): boolean;
+        keys(): KArray<number>;
+        map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): KArray<U>;
+        some(callbackfn: (value: T, index: number, array: T[]) => boolean, thisArg?: any): boolean;
+        filter<U extends T>(callbackfn: (value: T, index: number, array: T[]) => boolean, thisArg?: any): KArray<U>;
+        find(callbackfn: (value: T, index: number, array: T[]) => boolean, thisArg?: any): T;
+        findIndex(callbackfn: (value: T, index: number, array: T[]) => boolean, thisArg?: any): number;
+        reduce<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue?: U): U;
+        reduceRight<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue?: U): U;
+        values(): KArray<T>;
+    }
+}
+declare namespace KIKAKU {
+    class KItemCollection {
+        protected _items: ItemCollection;
+        constructor(_items: ItemCollection);
+        addComp(name: string, width: number, height: number, pixelAspect: number, duration: number, frameRate: number): KCompItem;
+        addFolder(name: string): KFolderItem;
+    }
+    class KItem<T extends Item> {
+        protected _item: T;
+        constructor(_item: T);
+        get(): T;
+        isValid(): boolean;
+        asFolder(): KFolderItem;
+        asAV(): KAVItem<AVItem>;
+        asComp(): KCompItem;
+        asFootage(): KFootageItem;
+        name(name?: string): string;
+        comment(comment?: string): string;
+        id(): number;
+        parentFolder(): KFolderItem;
+        selected(selected?: boolean): boolean;
+        typeName(): string;
+        label(label?: number): number;
+        remove(): void;
+    }
+    class KFolderItem extends KItem<FolderItem> {
+        isValid(): boolean;
+        items(): KItemCollection;
+        numItems(): number;
+        item(index: number): KItem<Item>;
+    }
+    class KAVItem<T extends AVItem> extends KItem<T> {
+        isValid(): boolean;
+        width(width?: number): number;
+        height(height?: number): number;
+        pixelAspect(pixelAspect?: number): number;
+        frameRate(frameRate?: number): number;
+        frameDuration(frameDuration?: number): number;
+        duration(duration?: number): number;
+        useProxy(useProxy?: boolean): boolean;
+        proxySource(): FootageSource;
+        time(time?: number): number;
+        usedIn(): CompItem[];
+        hasVideo(): boolean;
+        hasAudio(): boolean;
+        footageMissing(): boolean;
+        setProxy(file: File): void;
+        setProxyWithSequence(file: File, forceAlphabetical: boolean): void;
+        setProxyWithSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number): void;
+        setProxyWithPlaceholder(name: string, width: number, height: number, frameRate: number, duration: number): void;
+        setProxyToNone(): void;
+    }
+    class KCompItem extends KAVItem<CompItem> {
+        isValid(): boolean;
+        dropFrame(dropFrame?: boolean): boolean;
+        workAreaStart(workAreaStart?: number): number;
+        workAreaDuration(workAreaDuration?: number): number;
+        numLayers(): number;
+        hideShyLayers(hideShyLayers?: boolean): boolean;
+        motionBlur(motionBlur?: boolean): boolean;
+        draft3d(draft3d?: boolean): boolean;
+        frameBlending(frameBlending?: boolean): boolean;
+        preserveNestedFrameRate(preserveNestedFrameRate?: boolean): boolean;
+        preserveNestedResolution(preserveNestedResolution?: boolean): boolean;
+        bgColor(bgColor?: [number, number, number]): [number, number, number];
+        activeCamera(): KCameraLayer;
+        displayStartTime(displayStartTime?: number): number;
+        resolutionFactor(resolutionFactor?: [number, number]): [number, number];
+        shutterAngle(shutterAngle?: number): number;
+        shutterPhase(shutterPhase?: number): number;
+        motionBlurSamplesPerFrame(motionBlurSamplesPerFrame?: number): number;
+        motionBlurAdaptiveSampleLimit(motionBlurAdaptiveSampleLimit?: number): number;
+        layers(): KLayerCollection;
+        selectedLayers(): KArray<KLayer<Layer>>;
+        selectedProperties(): PropertyBase[];
+        renderer(renderer?: string): string;
+        renderers(): KArray<string>;
+        duplicate(): KCompItem;
+        layer(index_or_name: number | string): KLayer<Layer>;
+        openInViewer(): Viewer;
+    }
+    class KFootageItem extends KAVItem<FootageItem> {
+        isValid(): boolean;
+        file(): File;
+        mainSource(): FootageSource;
+        replace(file: File): void;
+        replaceWithSequence(file: File, forceAlphabetical: any): void;
+        replaceWithPlaceholder(name: string, width: number, height: number, frameRate: number, duration: number): void;
+        replaceWithSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number): void;
+        openInViewer(): Viewer;
+    }
+}
+declare namespace KIKAKU {
+    class KLayerCollection {
+        protected _layers: LayerCollection;
+        constructor(_layers: LayerCollection);
+        add(item: AVItem, duration?: number): KAVLayer<AVLayer>;
+        addNull(duration?: number): KAVLayer<AVLayer>;
+        addSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number, duration?: number): KAVLayer<AVLayer>;
+        addText(sourceText?: string | TextDocument): KTextLayer;
+        addBoxText(size: [number, number], sourceText?: string | TextDocument): KTextLayer;
+        addCamera(name: string, centerPoint: [number, number]): KCameraLayer;
+        addLight(name: string, centerPoint: [number, number]): KLightLayer;
+        addShape(): KShapeLayer;
+        byName(name: string): KLayer<Layer>;
+        precompose(layerIndices: number[], name: string, moveAllAttributes?: boolean): KCompItem;
+    }
+    class KLayer<T extends Layer> {
+        protected _layer: T;
+        constructor(_layer: T);
+        get(): T;
+        isValid(): boolean;
+        asAV(): KAVLayer<AVLayer>;
+        asShape(): KShapeLayer;
+        asText(): KTextLayer;
+        asLight(): KLightLayer;
+        asCamera(): KCameraLayer;
+        index(): number;
+        name(name?: string): string;
+        parent(parent?: Layer): Layer;
+        time(time?: number): number;
+        startTime(startTime?: number): number;
+        stretch(stretch?: number): number;
+        inPoint(inPoint?: number): number;
+        outPoint(outPoint?: number): number;
+        enabled(enabled?: boolean): boolean;
+        solo(solo?: boolean): boolean;
+        shy(shy?: boolean): boolean;
+        locked(locked?: boolean): boolean;
+        hasVideo(): boolean;
+        active(): boolean;
+        nullLayer(): boolean;
+        selectedProperties(): KArray<KPropertyBase<PropertyBase>>;
+        comment(comment?: string): string;
+        containingComp(): KCompItem;
+        isNameSet(): boolean;
+        remove(): void;
+        moveToBeginning(): void;
+        moveToEnd(): void;
+        moveAfter(layer: Layer): void;
+        moveBefore(layer: Layer): void;
+        duplicate(): KLayer<Layer>;
+        copyToComp(intoComp: CompItem): KLayer<Layer>;
+        activeAtTime(time: number): boolean;
+        setParentWithJump(newParent?: Layer): void;
+        applyPreset(presetName: File): void;
+    }
+    class KAVLayer<T extends AVLayer> extends KLayer<T> {
+        isValid(): boolean;
+        source(): KAVItem<AVItem>;
+        isNameFromSource(): boolean;
+        height(): number;
+        width(): number;
+        audioEnabled(audioEnabled?: boolean): boolean;
+        motionBlur(motionBlur?: boolean): boolean;
+        effectsActive(effectsActive?: boolean): boolean;
+        adjustmentLayer(adjustmentLayer?: boolean): boolean;
+        guideLayer(guideLayer?: boolean): boolean;
+        threeDLayer(threeDLayer?: boolean): boolean;
+        threeDPerChar(threeDPerChar?: boolean): boolean;
+        environmentLayer(environmentLayer?: boolean): boolean;
+        canSetCollapseTransformation(): boolean;
+        collapseTransformation(collapseTransformation?: boolean): boolean;
+        frameBlending(frameBlending?: boolean): boolean;
+        frameBlendingType(frameBlendingType?: FrameBlendingType): FrameBlendingType;
+        canSetTimeRemapEnabled(): boolean;
+        timeRemapEnabled(timeRemapEnabled?: boolean): boolean;
+        hasAudio(): boolean;
+        audioActive(): boolean;
+        blendingMode(blendingMode?: BlendingMode): BlendingMode;
+        preserveTransparency(preserveTransparency?: boolean): boolean;
+        trackMatteType(trackMatteType?: TrackMatteType): TrackMatteType;
+        isTrackMatte(): boolean;
+        hasTrackMatte(): boolean;
+        quality(quality?: LayerQuality): LayerQuality;
+        autoOrient(autoOrient?: AutoOrientType): AutoOrientType;
+        samplingQuality(samplingQuality?: LayerSamplingQuality): LayerSamplingQuality;
+        audioActiveAtTime(time: number): boolean;
+        calculateTransformFromPoints(pointTopLeft: [number, number, number], pointTopRight: [number, number, number], pointBottomRight: [number, number, number]): Object;
+        replaceSource(newSource: AVItem, fixExpressions: boolean): void;
+        sourceRectAtTime(timeT: number, extents: boolean): {
+            top: number;
+            left: number;
+            width: number;
+            height: number;
+        };
+        openInViewer(): Viewer;
+    }
+    class KShapeLayer extends KAVLayer<ShapeLayer> {
+        isValid(): boolean;
+    }
+    class KTextLayer extends KAVLayer<TextLayer> {
+        isValid(): boolean;
+    }
+    class KCameraLayer extends KLayer<CameraLayer> {
+        isValid(): boolean;
+    }
+    class KLightLayer extends KLayer<LightLayer> {
+        isValid(): boolean;
+    }
+}
+declare namespace KIKAKU {
+    class KPropertyBase<T extends PropertyBase> {
+        protected _prop: T;
+        constructor(_prop: T);
+        get(): T;
+        isValid(): boolean;
+        asPropertyGroup(): KPropertyGroup<PropertyGroup>;
+        asMaskPropertyGroup(): KMaskPropertyGroup;
+        asProperty(): KProperty;
+        name(name?: string): string;
+        matchName(): string;
+        propertyIndex(): number;
+        propertyDepth(): number;
+        propertyType(): PropertyType;
+        parentProperty(): KPropertyGroup<PropertyGroup>;
+        isModified(): boolean;
+        canSetEnabled(): boolean;
+        enabled(enabled?: boolean): boolean;
+        active(): boolean;
+        elided(): boolean;
+        isEffect(): boolean;
+        isMask(): boolean;
+        selected(selected?: boolean): boolean;
+        property(index_or_name: number | number): KPropertyBase<PropertyBase>;
+        propertyGroup(countUp?: number): KPropertyGroup<PropertyGroup>;
+        remove(): void;
+        moveTo(newIndex: number): void;
+        duplicate(): KPropertyBase<PropertyBase>;
+    }
+    class KPropertyGroup<T extends PropertyGroup> extends KPropertyBase<T> {
+        isValid(): boolean;
+        numProperties(): number;
+        canAddProperty(name: string): boolean;
+        addProperty(name: string): KPropertyBase<PropertyBase>;
+    }
+    class KMaskPropertyGroup extends KPropertyGroup<MaskPropertyGroup> {
+        isValid(): boolean;
+        maskMode(maskMode?: MaskMode): MaskMode;
+        inverted(inverted?: boolean): boolean;
+        rotoBezier(rotoBezier?: boolean): boolean;
+        maskMotionBlur(maskMotionBlur?: MaskMotionBlur): MaskMotionBlur;
+        locked(locked?: boolean): boolean;
+        color(color?: [number, number, number]): [number, number, number];
+        maskFeatherFalloff(maskFeatherFalloff?: MaskFeatherFalloff): MaskFeatherFalloff;
+    }
+    class KProperty extends KPropertyBase<Property> {
+        isValid(): boolean;
+        propertyValueType(): PropertyValueType;
+        value(): void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument;
+        hasMin(): boolean;
+        hasMax(): boolean;
+        minValue(): number;
+        maxValue(): number;
+        isSpatial(): boolean;
+        canVaryOverTime(): boolean;
+        isTimeVarying(): boolean;
+        numKeys(): number;
+        unitsText(): string;
+        expression(expression?: string): string;
+        canSetExpression(): boolean;
+        expressionEnabled(expressionEnabled?: boolean): boolean;
+        expressionError(): string;
+        selectedKeys(): KArray<number>;
+        propertyIndex(): number;
+        dimensionsSeparated(dimensionsSeparated?: boolean): boolean;
+        isSeparationFollower(): boolean;
+        isSeparationLeader(): boolean;
+        separationDimension(): number;
+        separationLeader(): Property;
+        valueAtTime(time: number, preExpression: boolean): void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument;
+        setValue(value: PropertyValue): void;
+        setValueAtTime(time: number, newValue: PropertyValue): void;
+        setValuesAtTimes(times: number[], newValues: PropertyValue[]): void;
+        setValueAtKey(keyIndex: number, newValue: PropertyValue): void;
+        nearestKeyIndex(time: number): number;
+        keyTime(keyIndex_or_markerComment: number | string): number;
+        keyValue(keyIndex_or_markerComment: number | string): void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument;
+        addKey(time: number): number;
+        removeKey(keyIndex: number): void;
+        isInterpolationTypeValid(type: KeyframeInterpolationType): boolean;
+        setInterpolationTypeAtKey(keyIndex: number, inType: KeyframeInterpolationType, outType: KeyframeInterpolationType): void;
+        keyInInterpolationType(keyIndex: number): KeyframeInterpolationType;
+        keyOutInterpolationType(keyIndex: number): KeyframeInterpolationType;
+        setSpatialTangentsAtKey(keyIndex: number, inTangent: [number, number] | [number, number, number], outTangent: [number, number] | [number, number, number]): void;
+        keyInSpatialTangent(keyIndex: number): [number, number] | [number, number, number];
+        keyOutSpatialTangent(keyIndex: number): [number, number] | [number, number, number];
+        setTemporalEaseAtKey(keyIndex: number, inTemporalEase: [KeyframeEase] | [KeyframeEase, KeyframeEase] | [KeyframeEase, KeyframeEase, KeyframeEase], outTemporalEase: [KeyframeEase] | [KeyframeEase, KeyframeEase] | [KeyframeEase, KeyframeEase, KeyframeEase]): void;
+        keyInTemporalEase(keyIndex: number): KArray<KeyframeEase>;
+        keyOutTemporalEase(keyIndex: number): KArray<KeyframeEase>;
+        setTemporalContinuousAtKey(keyIndex: number, newVal: boolean): void;
+        keyTemporalContinuous(keyIndex: number): boolean;
+        setTemporalAutoBezierAtKey(keyIndex: number, newVal: boolean): void;
+        keyTemporalAutoBezier(keyIndex: number): boolean;
+        setSpatialContinuousAtKey(keyIndex: number, newVal: boolean): void;
+        keySpatialContinuous(keyIndex: number): boolean;
+        setSpatialAutoBezierAtKey(keyIndex: number, newVal: boolean): void;
+        keySpatialAutoBezier(keyIndex: number): boolean;
+        setRovingAtKey(keyIndex: number, newVal: boolean): void;
+        keyRoving(keyIndex: number): boolean;
+        setSelectedAtKey(keyIndex: number, onOff: boolean): void;
+        keySelected(keyIndex: number): boolean;
+        getSeparationFollower(dim: number): KProperty;
+    }
+}
 declare namespace KIKAKU {
     var VERSION: string;
     var AUTHOR: string;
@@ -38,13 +383,6 @@ declare namespace KIKAKU.Utils {
     function getProjectFile(): File;
     function createFolder(path: string | Folder): void;
     function removeFolder(path: string | Folder): void;
-}
-declare namespace KIKAKU.Utils._Impl {
-    function not(fn: any, ctx?: any): () => boolean;
-    function and(fns?: any, ...other: any[]): () => boolean;
-    function or(fns?: any, ...other: any[]): () => boolean;
-    function operate(lhs: any, op: any, rhs: any): boolean;
-    function createOperatorFilter(fn: any, op: any, rhs: any): (obj: any) => boolean;
 }
 declare namespace KIKAKU.Utils {
     function isFootageItem(item: Item): boolean;
@@ -172,6 +510,13 @@ declare namespace KIKAKU.Utils {
     function getSelectedLayer(comp?: CompItem): Layer;
     function removeAllLayers(comp?: CompItem): void;
 }
+declare namespace KIKAKU.Utils._Impl {
+    function not(fn: any, ctx?: any): () => boolean;
+    function and(fns?: any, ...other: any[]): () => boolean;
+    function or(fns?: any, ...other: any[]): () => boolean;
+    function operate(lhs: any, op: any, rhs: any): boolean;
+    function createOperatorFilter(fn: any, op: any, rhs: any): (obj: any) => boolean;
+}
 declare namespace KIKAKU.Utils {
     function isProperty(property: PropertyBase): boolean;
     function isPropertyGroup(property: PropertyBase): boolean;
@@ -255,6 +600,11 @@ declare namespace KIKAKU.Utils {
     function rgbToYuv(rgba: Color): Color;
     function yuvToRgb(yuva: Color): Color;
 }
+declare namespace KIKAKU.Utils.Comment {
+    function get(layer_or_item: Layer | Item, key: string): any;
+    function set(layer_or_item: Layer | Item, key: string, value: any): void;
+    function remove(layer_or_item: Layer | Item, key: string): void;
+}
 declare namespace KIKAKU {
     interface JSON {
         parse(text: string, reviver?: (key: any, value: any) => any): any;
@@ -265,11 +615,6 @@ declare namespace KIKAKU {
         stringify(value: any, replacer: any[], space: any): string;
     }
     var JSON: JSON;
-}
-declare namespace KIKAKU.Utils.Comment {
-    function get(layer_or_item: Layer | Item, key: string): any;
-    function set(layer_or_item: Layer | Item, key: string, value: any): void;
-    function remove(layer_or_item: Layer | Item, key: string): void;
 }
 declare namespace KIKAKU {
     class EventDispatcher {

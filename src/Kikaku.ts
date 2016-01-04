@@ -1,3 +1,7 @@
+/// <reference path="KikakuKArray.ts" />
+/// <reference path="KikakuKItem.ts" />
+/// <reference path="KikakuKLayer.ts" />
+/// <reference path="KikakuKProperty.ts" />
 /// <reference path="KikakuConfig.ts" />
 /// <reference path="KikakuUtils.ts" />
 /// <reference path="KikakuJSON.ts" />
