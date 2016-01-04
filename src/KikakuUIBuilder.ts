@@ -1,10 +1,3 @@
-/// <reference path="../typings/aftereffects/ae.d.ts" />
-/// <reference path="KikakuUtils.ts" />
-/// <reference path="KikakuJSON.ts" />
-/// <reference path="KikakuEventDispatcher.ts" />
-/// <reference path="KikakuFileManager.ts" />
-/// <reference path="KikakuSettingManager.ts" />
-
 namespace KIKAKU {
 
   const MATH_REGEX = /Math\s*\.\s*(?:E|LN2|LN10|LOG2E|LOG10E|PI|SQRT1_2|SQRT2|abs|acos|asin|atan2|atan|ceil|exp|floor|log|max|min|pow|random|round|sin|cos|sqrt|tan)/g;
@@ -2257,7 +2250,7 @@ namespace KIKAKU {
         };
       }
 
-      let current_container: Panel | Group = <Panel>w;
+      let current_container: _WindowOrContainer = w;
       let current_width = width - 2 * UIBuilder.MARGINS_SIZE;
       let script_index = 0;
       let script_columns = this._options.numberOfScriptColumns;
@@ -2275,7 +2268,7 @@ namespace KIKAKU {
           current_container.alignChildren = ['fill', 'fill'];
           current_width -= 2 * (UIBuilder.SPACING_SIZE + UIBuilder.MARGINS_SIZE);
           script_index = 0;
-          parameter.build(current_container, this);
+          parameter.build(<Group>current_container, this);
         } else if (parameter instanceof PanelEndParameter) {
           current_container = current_container.parent;
           current_width += 2 * (UIBuilder.SPACING_SIZE + UIBuilder.MARGINS_SIZE);
@@ -2289,7 +2282,7 @@ namespace KIKAKU {
           current_container.alignment = ['fill', 'top'];
           current_container.alignChildren = ['fill', 'fill'];
           script_index = 0;
-          parameter.build(current_container, this);
+          parameter.build(<Group>current_container, this);
         } else if (parameter instanceof GroupEndParameter) {
           current_container = current_container.parent;
           script_index = 0;

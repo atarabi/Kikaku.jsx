@@ -1,7 +1,3 @@
-/// <reference path="../../typings/aftereffects/ae.d.ts" />
-/// <reference path="../KikakuJSON.ts" />
-/// <reference path="utility.ts" />
-
 namespace KIKAKU.Utils.Comment {
 
 	const JSON = KIKAKU.JSON;

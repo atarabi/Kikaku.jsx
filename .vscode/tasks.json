@@ -2,13 +2,14 @@
 	"version": "0.1.0",
 	"command": "tsc",
 	"isShellCommand": true,
-	"showOutput": "always",
+	"showOutput": "silent",
 	"tasks": [	
 		{
 			"taskName": "build",
 			"isBuildCommand": true,
 			"suppressTaskName": true,
 			"args": [
+        "typings/aftereffects/ae.d.ts",
 				"src/Kikaku.ts",
 				"-d",
 				"--out", "dest/Kikaku.jsx",
@@ -22,6 +23,7 @@
 			"isWatching": true,
 			"suppressTaskName": true,
 			"args": [
+        "typings/aftereffects/ae.d.ts",
 				"src/Kikaku.ts",
 				"-d",
 				"-w",

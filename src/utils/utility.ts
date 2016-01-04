@@ -1,5 +1,3 @@
-/// <reference path="../../typings/aftereffects/ae.d.ts" />
-
 namespace KIKAKU.Utils {
 
   export function isObject(arg) {

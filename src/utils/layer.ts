@@ -1,8 +1,3 @@
-/// <reference path="../../typings/aftereffects/ae.d.ts" />
-/// <reference path="utility.ts" />
-/// <reference path="item.ts" />
-/// <reference path="_impl.ts" />
-
 namespace KIKAKU.Utils {
 
   export function isLayer(layer: Layer) {

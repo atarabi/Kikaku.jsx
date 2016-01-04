@@ -1,6 +1,3 @@
-/// <reference path="../../typings/aftereffects/ae.d.ts" />
-/// <reference path="utility.ts" />
-
 namespace KIKAKU.Utils {
 
 	export function getProjectFile() {

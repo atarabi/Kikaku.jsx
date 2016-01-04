@@ -1,6 +1,3 @@
-/// <reference path="../typings/aftereffects/ae.d.ts" />
-/// <reference path="KikakuUtils.ts" />
-
 namespace KIKAKU {
 
 	const Utils = KIKAKU.Utils;

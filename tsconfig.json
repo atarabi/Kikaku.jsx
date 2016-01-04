@@ -1,7 +1,10 @@
 {
 	"compilerOptions": {
-		"target": "ES3",
-		"noLib": true,
-		"module": "umd"
-	}
+		"target": "es3",
+		"noLib": true
+	},
+  "files": [
+    "typings/aftereffects/ae.d.ts",
+    "src/Kikaku.ts"
+  ]
 }
