@@ -1,1376 +1,107 @@
 var KIKAKU;
 (function (KIKAKU) {
-    var KArray = (function () {
-        function KArray(_arr) {
-            this._arr = _arr;
-        }
-        KArray.from = function (arr) {
-            return new KArray(arr);
-        };
-        KArray.of = function () {
-            var items = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                items[_i - 0] = arguments[_i];
-            }
-            return new KArray(items);
-        };
-        KArray.prototype.get = function () {
-            return this._arr;
-        };
-        KArray.prototype.at = function (index) {
-            return this._arr[index];
-        };
-        KArray.prototype.length = function () {
-            return this._arr.length;
-        };
-        //Mutator
-        KArray.prototype.copyWithin = function (target, start, end) {
-            if (end === void 0) { end = this._arr.length; }
-            var len = this._arr.length;
-            var to = target < 0 ? Math.max(len + target, 0) : Math.min(target, len);
-            var from = start < 0 ? Math.max(len + start, 0) : Math.min(start, len);
-            var last = end < 0 ? Math.max(len + end, 0) : Math.min(end, len);
-            var count = Math.min(last - from, len - to);
-            var direction = 1;
-            if (from < to && to < (from + count)) {
-                direction = -1;
-                from += count - 1;
-                to += count - 1;
-            }
-            for (; count > 0; --count) {
-                this._arr[to] = this._arr[from];
-                from += direction;
-                to += direction;
-            }
-            return this;
-        };
-        KArray.prototype.fill = function (value, start, end) {
-            if (start === void 0) { start = 0; }
-            if (end === void 0) { end = this._arr.length; }
-            var len = this._arr.length;
-            var k = start < 0 ? Math.max(len + start, 0) : Math.min(start, len);
-            var last = end < 0 ? Math.max(len + end, 0) : Math.min(end, len);
-            for (; k < last; ++k) {
-                this._arr[k] = value;
-            }
-            return this;
-        };
-        KArray.prototype.pop = function () {
-            return this._arr.pop();
-        };
-        KArray.prototype.push = function () {
-            var items = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                items[_i - 0] = arguments[_i];
-            }
-            return (_a = this._arr).push.apply(_a, items);
-            var _a;
-        };
-        KArray.prototype.reverse = function () {
-            this._arr.reverse();
-            return this;
-        };
-        KArray.prototype.shift = function () {
-            return this._arr.shift();
-        };
-        KArray.prototype.sort = function (cmp) {
-            this._arr.sort(cmp);
-            return this;
-        };
-        KArray.prototype.splice = function (start, deleteCount) {
-            var items = [];
-            for (var _i = 2; _i < arguments.length; _i++) {
-                items[_i - 2] = arguments[_i];
-            }
-            (_a = this._arr).splice.apply(_a, [start, deleteCount].concat(items));
-            return this;
-            var _a;
-        };
-        KArray.prototype.unshift = function () {
-            var items = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                items[_i - 0] = arguments[_i];
-            }
-            return (_a = this._arr).unshift.apply(_a, items);
-            var _a;
-        };
-        //Accessor
-        KArray.prototype.concat = function () {
-            var items = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                items[_i - 0] = arguments[_i];
-            }
-            return new KArray((_a = this._arr).concat.apply(_a, items));
-            var _a;
-        };
-        KArray.prototype.includes = function (searchElement, fromIndex) {
-            if (fromIndex === void 0) { fromIndex = 0; }
-            var len = this._arr.length;
-            var k = fromIndex >= 0 ? fromIndex : Math.max(len + fromIndex, 0);
-            for (; k < len; ++k) {
-                if (searchElement === this._arr[k]) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        KArray.prototype.join = function (sepqrator) {
-            return this._arr.join(sepqrator);
-        };
-        KArray.prototype.slice = function (start, end) {
-            return new KArray(this._arr.slice(start, end));
-        };
-        KArray.prototype.toSource = function () {
-            return this._arr.toSource();
-        };
-        KArray.prototype.toString = function () {
-            return this._arr.toString();
-        };
-        KArray.prototype.toLocaleString = function () {
-            return this._arr.toLocaleString();
-        };
-        KArray.prototype.indexOf = function (searchElement, fromIndex) {
-            var len = this._arr.length;
-            if (len === 0) {
-                return -1;
-            }
-            var n = fromIndex !== void 0 ? fromIndex : 0;
-            if (n >= len) {
-                return -1;
-            }
-            var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-            for (; k < len; ++k) {
-                if (this._arr[k] === searchElement) {
-                    return k;
-                }
-            }
-            return -1;
-        };
-        KArray.prototype.lastIndexOf = function (searchElement, fromIndex) {
-            var len = this._arr.length;
-            if (len === 0) {
-                return -1;
-            }
-            var n = fromIndex !== void 0 ? fromIndex : len;
-            var k = n >= 0 ? Math.min(n, len - 1) : len - Math.abs(n);
-            for (; k >= 0; --k) {
-                if (this._arr[k] === searchElement) {
-                    return k;
-                }
-            }
-            return -1;
-        };
-        //iteration
-        KArray.prototype.forEach = function (callbackfn, thisArg) {
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                callbackfn.call(thisArg, this._arr[k], k, this._arr);
-            }
-        };
-        KArray.prototype.entries = function () {
-            var arr = [];
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                arr.push([k, this._arr[k]]);
-            }
-            return new KArray(arr);
-        };
-        KArray.prototype.every = function (callbackfn, thisArg) {
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                if (!callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
-                    return false;
-                }
-            }
-            return true;
-        };
-        KArray.prototype.keys = function () {
-            var arr = [];
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                arr.push(k);
-            }
-            return new KArray(arr);
-        };
-        KArray.prototype.map = function (callbackfn, thisArg) {
-            var arr = [];
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                arr.push(callbackfn.call(thisArg, this._arr[k], k, this._arr));
-            }
-            return new KArray(arr);
-        };
-        KArray.prototype.some = function (callbackfn, thisArg) {
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                if (callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        KArray.prototype.filter = function (callbackfn, thisArg) {
-            var arr = [];
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                if (callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
-                    arr.push(this._arr[k]);
-                }
-            }
-            return new KArray(arr);
-        };
-        KArray.prototype.find = function (callbackfn, thisArg) {
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                if (callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
-                    return this._arr[k];
-                }
-            }
-            return void 0;
-        };
-        KArray.prototype.findIndex = function (callbackfn, thisArg) {
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                if (callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
-                    return k;
-                }
-            }
-            return -1;
-        };
-        KArray.prototype.reduce = function (callbackfn, initialValue) {
-            var len = this._arr.length;
-            var k = 0;
-            var value;
-            if (initialValue === void 0) {
-                if (len === 0) {
-                    throw new TypeError();
-                }
-                value = this._arr[k++];
-            }
-            for (; k < len; ++k) {
-                value = callbackfn.call(undefined, value, this._arr[k], k, this._arr);
-            }
-            return value;
-        };
-        KArray.prototype.reduceRight = function (callbackfn, initialValue) {
-            var len = this._arr.length;
-            var k = len - 1;
-            var value;
-            if (initialValue === void 0) {
-                if (len === 0) {
-                    throw new TypeError();
-                }
-                value = this._arr[k--];
-            }
-            for (; k >= 0; --k) {
-                value = callbackfn.call(undefined, value, this._arr[k], k, this._arr);
-            }
-            return value;
-        };
-        KArray.prototype.values = function () {
-            var arr = [];
-            for (var k = 0, len = this._arr.length; k < len; ++k) {
-                arr.push(this._arr[k]);
-            }
-            return new KArray(arr);
-        };
-        return KArray;
-    }());
-    KIKAKU.KArray = KArray;
-})(KIKAKU || (KIKAKU = {}));
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var KIKAKU;
-(function (KIKAKU) {
-    var KItemCollection = (function () {
-        function KItemCollection(_items) {
-            this._items = _items;
-        }
-        KItemCollection.prototype.addComp = function (name, width, height, pixelAspect, duration, frameRate) {
-            return new KCompItem(this._items.addComp(name, width, height, pixelAspect, duration, frameRate));
-        };
-        KItemCollection.prototype.addFolder = function (name) {
-            return new KFolderItem(this._items.addFolder(name));
-        };
-        return KItemCollection;
-    }());
-    KIKAKU.KItemCollection = KItemCollection;
-    var KItem = (function () {
-        function KItem(_item) {
-            this._item = _item;
-        }
-        KItem.prototype.get = function () {
-            return this._item;
-        };
-        KItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && (item instanceof FolderItem || item instanceof FootageItem || item instanceof CompItem) && isValid(item);
-        };
-        //cast
-        KItem.prototype.asFolder = function () {
-            return new KFolderItem(this._item);
-        };
-        KItem.prototype.asAV = function () {
-            return new KAVItem(this._item);
-        };
-        KItem.prototype.asComp = function () {
-            return new KCompItem(this._item);
-        };
-        KItem.prototype.asFootage = function () {
-            return new KFootageItem(this._item);
-        };
-        //attributes
-        KItem.prototype.name = function (name) {
-            if (name !== void 0)
-                this._item.name = name;
-            return this._item.name;
-        };
-        KItem.prototype.comment = function (comment) {
-            if (comment !== void 0)
-                this._item.comment = comment;
-            return this._item.comment;
-        };
-        KItem.prototype.id = function () {
-            return this._item.id;
-        };
-        KItem.prototype.parentFolder = function () {
-            return new KFolderItem(this._item.parentFolder);
-        };
-        KItem.prototype.selected = function (selected) {
-            if (selected !== void 0)
-                this._item.selected = selected;
-            return this._item.selected;
-        };
-        KItem.prototype.typeName = function () {
-            return this._item.typeName;
-        };
-        KItem.prototype.label = function (label) {
-            if (label !== void 0)
-                this._item.label = label;
-            return this._item.label;
-        };
-        //methods
-        KItem.prototype.remove = function () {
-            this._item.remove();
-        };
-        return KItem;
-    }());
-    KIKAKU.KItem = KItem;
-    var KFolderItem = (function (_super) {
-        __extends(KFolderItem, _super);
-        function KFolderItem() {
-            _super.apply(this, arguments);
-        }
-        KFolderItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && item instanceof FolderItem && isValid(item);
-        };
-        //attributes
-        KFolderItem.prototype.items = function () {
-            return new KItemCollection(this._item.items);
-        };
-        KFolderItem.prototype.numItems = function () {
-            return this._item.numItems;
-        };
-        //methods
-        KFolderItem.prototype.item = function (index) {
-            return new KItem(this._item.item(index));
-        };
-        return KFolderItem;
-    }(KItem));
-    KIKAKU.KFolderItem = KFolderItem;
-    var KAVItem = (function (_super) {
-        __extends(KAVItem, _super);
-        function KAVItem() {
-            _super.apply(this, arguments);
-        }
-        KAVItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && (item instanceof FootageItem || item instanceof CompItem) && isValid(item);
-        };
-        //attributes
-        KAVItem.prototype.width = function (width) {
-            if (width !== void 0)
-                this._item.width = width;
-            return this._item.width;
-        };
-        KAVItem.prototype.height = function (height) {
-            if (height !== void 0)
-                this._item.height = height;
-            return this._item.height;
-        };
-        KAVItem.prototype.pixelAspect = function (pixelAspect) {
-            if (pixelAspect !== void 0)
-                this._item.pixelAspect = pixelAspect;
-            return this._item.pixelAspect;
-        };
-        KAVItem.prototype.frameRate = function (frameRate) {
-            if (frameRate !== void 0)
-                this._item.frameRate = frameRate;
-            return this._item.frameRate;
-        };
-        KAVItem.prototype.frameDuration = function (frameDuration) {
-            if (frameDuration !== void 0)
-                this._item.frameDuration = frameDuration;
-            return this._item.frameDuration;
-        };
-        KAVItem.prototype.duration = function (duration) {
-            if (duration !== void 0)
-                this._item.duration = duration;
-            return this._item.duration;
-        };
-        KAVItem.prototype.useProxy = function (useProxy) {
-            if (useProxy !== void 0)
-                this._item.useProxy = useProxy;
-            return this._item.useProxy;
-        };
-        KAVItem.prototype.proxySource = function () {
-            return this._item.proxySource;
-        };
-        KAVItem.prototype.time = function (time) {
-            if (time !== void 0)
-                this._item.time = time;
-            return this._item.time;
-        };
-        KAVItem.prototype.usedIn = function () {
-            return this._item.usedIn;
-        };
-        KAVItem.prototype.hasVideo = function () {
-            return this._item.hasVideo;
-        };
-        KAVItem.prototype.hasAudio = function () {
-            return this._item.hasAudio;
-        };
-        KAVItem.prototype.footageMissing = function () {
-            return this._item.footageMissing;
-        };
-        KAVItem.prototype.setProxy = function (file) {
-            this._item.setProxy(file);
-        };
-        KAVItem.prototype.setProxyWithSequence = function (file, forceAlphabetical) {
-            this._item.setProxyWithSequence(file, forceAlphabetical);
-        };
-        KAVItem.prototype.setProxyWithSolid = function (color, name, width, height, pixelAspect) {
-            this._item.setProxyWithSolid(color, name, width, height, pixelAspect);
-        };
-        KAVItem.prototype.setProxyWithPlaceholder = function (name, width, height, frameRate, duration) {
-            this._item.setProxyWithPlaceholder(name, width, height, frameRate, duration);
-        };
-        KAVItem.prototype.setProxyToNone = function () {
-            this._item.setProxyToNone();
-        };
-        return KAVItem;
-    }(KItem));
-    KIKAKU.KAVItem = KAVItem;
-    var KCompItem = (function (_super) {
-        __extends(KCompItem, _super);
-        function KCompItem() {
-            _super.apply(this, arguments);
-        }
-        KCompItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && item instanceof CompItem && isValid(item);
-        };
-        //attributes
-        KCompItem.prototype.dropFrame = function (dropFrame) {
-            if (dropFrame !== void 0)
-                this._item.dropFrame = dropFrame;
-            return this._item.dropFrame;
-        };
-        KCompItem.prototype.workAreaStart = function (workAreaStart) {
-            if (workAreaStart !== void 0)
-                this._item.workAreaStart = workAreaStart;
-            return this._item.workAreaStart;
-        };
-        KCompItem.prototype.workAreaDuration = function (workAreaDuration) {
-            if (workAreaDuration !== void 0)
-                this._item.workAreaDuration = workAreaDuration;
-            return this._item.workAreaDuration;
-        };
-        KCompItem.prototype.numLayers = function () {
-            return this._item.numLayers;
-        };
-        KCompItem.prototype.hideShyLayers = function (hideShyLayers) {
-            if (hideShyLayers !== void 0)
-                this._item.hideShyLayers = hideShyLayers;
-            return this._item.hideShyLayers;
-        };
-        KCompItem.prototype.motionBlur = function (motionBlur) {
-            if (motionBlur !== void 0)
-                this._item.motionBlur = motionBlur;
-            return this._item.motionBlur;
-        };
-        KCompItem.prototype.draft3d = function (draft3d) {
-            if (draft3d !== void 0)
-                this._item.draft3d = draft3d;
-            return this._item.draft3d;
-        };
-        KCompItem.prototype.frameBlending = function (frameBlending) {
-            if (frameBlending !== void 0)
-                this._item.frameBlending = frameBlending;
-            return this._item.frameBlending;
-        };
-        KCompItem.prototype.preserveNestedFrameRate = function (preserveNestedFrameRate) {
-            if (preserveNestedFrameRate !== void 0)
-                this._item.preserveNestedFrameRate = preserveNestedFrameRate;
-            return this._item.preserveNestedFrameRate;
-        };
-        KCompItem.prototype.preserveNestedResolution = function (preserveNestedResolution) {
-            if (preserveNestedResolution !== void 0)
-                this._item.preserveNestedResolution = preserveNestedResolution;
-            return this._item.preserveNestedResolution;
-        };
-        KCompItem.prototype.bgColor = function (bgColor) {
-            if (bgColor !== void 0)
-                this._item.bgColor = bgColor;
-            return this._item.bgColor;
-        };
-        KCompItem.prototype.activeCamera = function () {
-            return new KIKAKU.KCameraLayer(this._item.activeCamera);
-        };
-        KCompItem.prototype.displayStartTime = function (displayStartTime) {
-            if (displayStartTime !== void 0)
-                this._item.displayStartTime = displayStartTime;
-            return this._item.displayStartTime;
-        };
-        KCompItem.prototype.resolutionFactor = function (resolutionFactor) {
-            if (resolutionFactor !== void 0)
-                this._item.resolutionFactor = resolutionFactor;
-            return this._item.resolutionFactor;
-        };
-        KCompItem.prototype.shutterAngle = function (shutterAngle) {
-            if (shutterAngle !== void 0)
-                this._item.shutterAngle = shutterAngle;
-            return this._item.shutterAngle;
-        };
-        KCompItem.prototype.shutterPhase = function (shutterPhase) {
-            if (shutterPhase !== void 0)
-                this._item.shutterPhase = shutterPhase;
-            return this._item.shutterPhase;
-        };
-        KCompItem.prototype.motionBlurSamplesPerFrame = function (motionBlurSamplesPerFrame) {
-            if (motionBlurSamplesPerFrame !== void 0)
-                this._item.motionBlurSamplesPerFrame = motionBlurSamplesPerFrame;
-            return this._item.motionBlurSamplesPerFrame;
-        };
-        KCompItem.prototype.motionBlurAdaptiveSampleLimit = function (motionBlurAdaptiveSampleLimit) {
-            if (motionBlurAdaptiveSampleLimit !== void 0)
-                this._item.motionBlurAdaptiveSampleLimit = motionBlurAdaptiveSampleLimit;
-            return this._item.motionBlurAdaptiveSampleLimit;
-        };
-        KCompItem.prototype.layers = function () {
-            return new KIKAKU.KLayerCollection(this._item.layers);
-        };
-        KCompItem.prototype.selectedLayers = function () {
-            return new KIKAKU.KArray(this._item.selectedLayers.slice()).map(function (layer) { return new KIKAKU.KLayer(layer); });
-        };
-        KCompItem.prototype.selectedProperties = function () {
-            return this._item.selectedProperties;
-        };
-        KCompItem.prototype.renderer = function (renderer) {
-            if (renderer !== void 0)
-                this._item.renderer = renderer;
-            return this._item.renderer;
-        };
-        KCompItem.prototype.renderers = function () {
-            return new KIKAKU.KArray(this._item.renderers);
-        };
-        //methods
-        KCompItem.prototype.duplicate = function () {
-            return new KCompItem(this._item.duplicate());
-        };
-        KCompItem.prototype.layer = function (index_or_name) {
-            return new KIKAKU.KLayer(this._item.layer(index_or_name));
-        };
-        KCompItem.prototype.openInViewer = function () {
-            return this._item.openInViewer();
-        };
-        return KCompItem;
-    }(KAVItem));
-    KIKAKU.KCompItem = KCompItem;
-    var KFootageItem = (function (_super) {
-        __extends(KFootageItem, _super);
-        function KFootageItem() {
-            _super.apply(this, arguments);
-        }
-        KFootageItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && item instanceof FootageItem && isValid(item);
-        };
-        //attributes
-        KFootageItem.prototype.file = function () {
-            return this._item.file;
-        };
-        KFootageItem.prototype.mainSource = function () {
-            return this._item.mainSource;
-        };
-        //methods
-        KFootageItem.prototype.replace = function (file) {
-            this._item.replace(file);
-        };
-        KFootageItem.prototype.replaceWithSequence = function (file, forceAlphabetical) {
-            this._item.replaceWithSequence(file, forceAlphabetical);
-        };
-        KFootageItem.prototype.replaceWithPlaceholder = function (name, width, height, frameRate, duration) {
-            this._item.replaceWithPlaceholder(name, width, height, frameRate, duration);
-        };
-        KFootageItem.prototype.replaceWithSolid = function (color, name, width, height, pixelAspect) {
-            this._item.replaceWithSolid(color, name, width, height, pixelAspect);
-        };
-        KFootageItem.prototype.openInViewer = function () {
-            return this._item.openInViewer();
-        };
-        return KFootageItem;
-    }(KAVItem));
-    KIKAKU.KFootageItem = KFootageItem;
-})(KIKAKU || (KIKAKU = {}));
-var KIKAKU;
-(function (KIKAKU) {
-    var KLayerCollection = (function () {
-        function KLayerCollection(_layers) {
-            this._layers = _layers;
-        }
-        KLayerCollection.prototype.add = function (item, duration) {
-            if (duration !== void 0) {
-                return new KAVLayer(this._layers.add(item, duration));
-            }
-            return new KAVLayer(this._layers.add(item));
-        };
-        KLayerCollection.prototype.addNull = function (duration) {
-            if (duration !== void 0) {
-                return new KAVLayer(this._layers.addNull(duration));
-            }
-            return new KAVLayer(this._layers.addNull());
-        };
-        KLayerCollection.prototype.addSolid = function (color, name, width, height, pixelAspect, duration) {
-            if (duration !== void 0) {
-                return new KAVLayer(this._layers.addSolid(color, name, width, height, pixelAspect, duration));
-            }
-            return new KAVLayer(this._layers.addSolid(color, name, width, height, pixelAspect));
-        };
-        KLayerCollection.prototype.addText = function (sourceText) {
-            if (sourceText !== void 0) {
-                return new KTextLayer(this._layers.addText(sourceText));
-            }
-            return new KTextLayer(this._layers.addText());
-        };
-        KLayerCollection.prototype.addBoxText = function (size, sourceText) {
-            if (sourceText !== void 0) {
-                return new KTextLayer(this._layers.addBoxText(size, sourceText));
-            }
-            return new KTextLayer(this._layers.addBoxText(size));
-        };
-        KLayerCollection.prototype.addCamera = function (name, centerPoint) {
-            return new KCameraLayer(this._layers.addCamera(name, centerPoint));
-        };
-        KLayerCollection.prototype.addLight = function (name, centerPoint) {
-            return new KLightLayer(this._layers.addLight(name, centerPoint));
-        };
-        KLayerCollection.prototype.addShape = function () {
-            return new KShapeLayer(this._layers.addShape());
-        };
-        KLayerCollection.prototype.byName = function (name) {
-            return new KLayer(this._layers.byName(name));
-        };
-        KLayerCollection.prototype.precompose = function (layerIndices, name, moveAllAttributes) {
-            if (moveAllAttributes === void 0) { moveAllAttributes = true; }
-            return new KIKAKU.KCompItem(this._layers.precompose(layerIndices, name, moveAllAttributes));
-        };
-        return KLayerCollection;
-    }());
-    KIKAKU.KLayerCollection = KLayerCollection;
-    var KLayer = (function () {
-        function KLayer(_layer) {
-            this._layer = _layer;
-        }
-        KLayer.prototype.get = function () {
-            return this._layer;
-        };
-        KLayer.prototype.isValid = function () {
-            var layer = this._layer;
-            return layer && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
-        };
-        //cast
-        KLayer.prototype.asAV = function () {
-            return new KAVLayer(this._layer);
-        };
-        KLayer.prototype.asShape = function () {
-            return new KShapeLayer(this._layer);
-        };
-        KLayer.prototype.asText = function () {
-            return new KTextLayer(this._layer);
-        };
-        KLayer.prototype.asLight = function () {
-            return new KLightLayer(this._layer);
-        };
-        KLayer.prototype.asCamera = function () {
-            return new KCameraLayer(this._layer);
-        };
-        //attributes
-        KLayer.prototype.index = function () {
-            return this._layer.index;
-        };
-        KLayer.prototype.name = function (name) {
-            if (name !== void 0)
-                this._layer.name = name;
-            return this._layer.name;
-        };
-        KLayer.prototype.parent = function (parent) {
-            if (parent !== void 0)
-                this._layer.parent = parent;
-            return this._layer.parent;
-        };
-        KLayer.prototype.time = function (time) {
-            if (time !== void 0)
-                this._layer.time = time;
-            return this._layer.time;
-        };
-        KLayer.prototype.startTime = function (startTime) {
-            if (startTime !== void 0)
-                this._layer.startTime = startTime;
-            return this._layer.startTime;
-        };
-        KLayer.prototype.stretch = function (stretch) {
-            if (stretch !== void 0)
-                this._layer.stretch = stretch;
-            return this._layer.stretch;
-        };
-        KLayer.prototype.inPoint = function (inPoint) {
-            if (inPoint !== void 0)
-                this._layer.inPoint = inPoint;
-            return this._layer.inPoint;
-        };
-        KLayer.prototype.outPoint = function (outPoint) {
-            if (outPoint !== void 0)
-                this._layer.outPoint = outPoint;
-            return this._layer.outPoint;
-        };
-        KLayer.prototype.enabled = function (enabled) {
-            if (enabled !== void 0)
-                this._layer.enabled = enabled;
-            return this._layer.enabled;
-        };
-        KLayer.prototype.solo = function (solo) {
-            if (solo !== void 0)
-                this._layer.solo = solo;
-            return this._layer.solo;
-        };
-        KLayer.prototype.shy = function (shy) {
-            if (shy !== void 0)
-                this._layer.shy = shy;
-            return this._layer.shy;
-        };
-        KLayer.prototype.locked = function (locked) {
-            if (locked !== void 0)
-                this._layer.locked = locked;
-            return this._layer.locked;
-        };
-        KLayer.prototype.hasVideo = function () {
-            return this._layer.hasVideo;
-        };
-        KLayer.prototype.active = function () {
-            return this._layer.active;
-        };
-        KLayer.prototype.nullLayer = function () {
-            return this._layer.nullLayer;
-        };
-        KLayer.prototype.selectedProperties = function () {
-            return new KIKAKU.KArray(this._layer.selectedProperties.slice()).map(function (property) { return new KIKAKU.KPropertyBase(property); });
-        };
-        KLayer.prototype.comment = function (comment) {
-            if (comment !== void 0)
-                this._layer.comment = comment;
-            return this._layer.comment;
-        };
-        KLayer.prototype.containingComp = function () {
-            return new KIKAKU.KCompItem(this._layer.containingComp);
-        };
-        KLayer.prototype.isNameSet = function () {
-            return this._layer.isNameSet;
-        };
-        //methods
-        KLayer.prototype.remove = function () {
-            this._layer.remove();
-        };
-        KLayer.prototype.moveToBeginning = function () {
-            this._layer.moveToBeginning();
-        };
-        KLayer.prototype.moveToEnd = function () {
-            this._layer.moveToEnd();
-        };
-        KLayer.prototype.moveAfter = function (layer) {
-            this._layer.moveAfter(layer);
-        };
-        KLayer.prototype.moveBefore = function (layer) {
-            this._layer.moveBefore(layer);
-        };
-        KLayer.prototype.duplicate = function () {
-            return new KLayer(this._layer.duplicate());
-        };
-        KLayer.prototype.copyToComp = function (intoComp) {
-            this._layer.copyToComp(intoComp);
-            return new KLayer(intoComp.layer(1));
-        };
-        KLayer.prototype.activeAtTime = function (time) {
-            return this._layer.activeAtTime(time);
-        };
-        KLayer.prototype.setParentWithJump = function (newParent) {
-            if (newParent !== void 0)
-                this._layer.setParentWithJump(newParent);
-            else
-                this._layer.setParentWithJump();
-        };
-        KLayer.prototype.applyPreset = function (presetName) {
-            this._layer.applyPreset(presetName);
-        };
-        return KLayer;
-    }());
-    KIKAKU.KLayer = KLayer;
-    var KAVLayer = (function (_super) {
-        __extends(KAVLayer, _super);
-        function KAVLayer() {
-            _super.apply(this, arguments);
-        }
-        KAVLayer.prototype.isValid = function () {
-            var layer = this._layer;
-            return layer && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
-        };
-        //attributes
-        KAVLayer.prototype.source = function () {
-            return new KIKAKU.KAVItem(this._layer.source);
-        };
-        KAVLayer.prototype.isNameFromSource = function () {
-            return this._layer.isNameFromSource;
-        };
-        KAVLayer.prototype.height = function () {
-            return this._layer.height;
-        };
-        KAVLayer.prototype.width = function () {
-            return this._layer.width;
-        };
-        KAVLayer.prototype.audioEnabled = function (audioEnabled) {
-            if (audioEnabled !== void 0)
-                this._layer.audioEnabled = audioEnabled;
-            return this._layer.audioEnabled;
-        };
-        KAVLayer.prototype.motionBlur = function (motionBlur) {
-            if (motionBlur !== void 0)
-                this._layer.motionBlur = motionBlur;
-            return this._layer.motionBlur;
-        };
-        KAVLayer.prototype.effectsActive = function (effectsActive) {
-            if (effectsActive !== void 0)
-                this._layer.effectsActive = effectsActive;
-            return this._layer.effectsActive;
-        };
-        KAVLayer.prototype.adjustmentLayer = function (adjustmentLayer) {
-            if (adjustmentLayer !== void 0)
-                this._layer.adjustmentLayer = adjustmentLayer;
-            return this._layer.adjustmentLayer;
-        };
-        KAVLayer.prototype.guideLayer = function (guideLayer) {
-            if (guideLayer !== void 0)
-                this._layer.guideLayer = guideLayer;
-            return this._layer.guideLayer;
-        };
-        KAVLayer.prototype.threeDLayer = function (threeDLayer) {
-            if (threeDLayer !== void 0)
-                this._layer.threeDLayer = threeDLayer;
-            return this._layer.threeDLayer;
-        };
-        KAVLayer.prototype.threeDPerChar = function (threeDPerChar) {
-            if (threeDPerChar !== void 0)
-                this._layer.threeDPerChar = threeDPerChar;
-            return this._layer.threeDPerChar;
-        };
-        KAVLayer.prototype.environmentLayer = function (environmentLayer) {
-            if (environmentLayer !== void 0)
-                this._layer.environmentLayer = environmentLayer;
-            return this._layer.environmentLayer;
-        };
-        KAVLayer.prototype.canSetCollapseTransformation = function () {
-            return this._layer.canSetCollapseTransformation;
-        };
-        KAVLayer.prototype.collapseTransformation = function (collapseTransformation) {
-            if (collapseTransformation !== void 0)
-                this._layer.collapseTransformation = collapseTransformation;
-            return this._layer.collapseTransformation;
-        };
-        KAVLayer.prototype.frameBlending = function (frameBlending) {
-            if (frameBlending !== void 0)
-                this._layer.frameBlending = frameBlending;
-            return this._layer.frameBlending;
-        };
-        KAVLayer.prototype.frameBlendingType = function (frameBlendingType) {
-            if (frameBlendingType !== void 0)
-                this._layer.frameBlendingType = frameBlendingType;
-            return this._layer.frameBlendingType;
-        };
-        KAVLayer.prototype.canSetTimeRemapEnabled = function () {
-            return this._layer.canSetTimeRemapEnabled;
-        };
-        KAVLayer.prototype.timeRemapEnabled = function (timeRemapEnabled) {
-            if (timeRemapEnabled !== void 0)
-                this._layer.timeRemapEnabled = timeRemapEnabled;
-            return this._layer.timeRemapEnabled;
-        };
-        KAVLayer.prototype.hasAudio = function () {
-            return this._layer.hasAudio;
-        };
-        KAVLayer.prototype.audioActive = function () {
-            return this._layer.audioActive;
-        };
-        KAVLayer.prototype.blendingMode = function (blendingMode) {
-            if (blendingMode !== void 0)
-                this._layer.blendingMode = blendingMode;
-            return this._layer.blendingMode;
-        };
-        KAVLayer.prototype.preserveTransparency = function (preserveTransparency) {
-            if (preserveTransparency !== void 0)
-                this._layer.preserveTransparency = preserveTransparency;
-            return this._layer.preserveTransparency;
-        };
-        KAVLayer.prototype.trackMatteType = function (trackMatteType) {
-            if (trackMatteType !== void 0)
-                this._layer.trackMatteType = trackMatteType;
-            return this._layer.trackMatteType;
-        };
-        KAVLayer.prototype.isTrackMatte = function () {
-            return this._layer.isTrackMatte;
-        };
-        KAVLayer.prototype.hasTrackMatte = function () {
-            return this._layer.hasTrackMatte;
-        };
-        KAVLayer.prototype.quality = function (quality) {
-            if (quality !== void 0)
-                this._layer.quality = quality;
-            return this._layer.quality;
-        };
-        KAVLayer.prototype.autoOrient = function (autoOrient) {
-            if (autoOrient !== void 0)
-                this._layer.autoOrient = autoOrient;
-            return this._layer.autoOrient;
-        };
-        KAVLayer.prototype.samplingQuality = function (samplingQuality) {
-            if (samplingQuality !== void 0)
-                this._layer.samplingQuality = samplingQuality;
-            return this._layer.samplingQuality;
-        };
-        //methods
-        KAVLayer.prototype.audioActiveAtTime = function (time) {
-            return this._layer.audioActiveAtTime(time);
-        };
-        KAVLayer.prototype.calculateTransformFromPoints = function (pointTopLeft, pointTopRight, pointBottomRight) {
-            return this._layer.calculateTransformFromPoints(pointTopLeft, pointTopRight, pointBottomRight);
-        };
-        KAVLayer.prototype.replaceSource = function (newSource, fixExpressions) {
-            this._layer.replaceSource(newSource, fixExpressions);
-        };
-        KAVLayer.prototype.sourceRectAtTime = function (timeT, extents) {
-            return this._layer.sourceRectAtTime(timeT, extents);
-        };
-        KAVLayer.prototype.openInViewer = function () {
-            return this._layer.openInViewer();
-        };
-        return KAVLayer;
-    }(KLayer));
-    KIKAKU.KAVLayer = KAVLayer;
-    var KShapeLayer = (function (_super) {
-        __extends(KShapeLayer, _super);
-        function KShapeLayer() {
-            _super.apply(this, arguments);
-        }
-        KShapeLayer.prototype.isValid = function () {
-            var layer = this._layer;
-            return layer && layer instanceof ShapeLayer && isValid(layer);
-        };
-        return KShapeLayer;
-    }(KAVLayer));
-    KIKAKU.KShapeLayer = KShapeLayer;
-    var KTextLayer = (function (_super) {
-        __extends(KTextLayer, _super);
-        function KTextLayer() {
-            _super.apply(this, arguments);
-        }
-        KTextLayer.prototype.isValid = function () {
-            var layer = this._layer;
-            return layer && layer instanceof TextLayer && isValid(layer);
-        };
-        return KTextLayer;
-    }(KAVLayer));
-    KIKAKU.KTextLayer = KTextLayer;
-    var KCameraLayer = (function (_super) {
-        __extends(KCameraLayer, _super);
-        function KCameraLayer() {
-            _super.apply(this, arguments);
-        }
-        KCameraLayer.prototype.isValid = function () {
-            var layer = this._layer;
-            return layer && layer instanceof CameraLayer && isValid(layer);
-        };
-        return KCameraLayer;
-    }(KLayer));
-    KIKAKU.KCameraLayer = KCameraLayer;
-    var KLightLayer = (function (_super) {
-        __extends(KLightLayer, _super);
-        function KLightLayer() {
-            _super.apply(this, arguments);
-        }
-        KLightLayer.prototype.isValid = function () {
-            var layer = this._layer;
-            return layer && layer instanceof LightLayer && isValid(layer);
-        };
-        return KLightLayer;
-    }(KLayer));
-    KIKAKU.KLightLayer = KLightLayer;
-})(KIKAKU || (KIKAKU = {}));
-var KIKAKU;
-(function (KIKAKU) {
-    var KPropertyBase = (function () {
-        function KPropertyBase(_prop) {
-            this._prop = _prop;
-        }
-        KPropertyBase.prototype.get = function () {
-            return this._prop;
-        };
-        KPropertyBase.prototype.isValid = function () {
-            var prop = this._prop;
-            return prop && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup || prop instanceof Property) && isValid(prop);
-        };
-        //cast
-        KPropertyBase.prototype.asPropertyGroup = function () {
-            return new KPropertyGroup(this._prop);
-        };
-        KPropertyBase.prototype.asMaskPropertyGroup = function () {
-            return new KMaskPropertyGroup(this._prop);
-        };
-        KPropertyBase.prototype.asProperty = function () {
-            return new KProperty(this._prop);
-        };
-        //attributes
-        KPropertyBase.prototype.name = function (name) {
-            if (name !== void 0)
-                this._prop.name = name;
-            return this._prop.name;
-        };
-        KPropertyBase.prototype.matchName = function () {
-            return this._prop.matchName;
-        };
-        KPropertyBase.prototype.propertyIndex = function () {
-            return this._prop.propertyIndex;
-        };
-        KPropertyBase.prototype.propertyDepth = function () {
-            return this._prop.propertyDepth;
-        };
-        KPropertyBase.prototype.propertyType = function () {
-            return this._prop.propertyType;
-        };
-        KPropertyBase.prototype.parentProperty = function () {
-            return new KPropertyGroup(this._prop.parentProperty);
-        };
-        KPropertyBase.prototype.isModified = function () {
-            return this._prop.isModified;
-        };
-        KPropertyBase.prototype.canSetEnabled = function () {
-            return this._prop.canSetEnabled;
-        };
-        KPropertyBase.prototype.enabled = function (enabled) {
-            if (enabled !== void 0)
-                this._prop.enabled = enabled;
-            return this._prop.enabled;
-        };
-        KPropertyBase.prototype.active = function () {
-            return this._prop.active;
-        };
-        KPropertyBase.prototype.elided = function () {
-            return this._prop.elided;
-        };
-        KPropertyBase.prototype.isEffect = function () {
-            return this._prop.isEffect;
-        };
-        KPropertyBase.prototype.isMask = function () {
-            return this._prop.isMask;
-        };
-        KPropertyBase.prototype.selected = function (selected) {
-            if (selected !== void 0)
-                this._prop.selected = selected;
-            return this._prop.selected;
-        };
-        //methods
-        KPropertyBase.prototype.property = function (index_or_name) {
-            return new KPropertyBase(this._prop.property(index_or_name));
-        };
-        KPropertyBase.prototype.propertyGroup = function (countUp) {
-            if (countUp === void 0) { countUp = 1; }
-            return new KPropertyGroup(this._prop.propertyGroup(countUp));
-        };
-        KPropertyBase.prototype.remove = function () {
-            this._prop.remove();
-        };
-        KPropertyBase.prototype.moveTo = function (newIndex) {
-            this._prop.moveTo(newIndex);
-        };
-        KPropertyBase.prototype.duplicate = function () {
-            return new KPropertyBase(this._prop.duplicate());
-        };
-        return KPropertyBase;
-    }());
-    KIKAKU.KPropertyBase = KPropertyBase;
-    var KPropertyGroup = (function (_super) {
-        __extends(KPropertyGroup, _super);
-        function KPropertyGroup() {
-            _super.apply(this, arguments);
-        }
-        KPropertyGroup.prototype.isValid = function () {
-            var prop = this._prop;
-            return prop && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup) && isValid(prop);
-        };
-        //attributes
-        KPropertyGroup.prototype.numProperties = function () {
-            return this._prop.numProperties;
-        };
-        KPropertyGroup.prototype.canAddProperty = function (name) {
-            return this._prop.canAddProperty(name);
-        };
-        KPropertyGroup.prototype.addProperty = function (name) {
-            return new KPropertyBase(this._prop.addProperty(name));
-        };
-        return KPropertyGroup;
-    }(KPropertyBase));
-    KIKAKU.KPropertyGroup = KPropertyGroup;
-    var KMaskPropertyGroup = (function (_super) {
-        __extends(KMaskPropertyGroup, _super);
-        function KMaskPropertyGroup() {
-            _super.apply(this, arguments);
-        }
-        KMaskPropertyGroup.prototype.isValid = function () {
-            var prop = this._prop;
-            return prop && prop instanceof MaskPropertyGroup && isValid(prop);
-        };
-        //attributes
-        KMaskPropertyGroup.prototype.maskMode = function (maskMode) {
-            if (maskMode !== void 0)
-                this._prop.maskMode = maskMode;
-            return this._prop.maskMode;
-        };
-        KMaskPropertyGroup.prototype.inverted = function (inverted) {
-            if (inverted !== void 0)
-                this._prop.inverted = inverted;
-            return this._prop.inverted;
-        };
-        KMaskPropertyGroup.prototype.rotoBezier = function (rotoBezier) {
-            if (rotoBezier !== void 0)
-                this._prop.rotoBezier = rotoBezier;
-            return this._prop.rotoBezier;
-        };
-        KMaskPropertyGroup.prototype.maskMotionBlur = function (maskMotionBlur) {
-            if (maskMotionBlur !== void 0)
-                this._prop.maskMotionBlur = maskMotionBlur;
-            return this._prop.maskMotionBlur;
-        };
-        KMaskPropertyGroup.prototype.locked = function (locked) {
-            if (locked !== void 0)
-                this._prop.locked = locked;
-            return this._prop.locked;
-        };
-        KMaskPropertyGroup.prototype.color = function (color) {
-            if (color !== void 0)
-                this._prop.color = color;
-            return this._prop.color;
-        };
-        KMaskPropertyGroup.prototype.maskFeatherFalloff = function (maskFeatherFalloff) {
-            if (maskFeatherFalloff !== void 0)
-                this._prop.maskFeatherFalloff = maskFeatherFalloff;
-            return this._prop.maskFeatherFalloff;
-        };
-        return KMaskPropertyGroup;
-    }(KPropertyGroup));
-    KIKAKU.KMaskPropertyGroup = KMaskPropertyGroup;
-    var KProperty = (function (_super) {
-        __extends(KProperty, _super);
-        function KProperty() {
-            _super.apply(this, arguments);
-        }
-        KProperty.prototype.isValid = function () {
-            var prop = this._prop;
-            return prop && prop instanceof Property && isValid(prop);
-        };
-        //attributes
-        KProperty.prototype.propertyValueType = function () {
-            return this._prop.propertyValueType;
-        };
-        KProperty.prototype.value = function () {
-            return this._prop.value;
-        };
-        KProperty.prototype.hasMin = function () {
-            return this._prop.hasMin;
-        };
-        KProperty.prototype.hasMax = function () {
-            return this._prop.hasMax;
-        };
-        KProperty.prototype.minValue = function () {
-            return this._prop.minValue;
-        };
-        KProperty.prototype.maxValue = function () {
-            return this._prop.maxValue;
-        };
-        KProperty.prototype.isSpatial = function () {
-            return this._prop.isSpatial;
-        };
-        KProperty.prototype.canVaryOverTime = function () {
-            return this._prop.canVaryOverTime;
-        };
-        KProperty.prototype.isTimeVarying = function () {
-            return this._prop.isTimeVarying;
-        };
-        KProperty.prototype.numKeys = function () {
-            return this._prop.numKeys;
-        };
-        KProperty.prototype.unitsText = function () {
-            return this._prop.unitsText;
-        };
-        KProperty.prototype.expression = function (expression) {
-            if (expression !== void 0)
-                this._prop.expression = expression;
-            return this._prop.expression;
-        };
-        KProperty.prototype.canSetExpression = function () {
-            return this._prop.canSetExpression;
-        };
-        KProperty.prototype.expressionEnabled = function (expressionEnabled) {
-            if (expressionEnabled !== void 0)
-                this._prop.expressionEnabled = expressionEnabled;
-            return this._prop.expressionEnabled;
-        };
-        KProperty.prototype.expressionError = function () {
-            return this._prop.expressionError;
-        };
-        KProperty.prototype.selectedKeys = function () {
-            return new KIKAKU.KArray(this._prop.selectedKeys.slice());
-        };
-        KProperty.prototype.propertyIndex = function () {
-            return this._prop.propertyIndex;
-        };
-        KProperty.prototype.dimensionsSeparated = function (dimensionsSeparated) {
-            if (dimensionsSeparated !== void 0)
-                this._prop.dimensionsSeparated = dimensionsSeparated;
-            return this._prop.dimensionsSeparated;
-        };
-        KProperty.prototype.isSeparationFollower = function () {
-            return this._prop.isSeparationFollower;
-        };
-        KProperty.prototype.isSeparationLeader = function () {
-            return this._prop.isSeparationLeader;
-        };
-        KProperty.prototype.separationDimension = function () {
-            return this._prop.separationDimension;
-        };
-        KProperty.prototype.separationLeader = function () {
-            return this._prop.separationLeader;
-        };
-        //methods
-        KProperty.prototype.valueAtTime = function (time, preExpression) {
-            return this._prop.valueAtTime(time, preExpression);
-        };
-        KProperty.prototype.setValue = function (value) {
-            this._prop.setValue(value);
-        };
-        KProperty.prototype.setValueAtTime = function (time, newValue) {
-            this._prop.setValueAtTime(time, newValue);
-        };
-        KProperty.prototype.setValuesAtTimes = function (times, newValues) {
-            this._prop.setValuesAtTimes(times, newValues);
-        };
-        KProperty.prototype.setValueAtKey = function (keyIndex, newValue) {
-            this._prop.setValueAtKey(keyIndex, newValue);
-        };
-        KProperty.prototype.nearestKeyIndex = function (time) {
-            return this._prop.nearestKeyIndex(time);
-        };
-        KProperty.prototype.keyTime = function (keyIndex_or_markerComment) {
-            return this._prop.keyTime(keyIndex_or_markerComment);
-        };
-        KProperty.prototype.keyValue = function (keyIndex_or_markerComment) {
-            return this._prop.keyValue(keyIndex_or_markerComment);
-        };
-        KProperty.prototype.addKey = function (time) {
-            return this._prop.addKey(time);
-        };
-        KProperty.prototype.removeKey = function (keyIndex) {
-            return this._prop.removeKey(keyIndex);
-        };
-        KProperty.prototype.isInterpolationTypeValid = function (type) {
-            return this._prop.isInterpolationTypeValid(type);
-        };
-        KProperty.prototype.setInterpolationTypeAtKey = function (keyIndex, inType, outType) {
-            this._prop.setInterpolationTypeAtKey(keyIndex, inType, outType);
-        };
-        KProperty.prototype.keyInInterpolationType = function (keyIndex) {
-            return this._prop.keyInInterpolationType(keyIndex);
-        };
-        KProperty.prototype.keyOutInterpolationType = function (keyIndex) {
-            return this._prop.keyOutInterpolationType(keyIndex);
-        };
-        KProperty.prototype.setSpatialTangentsAtKey = function (keyIndex, inTangent, outTangent) {
-            this._prop.setSpatialTangentsAtKey(keyIndex, inTangent, outTangent);
-        };
-        KProperty.prototype.keyInSpatialTangent = function (keyIndex) {
-            return this._prop.keyInSpatialTangent(keyIndex);
-        };
-        KProperty.prototype.keyOutSpatialTangent = function (keyIndex) {
-            return this._prop.keyOutSpatialTangent(keyIndex);
-        };
-        KProperty.prototype.setTemporalEaseAtKey = function (keyIndex, inTemporalEase, outTemporalEase) {
-            this._prop.setTemporalEaseAtKey(keyIndex, inTemporalEase, outTemporalEase);
-        };
-        KProperty.prototype.keyInTemporalEase = function (keyIndex) {
-            return new KIKAKU.KArray(this._prop.keyInTemporalEase(keyIndex));
-        };
-        KProperty.prototype.keyOutTemporalEase = function (keyIndex) {
-            return new KIKAKU.KArray(this._prop.keyOutTemporalEase(keyIndex));
-        };
-        KProperty.prototype.setTemporalContinuousAtKey = function (keyIndex, newVal) {
-            this._prop.setTemporalContinuousAtKey(keyIndex, newVal);
-        };
-        KProperty.prototype.keyTemporalContinuous = function (keyIndex) {
-            return this._prop.keyTemporalContinuous(keyIndex);
-        };
-        KProperty.prototype.setTemporalAutoBezierAtKey = function (keyIndex, newVal) {
-            this._prop.setTemporalAutoBezierAtKey(keyIndex, newVal);
-        };
-        KProperty.prototype.keyTemporalAutoBezier = function (keyIndex) {
-            return this._prop.keyTemporalAutoBezier(keyIndex);
-        };
-        KProperty.prototype.setSpatialContinuousAtKey = function (keyIndex, newVal) {
-            this._prop.setSpatialContinuousAtKey(keyIndex, newVal);
-        };
-        KProperty.prototype.keySpatialContinuous = function (keyIndex) {
-            return this._prop.keySpatialContinuous(keyIndex);
-        };
-        KProperty.prototype.setSpatialAutoBezierAtKey = function (keyIndex, newVal) {
-            this._prop.setSpatialAutoBezierAtKey(keyIndex, newVal);
-        };
-        KProperty.prototype.keySpatialAutoBezier = function (keyIndex) {
-            return this._prop.keySpatialAutoBezier(keyIndex);
-        };
-        KProperty.prototype.setRovingAtKey = function (keyIndex, newVal) {
-            this._prop.setRovingAtKey(keyIndex, newVal);
-        };
-        KProperty.prototype.keyRoving = function (keyIndex) {
-            return this._prop.keyRoving(keyIndex);
-        };
-        KProperty.prototype.setSelectedAtKey = function (keyIndex, onOff) {
-            this._prop.setSelectedAtKey(keyIndex, onOff);
-        };
-        KProperty.prototype.keySelected = function (keyIndex) {
-            return this._prop.keySelected(keyIndex);
-        };
-        KProperty.prototype.getSeparationFollower = function (dim) {
-            return new KProperty(this._prop.getSeparationFollower(dim));
-        };
-        return KProperty;
-    }(KPropertyBase));
-    KIKAKU.KProperty = KProperty;
-})(KIKAKU || (KIKAKU = {}));
-var KIKAKU;
-(function (KIKAKU) {
     KIKAKU.VERSION = '0.4.1';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
+})(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    KIKAKU.JSON = {};
+    (function () {
+        "use strict";
+        function f(e) { return e < 10 ? "0" + e : e; }
+        function quote(e) { escapable.lastIndex = 0; return escapable.test(e) ? '"' + e.replace(escapable, function (e) { var t = meta[e]; return typeof t === "string" ? t : "\\u" + ("0000" + e.charCodeAt(0).toString(16)).slice(-4); }) + '"' : '"' + e + '"'; }
+        function str(e, t) { var n, r, i, s, o = gap, u, a = t[e]; if (a && typeof a === "object" && typeof a.toJSON === "function") {
+            a = a.toJSON(e);
+        } if (typeof rep === "function") {
+            a = rep.call(t, e, a);
+        } switch (typeof a) {
+            case "string": return quote(a);
+            case "number": return isFinite(a) ? String(a) : "null";
+            case "boolean":
+            case "null": return String(a);
+            case "object":
+                if (!a) {
+                    return "null";
+                }
+                gap += indent;
+                u = [];
+                if (Object.prototype.toString.apply(a) === "[object Array]") {
+                    s = a.length;
+                    for (n = 0; n < s; n += 1) {
+                        u[n] = str(n, a) || "null";
+                    }
+                    i = u.length === 0 ? "[]" : gap ? "[\n" + gap + u.join(",\n" + gap) + "\n" + o + "]" : "[" + u.join(",") + "]";
+                    gap = o;
+                    return i;
+                }
+                if (rep && typeof rep === "object") {
+                    s = rep.length;
+                    for (n = 0; n < s; n += 1) {
+                        if (typeof rep[n] === "string") {
+                            r = rep[n];
+                            i = str(r, a);
+                            if (i) {
+                                u.push(quote(r) + (gap ? ": " : ":") + i);
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (r in a) {
+                        if (Object.prototype.hasOwnProperty.call(a, r)) {
+                            i = str(r, a);
+                            if (i) {
+                                u.push(quote(r) + (gap ? ": " : ":") + i);
+                            }
+                        }
+                    }
+                }
+                i = u.length === 0 ? "{}" : gap ? "{\n" + gap + u.join(",\n" + gap) + "\n" + o + "}" : "{" + u.join(",") + "}";
+                gap = o;
+                return i;
+        } }
+        if (typeof Date.prototype.toJSON !== "function") {
+            Date.prototype.toJSON = function () { return isFinite(this.valueOf()) ? this.getUTCFullYear() + "-" + f(this.getUTCMonth() + 1) + "-" + f(this.getUTCDate()) + "T" + f(this.getUTCHours()) + ":" + f(this.getUTCMinutes()) + ":" + f(this.getUTCSeconds()) + "Z" : null; };
+            String.prototype.toJSON = Number.prototype.toJSON = Boolean.prototype.toJSON = function () { return this.valueOf(); };
+        }
+        var cx, escapable, gap, indent, meta, rep;
+        if (typeof KIKAKU.JSON.stringify !== "function") {
+            escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+            meta = { "\b": "\\b", "	": "\\t", "\n": "\\n", "\f": "\\f", "\r": "\\r", '"': '\\"', "\\": "\\\\" };
+            KIKAKU.JSON.stringify = function (e, t, n) { var r; gap = ""; indent = ""; if (typeof n === "number") {
+                for (r = 0; r < n; r += 1) {
+                    indent += " ";
+                }
+            }
+            else if (typeof n === "string") {
+                indent = n;
+            } rep = t; if (t && typeof t !== "function" && (typeof t !== "object" || typeof t.length !== "number")) {
+                throw new Error("JSON.stringify");
+            } return str("", { "": e }); };
+        }
+        if (typeof KIKAKU.JSON.parse !== "function") {
+            cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+            KIKAKU.JSON.parse = function (text, reviver) { function walk(e, t) { var n, r, i = e[t]; if (i && typeof i === "object") {
+                for (n in i) {
+                    if (Object.prototype.hasOwnProperty.call(i, n)) {
+                        r = walk(i, n);
+                        if (r !== undefined) {
+                            i[n] = r;
+                        }
+                        else {
+                            delete i[n];
+                        }
+                    }
+                }
+            } return reviver.call(e, t, i); } var j; text = String(text); cx.lastIndex = 0; if (cx.test(text)) {
+                text = text.replace(cx, function (e) { return "\\u" + ("0000" + e.charCodeAt(0).toString(16)).slice(-4); });
+            } if (/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]").replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+                j = eval("(" + text + ")");
+                return typeof reviver === "function" ? walk({ "": j }, "") : j;
+            } throw new SyntaxError("JSON.parse"); };
+        }
+    })();
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
 (function (KIKAKU) {
@@ -2971,103 +1702,1376 @@ var KIKAKU;
 /// <reference path="utils/comment.ts" /> 
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.JSON = {};
-    (function () {
-        "use strict";
-        function f(e) { return e < 10 ? "0" + e : e; }
-        function quote(e) { escapable.lastIndex = 0; return escapable.test(e) ? '"' + e.replace(escapable, function (e) { var t = meta[e]; return typeof t === "string" ? t : "\\u" + ("0000" + e.charCodeAt(0).toString(16)).slice(-4); }) + '"' : '"' + e + '"'; }
-        function str(e, t) { var n, r, i, s, o = gap, u, a = t[e]; if (a && typeof a === "object" && typeof a.toJSON === "function") {
-            a = a.toJSON(e);
-        } if (typeof rep === "function") {
-            a = rep.call(t, e, a);
-        } switch (typeof a) {
-            case "string": return quote(a);
-            case "number": return isFinite(a) ? String(a) : "null";
-            case "boolean":
-            case "null": return String(a);
-            case "object":
-                if (!a) {
-                    return "null";
-                }
-                gap += indent;
-                u = [];
-                if (Object.prototype.toString.apply(a) === "[object Array]") {
-                    s = a.length;
-                    for (n = 0; n < s; n += 1) {
-                        u[n] = str(n, a) || "null";
-                    }
-                    i = u.length === 0 ? "[]" : gap ? "[\n" + gap + u.join(",\n" + gap) + "\n" + o + "]" : "[" + u.join(",") + "]";
-                    gap = o;
-                    return i;
-                }
-                if (rep && typeof rep === "object") {
-                    s = rep.length;
-                    for (n = 0; n < s; n += 1) {
-                        if (typeof rep[n] === "string") {
-                            r = rep[n];
-                            i = str(r, a);
-                            if (i) {
-                                u.push(quote(r) + (gap ? ": " : ":") + i);
-                            }
-                        }
-                    }
-                }
-                else {
-                    for (r in a) {
-                        if (Object.prototype.hasOwnProperty.call(a, r)) {
-                            i = str(r, a);
-                            if (i) {
-                                u.push(quote(r) + (gap ? ": " : ":") + i);
-                            }
-                        }
-                    }
-                }
-                i = u.length === 0 ? "{}" : gap ? "{\n" + gap + u.join(",\n" + gap) + "\n" + o + "}" : "{" + u.join(",") + "}";
-                gap = o;
-                return i;
-        } }
-        if (typeof Date.prototype.toJSON !== "function") {
-            Date.prototype.toJSON = function () { return isFinite(this.valueOf()) ? this.getUTCFullYear() + "-" + f(this.getUTCMonth() + 1) + "-" + f(this.getUTCDate()) + "T" + f(this.getUTCHours()) + ":" + f(this.getUTCMinutes()) + ":" + f(this.getUTCSeconds()) + "Z" : null; };
-            String.prototype.toJSON = Number.prototype.toJSON = Boolean.prototype.toJSON = function () { return this.valueOf(); };
+    var KArray = (function () {
+        function KArray(_arr) {
+            this._arr = _arr;
         }
-        var cx, escapable, gap, indent, meta, rep;
-        if (typeof KIKAKU.JSON.stringify !== "function") {
-            escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-            meta = { "\b": "\\b", "	": "\\t", "\n": "\\n", "\f": "\\f", "\r": "\\r", '"': '\\"', "\\": "\\\\" };
-            KIKAKU.JSON.stringify = function (e, t, n) { var r; gap = ""; indent = ""; if (typeof n === "number") {
-                for (r = 0; r < n; r += 1) {
-                    indent += " ";
+        KArray.from = function (arr) {
+            return new KArray(arr);
+        };
+        KArray.of = function () {
+            var items = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                items[_i - 0] = arguments[_i];
+            }
+            return new KArray(items);
+        };
+        KArray.prototype.get = function () {
+            return this._arr;
+        };
+        KArray.prototype.at = function (index) {
+            return this._arr[index];
+        };
+        KArray.prototype.length = function () {
+            return this._arr.length;
+        };
+        //Mutator
+        KArray.prototype.copyWithin = function (target, start, end) {
+            if (end === void 0) { end = this._arr.length; }
+            var len = this._arr.length;
+            var to = target < 0 ? Math.max(len + target, 0) : Math.min(target, len);
+            var from = start < 0 ? Math.max(len + start, 0) : Math.min(start, len);
+            var last = end < 0 ? Math.max(len + end, 0) : Math.min(end, len);
+            var count = Math.min(last - from, len - to);
+            var direction = 1;
+            if (from < to && to < (from + count)) {
+                direction = -1;
+                from += count - 1;
+                to += count - 1;
+            }
+            for (; count > 0; --count) {
+                this._arr[to] = this._arr[from];
+                from += direction;
+                to += direction;
+            }
+            return this;
+        };
+        KArray.prototype.fill = function (value, start, end) {
+            if (start === void 0) { start = 0; }
+            if (end === void 0) { end = this._arr.length; }
+            var len = this._arr.length;
+            var k = start < 0 ? Math.max(len + start, 0) : Math.min(start, len);
+            var last = end < 0 ? Math.max(len + end, 0) : Math.min(end, len);
+            for (; k < last; ++k) {
+                this._arr[k] = value;
+            }
+            return this;
+        };
+        KArray.prototype.pop = function () {
+            return this._arr.pop();
+        };
+        KArray.prototype.push = function () {
+            var items = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                items[_i - 0] = arguments[_i];
+            }
+            return (_a = this._arr).push.apply(_a, items);
+            var _a;
+        };
+        KArray.prototype.reverse = function () {
+            this._arr.reverse();
+            return this;
+        };
+        KArray.prototype.shift = function () {
+            return this._arr.shift();
+        };
+        KArray.prototype.sort = function (cmp) {
+            this._arr.sort(cmp);
+            return this;
+        };
+        KArray.prototype.splice = function (start, deleteCount) {
+            var items = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                items[_i - 2] = arguments[_i];
+            }
+            (_a = this._arr).splice.apply(_a, [start, deleteCount].concat(items));
+            return this;
+            var _a;
+        };
+        KArray.prototype.unshift = function () {
+            var items = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                items[_i - 0] = arguments[_i];
+            }
+            return (_a = this._arr).unshift.apply(_a, items);
+            var _a;
+        };
+        //Accessor
+        KArray.prototype.concat = function () {
+            var items = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                items[_i - 0] = arguments[_i];
+            }
+            return new KArray((_a = this._arr).concat.apply(_a, items));
+            var _a;
+        };
+        KArray.prototype.includes = function (searchElement, fromIndex) {
+            if (fromIndex === void 0) { fromIndex = 0; }
+            var len = this._arr.length;
+            var k = fromIndex >= 0 ? fromIndex : Math.max(len + fromIndex, 0);
+            for (; k < len; ++k) {
+                if (searchElement === this._arr[k]) {
+                    return true;
                 }
             }
-            else if (typeof n === "string") {
-                indent = n;
-            } rep = t; if (t && typeof t !== "function" && (typeof t !== "object" || typeof t.length !== "number")) {
-                throw new Error("JSON.stringify");
-            } return str("", { "": e }); };
-        }
-        if (typeof KIKAKU.JSON.parse !== "function") {
-            cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-            KIKAKU.JSON.parse = function (text, reviver) { function walk(e, t) { var n, r, i = e[t]; if (i && typeof i === "object") {
-                for (n in i) {
-                    if (Object.prototype.hasOwnProperty.call(i, n)) {
-                        r = walk(i, n);
-                        if (r !== undefined) {
-                            i[n] = r;
-                        }
-                        else {
-                            delete i[n];
-                        }
-                    }
+            return false;
+        };
+        KArray.prototype.join = function (sepqrator) {
+            return this._arr.join(sepqrator);
+        };
+        KArray.prototype.slice = function (start, end) {
+            return new KArray(this._arr.slice(start, end));
+        };
+        KArray.prototype.toSource = function () {
+            return this._arr.toSource();
+        };
+        KArray.prototype.toString = function () {
+            return this._arr.toString();
+        };
+        KArray.prototype.toLocaleString = function () {
+            return this._arr.toLocaleString();
+        };
+        KArray.prototype.indexOf = function (searchElement, fromIndex) {
+            var len = this._arr.length;
+            if (len === 0) {
+                return -1;
+            }
+            var n = fromIndex !== void 0 ? fromIndex : 0;
+            if (n >= len) {
+                return -1;
+            }
+            var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+            for (; k < len; ++k) {
+                if (this._arr[k] === searchElement) {
+                    return k;
                 }
-            } return reviver.call(e, t, i); } var j; text = String(text); cx.lastIndex = 0; if (cx.test(text)) {
-                text = text.replace(cx, function (e) { return "\\u" + ("0000" + e.charCodeAt(0).toString(16)).slice(-4); });
-            } if (/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]").replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
-                j = eval("(" + text + ")");
-                return typeof reviver === "function" ? walk({ "": j }, "") : j;
-            } throw new SyntaxError("JSON.parse"); };
-        }
-    })();
+            }
+            return -1;
+        };
+        KArray.prototype.lastIndexOf = function (searchElement, fromIndex) {
+            var len = this._arr.length;
+            if (len === 0) {
+                return -1;
+            }
+            var n = fromIndex !== void 0 ? fromIndex : len;
+            var k = n >= 0 ? Math.min(n, len - 1) : len - Math.abs(n);
+            for (; k >= 0; --k) {
+                if (this._arr[k] === searchElement) {
+                    return k;
+                }
+            }
+            return -1;
+        };
+        //iteration
+        KArray.prototype.forEach = function (callbackfn, thisArg) {
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                callbackfn.call(thisArg, this._arr[k], k, this._arr);
+            }
+        };
+        KArray.prototype.entries = function () {
+            var arr = [];
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                arr.push([k, this._arr[k]]);
+            }
+            return new KArray(arr);
+        };
+        KArray.prototype.every = function (callbackfn, thisArg) {
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                if (!callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        KArray.prototype.keys = function () {
+            var arr = [];
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                arr.push(k);
+            }
+            return new KArray(arr);
+        };
+        KArray.prototype.map = function (callbackfn, thisArg) {
+            var arr = [];
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                arr.push(callbackfn.call(thisArg, this._arr[k], k, this._arr));
+            }
+            return new KArray(arr);
+        };
+        KArray.prototype.some = function (callbackfn, thisArg) {
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                if (callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        KArray.prototype.filter = function (callbackfn, thisArg) {
+            var arr = [];
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                if (callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
+                    arr.push(this._arr[k]);
+                }
+            }
+            return new KArray(arr);
+        };
+        KArray.prototype.find = function (callbackfn, thisArg) {
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                if (callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
+                    return this._arr[k];
+                }
+            }
+            return void 0;
+        };
+        KArray.prototype.findIndex = function (callbackfn, thisArg) {
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                if (callbackfn.call(thisArg, this._arr[k], k, this._arr)) {
+                    return k;
+                }
+            }
+            return -1;
+        };
+        KArray.prototype.reduce = function (callbackfn, initialValue) {
+            var len = this._arr.length;
+            var k = 0;
+            var value;
+            if (initialValue === void 0) {
+                if (len === 0) {
+                    throw new TypeError();
+                }
+                value = this._arr[k++];
+            }
+            for (; k < len; ++k) {
+                value = callbackfn.call(undefined, value, this._arr[k], k, this._arr);
+            }
+            return value;
+        };
+        KArray.prototype.reduceRight = function (callbackfn, initialValue) {
+            var len = this._arr.length;
+            var k = len - 1;
+            var value;
+            if (initialValue === void 0) {
+                if (len === 0) {
+                    throw new TypeError();
+                }
+                value = this._arr[k--];
+            }
+            for (; k >= 0; --k) {
+                value = callbackfn.call(undefined, value, this._arr[k], k, this._arr);
+            }
+            return value;
+        };
+        KArray.prototype.values = function () {
+            var arr = [];
+            for (var k = 0, len = this._arr.length; k < len; ++k) {
+                arr.push(this._arr[k]);
+            }
+            return new KArray(arr);
+        };
+        return KArray;
+    }());
+    KIKAKU.KArray = KArray;
 })(KIKAKU || (KIKAKU = {}));
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var KIKAKU;
+(function (KIKAKU) {
+    var KItemCollection = (function () {
+        function KItemCollection(_items) {
+            this._items = _items;
+        }
+        KItemCollection.prototype.addComp = function (name, width, height, pixelAspect, duration, frameRate) {
+            return new KCompItem(this._items.addComp(name, width, height, pixelAspect, duration, frameRate));
+        };
+        KItemCollection.prototype.addFolder = function (name) {
+            return new KFolderItem(this._items.addFolder(name));
+        };
+        return KItemCollection;
+    }());
+    KIKAKU.KItemCollection = KItemCollection;
+    var KItem = (function () {
+        function KItem(_item) {
+            this._item = _item;
+        }
+        KItem.prototype.get = function () {
+            return this._item;
+        };
+        KItem.prototype.isValid = function () {
+            var item = this._item;
+            return item && (item instanceof FolderItem || item instanceof FootageItem || item instanceof CompItem) && isValid(item);
+        };
+        //cast
+        KItem.prototype.asFolder = function () {
+            return new KFolderItem(this._item);
+        };
+        KItem.prototype.asAV = function () {
+            return new KAVItem(this._item);
+        };
+        KItem.prototype.asComp = function () {
+            return new KCompItem(this._item);
+        };
+        KItem.prototype.asFootage = function () {
+            return new KFootageItem(this._item);
+        };
+        //attributes
+        KItem.prototype.name = function (name) {
+            if (name !== void 0)
+                this._item.name = name;
+            return this._item.name;
+        };
+        KItem.prototype.comment = function (comment) {
+            if (comment !== void 0)
+                this._item.comment = comment;
+            return this._item.comment;
+        };
+        KItem.prototype.id = function () {
+            return this._item.id;
+        };
+        KItem.prototype.parentFolder = function () {
+            return new KFolderItem(this._item.parentFolder);
+        };
+        KItem.prototype.selected = function (selected) {
+            if (selected !== void 0)
+                this._item.selected = selected;
+            return this._item.selected;
+        };
+        KItem.prototype.typeName = function () {
+            return this._item.typeName;
+        };
+        KItem.prototype.label = function (label) {
+            if (label !== void 0)
+                this._item.label = label;
+            return this._item.label;
+        };
+        //methods
+        KItem.prototype.remove = function () {
+            this._item.remove();
+        };
+        return KItem;
+    }());
+    KIKAKU.KItem = KItem;
+    var KFolderItem = (function (_super) {
+        __extends(KFolderItem, _super);
+        function KFolderItem() {
+            _super.apply(this, arguments);
+        }
+        KFolderItem.prototype.isValid = function () {
+            var item = this._item;
+            return item && item instanceof FolderItem && isValid(item);
+        };
+        //attributes
+        KFolderItem.prototype.items = function () {
+            return new KItemCollection(this._item.items);
+        };
+        KFolderItem.prototype.numItems = function () {
+            return this._item.numItems;
+        };
+        //methods
+        KFolderItem.prototype.item = function (index) {
+            return new KItem(this._item.item(index));
+        };
+        return KFolderItem;
+    }(KItem));
+    KIKAKU.KFolderItem = KFolderItem;
+    var KAVItem = (function (_super) {
+        __extends(KAVItem, _super);
+        function KAVItem() {
+            _super.apply(this, arguments);
+        }
+        KAVItem.prototype.isValid = function () {
+            var item = this._item;
+            return item && (item instanceof FootageItem || item instanceof CompItem) && isValid(item);
+        };
+        //attributes
+        KAVItem.prototype.width = function (width) {
+            if (width !== void 0)
+                this._item.width = width;
+            return this._item.width;
+        };
+        KAVItem.prototype.height = function (height) {
+            if (height !== void 0)
+                this._item.height = height;
+            return this._item.height;
+        };
+        KAVItem.prototype.pixelAspect = function (pixelAspect) {
+            if (pixelAspect !== void 0)
+                this._item.pixelAspect = pixelAspect;
+            return this._item.pixelAspect;
+        };
+        KAVItem.prototype.frameRate = function (frameRate) {
+            if (frameRate !== void 0)
+                this._item.frameRate = frameRate;
+            return this._item.frameRate;
+        };
+        KAVItem.prototype.frameDuration = function (frameDuration) {
+            if (frameDuration !== void 0)
+                this._item.frameDuration = frameDuration;
+            return this._item.frameDuration;
+        };
+        KAVItem.prototype.duration = function (duration) {
+            if (duration !== void 0)
+                this._item.duration = duration;
+            return this._item.duration;
+        };
+        KAVItem.prototype.useProxy = function (useProxy) {
+            if (useProxy !== void 0)
+                this._item.useProxy = useProxy;
+            return this._item.useProxy;
+        };
+        KAVItem.prototype.proxySource = function () {
+            return this._item.proxySource;
+        };
+        KAVItem.prototype.time = function (time) {
+            if (time !== void 0)
+                this._item.time = time;
+            return this._item.time;
+        };
+        KAVItem.prototype.usedIn = function () {
+            return this._item.usedIn;
+        };
+        KAVItem.prototype.hasVideo = function () {
+            return this._item.hasVideo;
+        };
+        KAVItem.prototype.hasAudio = function () {
+            return this._item.hasAudio;
+        };
+        KAVItem.prototype.footageMissing = function () {
+            return this._item.footageMissing;
+        };
+        KAVItem.prototype.setProxy = function (file) {
+            this._item.setProxy(file);
+        };
+        KAVItem.prototype.setProxyWithSequence = function (file, forceAlphabetical) {
+            this._item.setProxyWithSequence(file, forceAlphabetical);
+        };
+        KAVItem.prototype.setProxyWithSolid = function (color, name, width, height, pixelAspect) {
+            this._item.setProxyWithSolid(color, name, width, height, pixelAspect);
+        };
+        KAVItem.prototype.setProxyWithPlaceholder = function (name, width, height, frameRate, duration) {
+            this._item.setProxyWithPlaceholder(name, width, height, frameRate, duration);
+        };
+        KAVItem.prototype.setProxyToNone = function () {
+            this._item.setProxyToNone();
+        };
+        return KAVItem;
+    }(KItem));
+    KIKAKU.KAVItem = KAVItem;
+    var KCompItem = (function (_super) {
+        __extends(KCompItem, _super);
+        function KCompItem() {
+            _super.apply(this, arguments);
+        }
+        KCompItem.prototype.isValid = function () {
+            var item = this._item;
+            return item && item instanceof CompItem && isValid(item);
+        };
+        //attributes
+        KCompItem.prototype.dropFrame = function (dropFrame) {
+            if (dropFrame !== void 0)
+                this._item.dropFrame = dropFrame;
+            return this._item.dropFrame;
+        };
+        KCompItem.prototype.workAreaStart = function (workAreaStart) {
+            if (workAreaStart !== void 0)
+                this._item.workAreaStart = workAreaStart;
+            return this._item.workAreaStart;
+        };
+        KCompItem.prototype.workAreaDuration = function (workAreaDuration) {
+            if (workAreaDuration !== void 0)
+                this._item.workAreaDuration = workAreaDuration;
+            return this._item.workAreaDuration;
+        };
+        KCompItem.prototype.numLayers = function () {
+            return this._item.numLayers;
+        };
+        KCompItem.prototype.hideShyLayers = function (hideShyLayers) {
+            if (hideShyLayers !== void 0)
+                this._item.hideShyLayers = hideShyLayers;
+            return this._item.hideShyLayers;
+        };
+        KCompItem.prototype.motionBlur = function (motionBlur) {
+            if (motionBlur !== void 0)
+                this._item.motionBlur = motionBlur;
+            return this._item.motionBlur;
+        };
+        KCompItem.prototype.draft3d = function (draft3d) {
+            if (draft3d !== void 0)
+                this._item.draft3d = draft3d;
+            return this._item.draft3d;
+        };
+        KCompItem.prototype.frameBlending = function (frameBlending) {
+            if (frameBlending !== void 0)
+                this._item.frameBlending = frameBlending;
+            return this._item.frameBlending;
+        };
+        KCompItem.prototype.preserveNestedFrameRate = function (preserveNestedFrameRate) {
+            if (preserveNestedFrameRate !== void 0)
+                this._item.preserveNestedFrameRate = preserveNestedFrameRate;
+            return this._item.preserveNestedFrameRate;
+        };
+        KCompItem.prototype.preserveNestedResolution = function (preserveNestedResolution) {
+            if (preserveNestedResolution !== void 0)
+                this._item.preserveNestedResolution = preserveNestedResolution;
+            return this._item.preserveNestedResolution;
+        };
+        KCompItem.prototype.bgColor = function (bgColor) {
+            if (bgColor !== void 0)
+                this._item.bgColor = bgColor;
+            return this._item.bgColor;
+        };
+        KCompItem.prototype.activeCamera = function () {
+            return new KIKAKU.KCameraLayer(this._item.activeCamera);
+        };
+        KCompItem.prototype.displayStartTime = function (displayStartTime) {
+            if (displayStartTime !== void 0)
+                this._item.displayStartTime = displayStartTime;
+            return this._item.displayStartTime;
+        };
+        KCompItem.prototype.resolutionFactor = function (resolutionFactor) {
+            if (resolutionFactor !== void 0)
+                this._item.resolutionFactor = resolutionFactor;
+            return this._item.resolutionFactor;
+        };
+        KCompItem.prototype.shutterAngle = function (shutterAngle) {
+            if (shutterAngle !== void 0)
+                this._item.shutterAngle = shutterAngle;
+            return this._item.shutterAngle;
+        };
+        KCompItem.prototype.shutterPhase = function (shutterPhase) {
+            if (shutterPhase !== void 0)
+                this._item.shutterPhase = shutterPhase;
+            return this._item.shutterPhase;
+        };
+        KCompItem.prototype.motionBlurSamplesPerFrame = function (motionBlurSamplesPerFrame) {
+            if (motionBlurSamplesPerFrame !== void 0)
+                this._item.motionBlurSamplesPerFrame = motionBlurSamplesPerFrame;
+            return this._item.motionBlurSamplesPerFrame;
+        };
+        KCompItem.prototype.motionBlurAdaptiveSampleLimit = function (motionBlurAdaptiveSampleLimit) {
+            if (motionBlurAdaptiveSampleLimit !== void 0)
+                this._item.motionBlurAdaptiveSampleLimit = motionBlurAdaptiveSampleLimit;
+            return this._item.motionBlurAdaptiveSampleLimit;
+        };
+        KCompItem.prototype.layers = function () {
+            return new KIKAKU.KLayerCollection(this._item.layers);
+        };
+        KCompItem.prototype.selectedLayers = function () {
+            return new KIKAKU.KArray(this._item.selectedLayers.slice()).map(function (layer) { return new KIKAKU.KLayer(layer); });
+        };
+        KCompItem.prototype.selectedProperties = function () {
+            return this._item.selectedProperties;
+        };
+        KCompItem.prototype.renderer = function (renderer) {
+            if (renderer !== void 0)
+                this._item.renderer = renderer;
+            return this._item.renderer;
+        };
+        KCompItem.prototype.renderers = function () {
+            return new KIKAKU.KArray(this._item.renderers);
+        };
+        //methods
+        KCompItem.prototype.duplicate = function () {
+            return new KCompItem(this._item.duplicate());
+        };
+        KCompItem.prototype.layer = function (index_or_name) {
+            return new KIKAKU.KLayer(this._item.layer(index_or_name));
+        };
+        KCompItem.prototype.openInViewer = function () {
+            return this._item.openInViewer();
+        };
+        return KCompItem;
+    }(KAVItem));
+    KIKAKU.KCompItem = KCompItem;
+    var KFootageItem = (function (_super) {
+        __extends(KFootageItem, _super);
+        function KFootageItem() {
+            _super.apply(this, arguments);
+        }
+        KFootageItem.prototype.isValid = function () {
+            var item = this._item;
+            return item && item instanceof FootageItem && isValid(item);
+        };
+        //attributes
+        KFootageItem.prototype.file = function () {
+            return this._item.file;
+        };
+        KFootageItem.prototype.mainSource = function () {
+            return this._item.mainSource;
+        };
+        //methods
+        KFootageItem.prototype.replace = function (file) {
+            this._item.replace(file);
+        };
+        KFootageItem.prototype.replaceWithSequence = function (file, forceAlphabetical) {
+            this._item.replaceWithSequence(file, forceAlphabetical);
+        };
+        KFootageItem.prototype.replaceWithPlaceholder = function (name, width, height, frameRate, duration) {
+            this._item.replaceWithPlaceholder(name, width, height, frameRate, duration);
+        };
+        KFootageItem.prototype.replaceWithSolid = function (color, name, width, height, pixelAspect) {
+            this._item.replaceWithSolid(color, name, width, height, pixelAspect);
+        };
+        KFootageItem.prototype.openInViewer = function () {
+            return this._item.openInViewer();
+        };
+        return KFootageItem;
+    }(KAVItem));
+    KIKAKU.KFootageItem = KFootageItem;
+})(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    var KLayerCollection = (function () {
+        function KLayerCollection(_layers) {
+            this._layers = _layers;
+        }
+        KLayerCollection.prototype.add = function (item, duration) {
+            if (duration !== void 0) {
+                return new KAVLayer(this._layers.add(item, duration));
+            }
+            return new KAVLayer(this._layers.add(item));
+        };
+        KLayerCollection.prototype.addNull = function (duration) {
+            if (duration !== void 0) {
+                return new KAVLayer(this._layers.addNull(duration));
+            }
+            return new KAVLayer(this._layers.addNull());
+        };
+        KLayerCollection.prototype.addSolid = function (color, name, width, height, pixelAspect, duration) {
+            if (duration !== void 0) {
+                return new KAVLayer(this._layers.addSolid(color, name, width, height, pixelAspect, duration));
+            }
+            return new KAVLayer(this._layers.addSolid(color, name, width, height, pixelAspect));
+        };
+        KLayerCollection.prototype.addText = function (sourceText) {
+            if (sourceText !== void 0) {
+                return new KTextLayer(this._layers.addText(sourceText));
+            }
+            return new KTextLayer(this._layers.addText());
+        };
+        KLayerCollection.prototype.addBoxText = function (size, sourceText) {
+            if (sourceText !== void 0) {
+                return new KTextLayer(this._layers.addBoxText(size, sourceText));
+            }
+            return new KTextLayer(this._layers.addBoxText(size));
+        };
+        KLayerCollection.prototype.addCamera = function (name, centerPoint) {
+            return new KCameraLayer(this._layers.addCamera(name, centerPoint));
+        };
+        KLayerCollection.prototype.addLight = function (name, centerPoint) {
+            return new KLightLayer(this._layers.addLight(name, centerPoint));
+        };
+        KLayerCollection.prototype.addShape = function () {
+            return new KShapeLayer(this._layers.addShape());
+        };
+        KLayerCollection.prototype.byName = function (name) {
+            return new KLayer(this._layers.byName(name));
+        };
+        KLayerCollection.prototype.precompose = function (layerIndices, name, moveAllAttributes) {
+            if (moveAllAttributes === void 0) { moveAllAttributes = true; }
+            return new KIKAKU.KCompItem(this._layers.precompose(layerIndices, name, moveAllAttributes));
+        };
+        return KLayerCollection;
+    }());
+    KIKAKU.KLayerCollection = KLayerCollection;
+    var KLayer = (function () {
+        function KLayer(_layer) {
+            this._layer = _layer;
+        }
+        KLayer.prototype.get = function () {
+            return this._layer;
+        };
+        KLayer.prototype.isValid = function () {
+            var layer = this._layer;
+            return layer && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
+        };
+        //cast
+        KLayer.prototype.asAV = function () {
+            return new KAVLayer(this._layer);
+        };
+        KLayer.prototype.asShape = function () {
+            return new KShapeLayer(this._layer);
+        };
+        KLayer.prototype.asText = function () {
+            return new KTextLayer(this._layer);
+        };
+        KLayer.prototype.asLight = function () {
+            return new KLightLayer(this._layer);
+        };
+        KLayer.prototype.asCamera = function () {
+            return new KCameraLayer(this._layer);
+        };
+        //attributes
+        KLayer.prototype.index = function () {
+            return this._layer.index;
+        };
+        KLayer.prototype.name = function (name) {
+            if (name !== void 0)
+                this._layer.name = name;
+            return this._layer.name;
+        };
+        KLayer.prototype.parent = function (parent) {
+            if (parent !== void 0)
+                this._layer.parent = parent;
+            return this._layer.parent;
+        };
+        KLayer.prototype.time = function (time) {
+            if (time !== void 0)
+                this._layer.time = time;
+            return this._layer.time;
+        };
+        KLayer.prototype.startTime = function (startTime) {
+            if (startTime !== void 0)
+                this._layer.startTime = startTime;
+            return this._layer.startTime;
+        };
+        KLayer.prototype.stretch = function (stretch) {
+            if (stretch !== void 0)
+                this._layer.stretch = stretch;
+            return this._layer.stretch;
+        };
+        KLayer.prototype.inPoint = function (inPoint) {
+            if (inPoint !== void 0)
+                this._layer.inPoint = inPoint;
+            return this._layer.inPoint;
+        };
+        KLayer.prototype.outPoint = function (outPoint) {
+            if (outPoint !== void 0)
+                this._layer.outPoint = outPoint;
+            return this._layer.outPoint;
+        };
+        KLayer.prototype.enabled = function (enabled) {
+            if (enabled !== void 0)
+                this._layer.enabled = enabled;
+            return this._layer.enabled;
+        };
+        KLayer.prototype.solo = function (solo) {
+            if (solo !== void 0)
+                this._layer.solo = solo;
+            return this._layer.solo;
+        };
+        KLayer.prototype.shy = function (shy) {
+            if (shy !== void 0)
+                this._layer.shy = shy;
+            return this._layer.shy;
+        };
+        KLayer.prototype.locked = function (locked) {
+            if (locked !== void 0)
+                this._layer.locked = locked;
+            return this._layer.locked;
+        };
+        KLayer.prototype.hasVideo = function () {
+            return this._layer.hasVideo;
+        };
+        KLayer.prototype.active = function () {
+            return this._layer.active;
+        };
+        KLayer.prototype.nullLayer = function () {
+            return this._layer.nullLayer;
+        };
+        KLayer.prototype.selectedProperties = function () {
+            return new KIKAKU.KArray(this._layer.selectedProperties.slice()).map(function (property) { return new KIKAKU.KPropertyBase(property); });
+        };
+        KLayer.prototype.comment = function (comment) {
+            if (comment !== void 0)
+                this._layer.comment = comment;
+            return this._layer.comment;
+        };
+        KLayer.prototype.containingComp = function () {
+            return new KIKAKU.KCompItem(this._layer.containingComp);
+        };
+        KLayer.prototype.isNameSet = function () {
+            return this._layer.isNameSet;
+        };
+        //methods
+        KLayer.prototype.remove = function () {
+            this._layer.remove();
+        };
+        KLayer.prototype.moveToBeginning = function () {
+            this._layer.moveToBeginning();
+        };
+        KLayer.prototype.moveToEnd = function () {
+            this._layer.moveToEnd();
+        };
+        KLayer.prototype.moveAfter = function (layer) {
+            this._layer.moveAfter(layer);
+        };
+        KLayer.prototype.moveBefore = function (layer) {
+            this._layer.moveBefore(layer);
+        };
+        KLayer.prototype.duplicate = function () {
+            return new KLayer(this._layer.duplicate());
+        };
+        KLayer.prototype.copyToComp = function (intoComp) {
+            this._layer.copyToComp(intoComp);
+            return new KLayer(intoComp.layer(1));
+        };
+        KLayer.prototype.activeAtTime = function (time) {
+            return this._layer.activeAtTime(time);
+        };
+        KLayer.prototype.setParentWithJump = function (newParent) {
+            if (newParent !== void 0)
+                this._layer.setParentWithJump(newParent);
+            else
+                this._layer.setParentWithJump();
+        };
+        KLayer.prototype.applyPreset = function (presetName) {
+            this._layer.applyPreset(presetName);
+        };
+        return KLayer;
+    }());
+    KIKAKU.KLayer = KLayer;
+    var KAVLayer = (function (_super) {
+        __extends(KAVLayer, _super);
+        function KAVLayer() {
+            _super.apply(this, arguments);
+        }
+        KAVLayer.prototype.isValid = function () {
+            var layer = this._layer;
+            return layer && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
+        };
+        //attributes
+        KAVLayer.prototype.source = function () {
+            return new KIKAKU.KAVItem(this._layer.source);
+        };
+        KAVLayer.prototype.isNameFromSource = function () {
+            return this._layer.isNameFromSource;
+        };
+        KAVLayer.prototype.height = function () {
+            return this._layer.height;
+        };
+        KAVLayer.prototype.width = function () {
+            return this._layer.width;
+        };
+        KAVLayer.prototype.audioEnabled = function (audioEnabled) {
+            if (audioEnabled !== void 0)
+                this._layer.audioEnabled = audioEnabled;
+            return this._layer.audioEnabled;
+        };
+        KAVLayer.prototype.motionBlur = function (motionBlur) {
+            if (motionBlur !== void 0)
+                this._layer.motionBlur = motionBlur;
+            return this._layer.motionBlur;
+        };
+        KAVLayer.prototype.effectsActive = function (effectsActive) {
+            if (effectsActive !== void 0)
+                this._layer.effectsActive = effectsActive;
+            return this._layer.effectsActive;
+        };
+        KAVLayer.prototype.adjustmentLayer = function (adjustmentLayer) {
+            if (adjustmentLayer !== void 0)
+                this._layer.adjustmentLayer = adjustmentLayer;
+            return this._layer.adjustmentLayer;
+        };
+        KAVLayer.prototype.guideLayer = function (guideLayer) {
+            if (guideLayer !== void 0)
+                this._layer.guideLayer = guideLayer;
+            return this._layer.guideLayer;
+        };
+        KAVLayer.prototype.threeDLayer = function (threeDLayer) {
+            if (threeDLayer !== void 0)
+                this._layer.threeDLayer = threeDLayer;
+            return this._layer.threeDLayer;
+        };
+        KAVLayer.prototype.threeDPerChar = function (threeDPerChar) {
+            if (threeDPerChar !== void 0)
+                this._layer.threeDPerChar = threeDPerChar;
+            return this._layer.threeDPerChar;
+        };
+        KAVLayer.prototype.environmentLayer = function (environmentLayer) {
+            if (environmentLayer !== void 0)
+                this._layer.environmentLayer = environmentLayer;
+            return this._layer.environmentLayer;
+        };
+        KAVLayer.prototype.canSetCollapseTransformation = function () {
+            return this._layer.canSetCollapseTransformation;
+        };
+        KAVLayer.prototype.collapseTransformation = function (collapseTransformation) {
+            if (collapseTransformation !== void 0)
+                this._layer.collapseTransformation = collapseTransformation;
+            return this._layer.collapseTransformation;
+        };
+        KAVLayer.prototype.frameBlending = function (frameBlending) {
+            if (frameBlending !== void 0)
+                this._layer.frameBlending = frameBlending;
+            return this._layer.frameBlending;
+        };
+        KAVLayer.prototype.frameBlendingType = function (frameBlendingType) {
+            if (frameBlendingType !== void 0)
+                this._layer.frameBlendingType = frameBlendingType;
+            return this._layer.frameBlendingType;
+        };
+        KAVLayer.prototype.canSetTimeRemapEnabled = function () {
+            return this._layer.canSetTimeRemapEnabled;
+        };
+        KAVLayer.prototype.timeRemapEnabled = function (timeRemapEnabled) {
+            if (timeRemapEnabled !== void 0)
+                this._layer.timeRemapEnabled = timeRemapEnabled;
+            return this._layer.timeRemapEnabled;
+        };
+        KAVLayer.prototype.hasAudio = function () {
+            return this._layer.hasAudio;
+        };
+        KAVLayer.prototype.audioActive = function () {
+            return this._layer.audioActive;
+        };
+        KAVLayer.prototype.blendingMode = function (blendingMode) {
+            if (blendingMode !== void 0)
+                this._layer.blendingMode = blendingMode;
+            return this._layer.blendingMode;
+        };
+        KAVLayer.prototype.preserveTransparency = function (preserveTransparency) {
+            if (preserveTransparency !== void 0)
+                this._layer.preserveTransparency = preserveTransparency;
+            return this._layer.preserveTransparency;
+        };
+        KAVLayer.prototype.trackMatteType = function (trackMatteType) {
+            if (trackMatteType !== void 0)
+                this._layer.trackMatteType = trackMatteType;
+            return this._layer.trackMatteType;
+        };
+        KAVLayer.prototype.isTrackMatte = function () {
+            return this._layer.isTrackMatte;
+        };
+        KAVLayer.prototype.hasTrackMatte = function () {
+            return this._layer.hasTrackMatte;
+        };
+        KAVLayer.prototype.quality = function (quality) {
+            if (quality !== void 0)
+                this._layer.quality = quality;
+            return this._layer.quality;
+        };
+        KAVLayer.prototype.autoOrient = function (autoOrient) {
+            if (autoOrient !== void 0)
+                this._layer.autoOrient = autoOrient;
+            return this._layer.autoOrient;
+        };
+        KAVLayer.prototype.samplingQuality = function (samplingQuality) {
+            if (samplingQuality !== void 0)
+                this._layer.samplingQuality = samplingQuality;
+            return this._layer.samplingQuality;
+        };
+        //methods
+        KAVLayer.prototype.audioActiveAtTime = function (time) {
+            return this._layer.audioActiveAtTime(time);
+        };
+        KAVLayer.prototype.calculateTransformFromPoints = function (pointTopLeft, pointTopRight, pointBottomRight) {
+            return this._layer.calculateTransformFromPoints(pointTopLeft, pointTopRight, pointBottomRight);
+        };
+        KAVLayer.prototype.replaceSource = function (newSource, fixExpressions) {
+            this._layer.replaceSource(newSource, fixExpressions);
+        };
+        KAVLayer.prototype.sourceRectAtTime = function (timeT, extents) {
+            return this._layer.sourceRectAtTime(timeT, extents);
+        };
+        KAVLayer.prototype.openInViewer = function () {
+            return this._layer.openInViewer();
+        };
+        return KAVLayer;
+    }(KLayer));
+    KIKAKU.KAVLayer = KAVLayer;
+    var KShapeLayer = (function (_super) {
+        __extends(KShapeLayer, _super);
+        function KShapeLayer() {
+            _super.apply(this, arguments);
+        }
+        KShapeLayer.prototype.isValid = function () {
+            var layer = this._layer;
+            return layer && layer instanceof ShapeLayer && isValid(layer);
+        };
+        return KShapeLayer;
+    }(KAVLayer));
+    KIKAKU.KShapeLayer = KShapeLayer;
+    var KTextLayer = (function (_super) {
+        __extends(KTextLayer, _super);
+        function KTextLayer() {
+            _super.apply(this, arguments);
+        }
+        KTextLayer.prototype.isValid = function () {
+            var layer = this._layer;
+            return layer && layer instanceof TextLayer && isValid(layer);
+        };
+        return KTextLayer;
+    }(KAVLayer));
+    KIKAKU.KTextLayer = KTextLayer;
+    var KCameraLayer = (function (_super) {
+        __extends(KCameraLayer, _super);
+        function KCameraLayer() {
+            _super.apply(this, arguments);
+        }
+        KCameraLayer.prototype.isValid = function () {
+            var layer = this._layer;
+            return layer && layer instanceof CameraLayer && isValid(layer);
+        };
+        return KCameraLayer;
+    }(KLayer));
+    KIKAKU.KCameraLayer = KCameraLayer;
+    var KLightLayer = (function (_super) {
+        __extends(KLightLayer, _super);
+        function KLightLayer() {
+            _super.apply(this, arguments);
+        }
+        KLightLayer.prototype.isValid = function () {
+            var layer = this._layer;
+            return layer && layer instanceof LightLayer && isValid(layer);
+        };
+        return KLightLayer;
+    }(KLayer));
+    KIKAKU.KLightLayer = KLightLayer;
+})(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    var KPropertyBase = (function () {
+        function KPropertyBase(_prop) {
+            this._prop = _prop;
+        }
+        KPropertyBase.prototype.get = function () {
+            return this._prop;
+        };
+        KPropertyBase.prototype.isValid = function () {
+            var prop = this._prop;
+            return prop && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup || prop instanceof Property) && isValid(prop);
+        };
+        //cast
+        KPropertyBase.prototype.asPropertyGroup = function () {
+            return new KPropertyGroup(this._prop);
+        };
+        KPropertyBase.prototype.asMaskPropertyGroup = function () {
+            return new KMaskPropertyGroup(this._prop);
+        };
+        KPropertyBase.prototype.asProperty = function () {
+            return new KProperty(this._prop);
+        };
+        //attributes
+        KPropertyBase.prototype.name = function (name) {
+            if (name !== void 0)
+                this._prop.name = name;
+            return this._prop.name;
+        };
+        KPropertyBase.prototype.matchName = function () {
+            return this._prop.matchName;
+        };
+        KPropertyBase.prototype.propertyIndex = function () {
+            return this._prop.propertyIndex;
+        };
+        KPropertyBase.prototype.propertyDepth = function () {
+            return this._prop.propertyDepth;
+        };
+        KPropertyBase.prototype.propertyType = function () {
+            return this._prop.propertyType;
+        };
+        KPropertyBase.prototype.parentProperty = function () {
+            return new KPropertyGroup(this._prop.parentProperty);
+        };
+        KPropertyBase.prototype.isModified = function () {
+            return this._prop.isModified;
+        };
+        KPropertyBase.prototype.canSetEnabled = function () {
+            return this._prop.canSetEnabled;
+        };
+        KPropertyBase.prototype.enabled = function (enabled) {
+            if (enabled !== void 0)
+                this._prop.enabled = enabled;
+            return this._prop.enabled;
+        };
+        KPropertyBase.prototype.active = function () {
+            return this._prop.active;
+        };
+        KPropertyBase.prototype.elided = function () {
+            return this._prop.elided;
+        };
+        KPropertyBase.prototype.isEffect = function () {
+            return this._prop.isEffect;
+        };
+        KPropertyBase.prototype.isMask = function () {
+            return this._prop.isMask;
+        };
+        KPropertyBase.prototype.selected = function (selected) {
+            if (selected !== void 0)
+                this._prop.selected = selected;
+            return this._prop.selected;
+        };
+        //methods
+        KPropertyBase.prototype.property = function (index_or_name) {
+            return new KPropertyBase(this._prop.property(index_or_name));
+        };
+        KPropertyBase.prototype.propertyGroup = function (countUp) {
+            if (countUp === void 0) { countUp = 1; }
+            return new KPropertyGroup(this._prop.propertyGroup(countUp));
+        };
+        KPropertyBase.prototype.remove = function () {
+            this._prop.remove();
+        };
+        KPropertyBase.prototype.moveTo = function (newIndex) {
+            this._prop.moveTo(newIndex);
+        };
+        KPropertyBase.prototype.duplicate = function () {
+            return new KPropertyBase(this._prop.duplicate());
+        };
+        return KPropertyBase;
+    }());
+    KIKAKU.KPropertyBase = KPropertyBase;
+    var KPropertyGroup = (function (_super) {
+        __extends(KPropertyGroup, _super);
+        function KPropertyGroup() {
+            _super.apply(this, arguments);
+        }
+        KPropertyGroup.prototype.isValid = function () {
+            var prop = this._prop;
+            return prop && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup) && isValid(prop);
+        };
+        //attributes
+        KPropertyGroup.prototype.numProperties = function () {
+            return this._prop.numProperties;
+        };
+        KPropertyGroup.prototype.canAddProperty = function (name) {
+            return this._prop.canAddProperty(name);
+        };
+        KPropertyGroup.prototype.addProperty = function (name) {
+            return new KPropertyBase(this._prop.addProperty(name));
+        };
+        return KPropertyGroup;
+    }(KPropertyBase));
+    KIKAKU.KPropertyGroup = KPropertyGroup;
+    var KMaskPropertyGroup = (function (_super) {
+        __extends(KMaskPropertyGroup, _super);
+        function KMaskPropertyGroup() {
+            _super.apply(this, arguments);
+        }
+        KMaskPropertyGroup.prototype.isValid = function () {
+            var prop = this._prop;
+            return prop && prop instanceof MaskPropertyGroup && isValid(prop);
+        };
+        //attributes
+        KMaskPropertyGroup.prototype.maskMode = function (maskMode) {
+            if (maskMode !== void 0)
+                this._prop.maskMode = maskMode;
+            return this._prop.maskMode;
+        };
+        KMaskPropertyGroup.prototype.inverted = function (inverted) {
+            if (inverted !== void 0)
+                this._prop.inverted = inverted;
+            return this._prop.inverted;
+        };
+        KMaskPropertyGroup.prototype.rotoBezier = function (rotoBezier) {
+            if (rotoBezier !== void 0)
+                this._prop.rotoBezier = rotoBezier;
+            return this._prop.rotoBezier;
+        };
+        KMaskPropertyGroup.prototype.maskMotionBlur = function (maskMotionBlur) {
+            if (maskMotionBlur !== void 0)
+                this._prop.maskMotionBlur = maskMotionBlur;
+            return this._prop.maskMotionBlur;
+        };
+        KMaskPropertyGroup.prototype.locked = function (locked) {
+            if (locked !== void 0)
+                this._prop.locked = locked;
+            return this._prop.locked;
+        };
+        KMaskPropertyGroup.prototype.color = function (color) {
+            if (color !== void 0)
+                this._prop.color = color;
+            return this._prop.color;
+        };
+        KMaskPropertyGroup.prototype.maskFeatherFalloff = function (maskFeatherFalloff) {
+            if (maskFeatherFalloff !== void 0)
+                this._prop.maskFeatherFalloff = maskFeatherFalloff;
+            return this._prop.maskFeatherFalloff;
+        };
+        return KMaskPropertyGroup;
+    }(KPropertyGroup));
+    KIKAKU.KMaskPropertyGroup = KMaskPropertyGroup;
+    var KProperty = (function (_super) {
+        __extends(KProperty, _super);
+        function KProperty() {
+            _super.apply(this, arguments);
+        }
+        KProperty.prototype.isValid = function () {
+            var prop = this._prop;
+            return prop && prop instanceof Property && isValid(prop);
+        };
+        //attributes
+        KProperty.prototype.propertyValueType = function () {
+            return this._prop.propertyValueType;
+        };
+        KProperty.prototype.value = function () {
+            return this._prop.value;
+        };
+        KProperty.prototype.hasMin = function () {
+            return this._prop.hasMin;
+        };
+        KProperty.prototype.hasMax = function () {
+            return this._prop.hasMax;
+        };
+        KProperty.prototype.minValue = function () {
+            return this._prop.minValue;
+        };
+        KProperty.prototype.maxValue = function () {
+            return this._prop.maxValue;
+        };
+        KProperty.prototype.isSpatial = function () {
+            return this._prop.isSpatial;
+        };
+        KProperty.prototype.canVaryOverTime = function () {
+            return this._prop.canVaryOverTime;
+        };
+        KProperty.prototype.isTimeVarying = function () {
+            return this._prop.isTimeVarying;
+        };
+        KProperty.prototype.numKeys = function () {
+            return this._prop.numKeys;
+        };
+        KProperty.prototype.unitsText = function () {
+            return this._prop.unitsText;
+        };
+        KProperty.prototype.expression = function (expression) {
+            if (expression !== void 0)
+                this._prop.expression = expression;
+            return this._prop.expression;
+        };
+        KProperty.prototype.canSetExpression = function () {
+            return this._prop.canSetExpression;
+        };
+        KProperty.prototype.expressionEnabled = function (expressionEnabled) {
+            if (expressionEnabled !== void 0)
+                this._prop.expressionEnabled = expressionEnabled;
+            return this._prop.expressionEnabled;
+        };
+        KProperty.prototype.expressionError = function () {
+            return this._prop.expressionError;
+        };
+        KProperty.prototype.selectedKeys = function () {
+            return new KIKAKU.KArray(this._prop.selectedKeys.slice());
+        };
+        KProperty.prototype.propertyIndex = function () {
+            return this._prop.propertyIndex;
+        };
+        KProperty.prototype.dimensionsSeparated = function (dimensionsSeparated) {
+            if (dimensionsSeparated !== void 0)
+                this._prop.dimensionsSeparated = dimensionsSeparated;
+            return this._prop.dimensionsSeparated;
+        };
+        KProperty.prototype.isSeparationFollower = function () {
+            return this._prop.isSeparationFollower;
+        };
+        KProperty.prototype.isSeparationLeader = function () {
+            return this._prop.isSeparationLeader;
+        };
+        KProperty.prototype.separationDimension = function () {
+            return this._prop.separationDimension;
+        };
+        KProperty.prototype.separationLeader = function () {
+            return this._prop.separationLeader;
+        };
+        //methods
+        KProperty.prototype.valueAtTime = function (time, preExpression) {
+            return this._prop.valueAtTime(time, preExpression);
+        };
+        KProperty.prototype.setValue = function (value) {
+            this._prop.setValue(value);
+        };
+        KProperty.prototype.setValueAtTime = function (time, newValue) {
+            this._prop.setValueAtTime(time, newValue);
+        };
+        KProperty.prototype.setValuesAtTimes = function (times, newValues) {
+            this._prop.setValuesAtTimes(times, newValues);
+        };
+        KProperty.prototype.setValueAtKey = function (keyIndex, newValue) {
+            this._prop.setValueAtKey(keyIndex, newValue);
+        };
+        KProperty.prototype.nearestKeyIndex = function (time) {
+            return this._prop.nearestKeyIndex(time);
+        };
+        KProperty.prototype.keyTime = function (keyIndex_or_markerComment) {
+            return this._prop.keyTime(keyIndex_or_markerComment);
+        };
+        KProperty.prototype.keyValue = function (keyIndex_or_markerComment) {
+            return this._prop.keyValue(keyIndex_or_markerComment);
+        };
+        KProperty.prototype.addKey = function (time) {
+            return this._prop.addKey(time);
+        };
+        KProperty.prototype.removeKey = function (keyIndex) {
+            return this._prop.removeKey(keyIndex);
+        };
+        KProperty.prototype.isInterpolationTypeValid = function (type) {
+            return this._prop.isInterpolationTypeValid(type);
+        };
+        KProperty.prototype.setInterpolationTypeAtKey = function (keyIndex, inType, outType) {
+            this._prop.setInterpolationTypeAtKey(keyIndex, inType, outType);
+        };
+        KProperty.prototype.keyInInterpolationType = function (keyIndex) {
+            return this._prop.keyInInterpolationType(keyIndex);
+        };
+        KProperty.prototype.keyOutInterpolationType = function (keyIndex) {
+            return this._prop.keyOutInterpolationType(keyIndex);
+        };
+        KProperty.prototype.setSpatialTangentsAtKey = function (keyIndex, inTangent, outTangent) {
+            this._prop.setSpatialTangentsAtKey(keyIndex, inTangent, outTangent);
+        };
+        KProperty.prototype.keyInSpatialTangent = function (keyIndex) {
+            return this._prop.keyInSpatialTangent(keyIndex);
+        };
+        KProperty.prototype.keyOutSpatialTangent = function (keyIndex) {
+            return this._prop.keyOutSpatialTangent(keyIndex);
+        };
+        KProperty.prototype.setTemporalEaseAtKey = function (keyIndex, inTemporalEase, outTemporalEase) {
+            this._prop.setTemporalEaseAtKey(keyIndex, inTemporalEase, outTemporalEase);
+        };
+        KProperty.prototype.keyInTemporalEase = function (keyIndex) {
+            return new KIKAKU.KArray(this._prop.keyInTemporalEase(keyIndex));
+        };
+        KProperty.prototype.keyOutTemporalEase = function (keyIndex) {
+            return new KIKAKU.KArray(this._prop.keyOutTemporalEase(keyIndex));
+        };
+        KProperty.prototype.setTemporalContinuousAtKey = function (keyIndex, newVal) {
+            this._prop.setTemporalContinuousAtKey(keyIndex, newVal);
+        };
+        KProperty.prototype.keyTemporalContinuous = function (keyIndex) {
+            return this._prop.keyTemporalContinuous(keyIndex);
+        };
+        KProperty.prototype.setTemporalAutoBezierAtKey = function (keyIndex, newVal) {
+            this._prop.setTemporalAutoBezierAtKey(keyIndex, newVal);
+        };
+        KProperty.prototype.keyTemporalAutoBezier = function (keyIndex) {
+            return this._prop.keyTemporalAutoBezier(keyIndex);
+        };
+        KProperty.prototype.setSpatialContinuousAtKey = function (keyIndex, newVal) {
+            this._prop.setSpatialContinuousAtKey(keyIndex, newVal);
+        };
+        KProperty.prototype.keySpatialContinuous = function (keyIndex) {
+            return this._prop.keySpatialContinuous(keyIndex);
+        };
+        KProperty.prototype.setSpatialAutoBezierAtKey = function (keyIndex, newVal) {
+            this._prop.setSpatialAutoBezierAtKey(keyIndex, newVal);
+        };
+        KProperty.prototype.keySpatialAutoBezier = function (keyIndex) {
+            return this._prop.keySpatialAutoBezier(keyIndex);
+        };
+        KProperty.prototype.setRovingAtKey = function (keyIndex, newVal) {
+            this._prop.setRovingAtKey(keyIndex, newVal);
+        };
+        KProperty.prototype.keyRoving = function (keyIndex) {
+            return this._prop.keyRoving(keyIndex);
+        };
+        KProperty.prototype.setSelectedAtKey = function (keyIndex, onOff) {
+            this._prop.setSelectedAtKey(keyIndex, onOff);
+        };
+        KProperty.prototype.keySelected = function (keyIndex) {
+            return this._prop.keySelected(keyIndex);
+        };
+        KProperty.prototype.getSeparationFollower = function (dim) {
+            return new KProperty(this._prop.getSeparationFollower(dim));
+        };
+        return KProperty;
+    }(KPropertyBase));
+    KIKAKU.KProperty = KProperty;
+})(KIKAKU || (KIKAKU = {}));
+/// <reference path="wrapper/array.ts" />
+/// <reference path="wrapper/item.ts" />
+/// <reference path="wrapper/layer.ts" />
+/// <reference path="wrapper/property.ts" /> 
 var KIKAKU;
 (function (KIKAKU) {
     var EventDispatcher = (function () {
@@ -3233,6 +3237,182 @@ var KIKAKU;
         return FileManager;
     }());
     KIKAKU.FileManager = FileManager;
+})(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    var Request;
+    (function (Request) {
+        Request.VERSION = '0.0.0';
+        var URL_REGEX = /^(https?):\/\/((?:[a-z0-9.-]|%[0-9A-F]{2}){3,})(?::(\d+))?((?:\/(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})*)*)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i;
+        function parseURL(url) {
+            var m = URL_REGEX.exec(url);
+            if (!m) {
+                throw new Error('Invalid url');
+            }
+            return {
+                scheme: m[1],
+                host: m[2],
+                port: m[3],
+                path: m[4] + (m[5] ? "?" + m[5] : ''),
+                query: m[5],
+                fragment: m[6]
+            };
+        }
+        function supportScheme(scheme) {
+            switch (scheme) {
+                case 'http':
+                    return true;
+            }
+            return false;
+        }
+        function getPortFromShceme(scheme) {
+            switch (scheme) {
+                case 'http':
+                    return 80;
+            }
+            throw new Error('Invalid scheme');
+        }
+        function fixedEncodeURIComponent(str) {
+            return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+                return '%' + c.charCodeAt(0).toString(16);
+            });
+        }
+        function createContent(options) {
+            var type = options.type, data = options.data;
+            switch (type) {
+                case Request.ContentType.FORM:
+                    var strs = [];
+                    for (var key in data) {
+                        strs.push(fixedEncodeURIComponent(key) + '=' + fixedEncodeURIComponent(data[key]));
+                    }
+                    return strs.join('&');
+                case Request.ContentType.JSON:
+                    return KIKAKU.JSON.stringify(data);
+            }
+            throw new Error("Invalid content type: " + type);
+        }
+        function createRequest(method, path, host, options) {
+            var request = method + " " + path + " HTTP/1.0";
+            var headers = { 'HOST': host };
+            var content = '';
+            if (options) {
+                content = createContent(options);
+                if (content.length) {
+                    headers['Content-Type'] = options.type;
+                    headers['Content-Length'] = content.length;
+                }
+            }
+            for (var name in headers) {
+                request += "\r\n" + name + ": " + headers[name];
+            }
+            request += '\r\n\r\n';
+            if (content.length) {
+                request += content;
+            }
+            return request;
+        }
+        function generateTemporaryPath(ext) {
+            if (ext === void 0) { ext = '.txt'; }
+            var characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            var temp_folder_path = Folder.temp.absoluteURI;
+            var filename = '';
+            while (true) {
+                for (var i = 0; i < 16; ++i) {
+                    filename += characters[~~(Math.random() * characters.length)];
+                }
+                var file = new File(temp_folder_path + "/" + filename + ext);
+                if (!file.exists) {
+                    break;
+                }
+                filename = '';
+            }
+            return temp_folder_path + "/" + filename + ext;
+        }
+        function createResponse(http_response) {
+            var header_length = http_response.indexOf('\r\n\r\n');
+            var header = http_response.substring(0, header_length);
+            var body = http_response.substring(header_length + 4);
+            var headers = header.split('\r\n');
+            var response = { statusCode: 0, reasonPhrase: '', headers: {}, body: '' };
+            //status line
+            {
+                var status_line = headers.shift();
+                var m = /^HTTP\/([\d\.]+)\s(\d+)\s(.*)$/.exec(status_line);
+                response.statusCode = +m[2];
+                response.reasonPhrase = m[3] || '';
+            }
+            //header
+            {
+                KIKAKU.Utils.forEach(headers, function (line) {
+                    var m = /^(.*):\s(.*)$/.exec(line);
+                    if (m) {
+                        var name = m[1];
+                        var value = m[2];
+                        response.headers[name] = value;
+                    }
+                });
+            }
+            //body
+            {
+                var temp_file = new File(generateTemporaryPath());
+                temp_file.encoding = 'BINARY';
+                if (!temp_file.open('w')) {
+                    throw new Error('File access denied');
+                }
+                temp_file.write(body);
+                temp_file.close();
+                temp_file.encoding = 'UTF-8';
+                if (!temp_file.open('r')) {
+                    throw new Error('File access denied');
+                }
+                response.body = temp_file.read();
+                temp_file.close();
+                temp_file.remove();
+            }
+            return response;
+        }
+        Request.ContentType = {
+            JSON: 'application/json',
+            FORM: 'application/x-www-form-urlencoded'
+        };
+        function request(method, url, options, fn) {
+            var parsed_url = parseURL(url);
+            var scheme = parsed_url.scheme, host = parsed_url.host, path = parsed_url.path, query = parsed_url.query, fragment = parsed_url.fragment;
+            if (!supportScheme(scheme)) {
+                throw new Error("'" + scheme + "' isn't supported");
+            }
+            var port = parsed_url.port || getPortFromShceme(scheme);
+            var socket = new Socket;
+            if (!socket.open(host + ":" + port, 'BINARY')) {
+                throw new Error('Unable to open socket');
+            }
+            var response;
+            try {
+                var request_1 = createRequest(method, path, host, options);
+                socket.write(request_1);
+                var http_response = '';
+                while (!socket.eof) {
+                    http_response += socket.read();
+                }
+                response = createResponse(http_response);
+            }
+            catch (e) {
+                throw e;
+            }
+            finally {
+                socket.close();
+            }
+            fn(response);
+        }
+        function get(url, fn) {
+            request('GET', url, null, fn);
+        }
+        Request.get = get;
+        function post(url, options, fn) {
+            request('POST', url, options, fn);
+        }
+        Request.post = post;
+    })(Request = KIKAKU.Request || (KIKAKU.Request = {}));
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
 (function (KIKAKU) {
@@ -5707,182 +5887,6 @@ var KIKAKU;
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
 (function (KIKAKU) {
-    var Request;
-    (function (Request) {
-        Request.VERSION = '0.0.0';
-        var URL_REGEX = /^(https?):\/\/((?:[a-z0-9.-]|%[0-9A-F]{2}){3,})(?::(\d+))?((?:\/(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})*)*)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i;
-        function parseURL(url) {
-            var m = URL_REGEX.exec(url);
-            if (!m) {
-                throw new Error('Invalid url');
-            }
-            return {
-                scheme: m[1],
-                host: m[2],
-                port: m[3],
-                path: m[4] + (m[5] ? "?" + m[5] : ''),
-                query: m[5],
-                fragment: m[6]
-            };
-        }
-        function supportScheme(scheme) {
-            switch (scheme) {
-                case 'http':
-                    return true;
-            }
-            return false;
-        }
-        function getPortFromShceme(scheme) {
-            switch (scheme) {
-                case 'http':
-                    return 80;
-            }
-            throw new Error('Invalid scheme');
-        }
-        function fixedEncodeURIComponent(str) {
-            return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-                return '%' + c.charCodeAt(0).toString(16);
-            });
-        }
-        function createContent(options) {
-            var type = options.type, data = options.data;
-            switch (type) {
-                case Request.ContentType.FORM:
-                    var strs = [];
-                    for (var key in data) {
-                        strs.push(fixedEncodeURIComponent(key) + '=' + fixedEncodeURIComponent(data[key]));
-                    }
-                    return strs.join('&');
-                case Request.ContentType.JSON:
-                    return KIKAKU.JSON.stringify(data);
-            }
-            throw new Error("Invalid content type: " + type);
-        }
-        function createRequest(method, path, host, options) {
-            var request = method + " " + path + " HTTP/1.0";
-            var headers = { 'HOST': host };
-            var content = '';
-            if (options) {
-                content = createContent(options);
-                if (content.length) {
-                    headers['Content-Type'] = options.type;
-                    headers['Content-Length'] = content.length;
-                }
-            }
-            for (var name in headers) {
-                request += "\r\n" + name + ": " + headers[name];
-            }
-            request += '\r\n\r\n';
-            if (content.length) {
-                request += content;
-            }
-            return request;
-        }
-        function generateTemporaryPath(ext) {
-            if (ext === void 0) { ext = '.txt'; }
-            var characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            var temp_folder_path = Folder.temp.absoluteURI;
-            var filename = '';
-            while (true) {
-                for (var i = 0; i < 16; ++i) {
-                    filename += characters[~~(Math.random() * characters.length)];
-                }
-                var file = new File(temp_folder_path + "/" + filename + ext);
-                if (!file.exists) {
-                    break;
-                }
-                filename = '';
-            }
-            return temp_folder_path + "/" + filename + ext;
-        }
-        function createResponse(http_response) {
-            var header_length = http_response.indexOf('\r\n\r\n');
-            var header = http_response.substring(0, header_length);
-            var body = http_response.substring(header_length + 4);
-            var headers = header.split('\r\n');
-            var response = { statusCode: 0, reasonPhrase: '', headers: {}, body: '' };
-            //status line
-            {
-                var status_line = headers.shift();
-                var m = /^HTTP\/([\d\.]+)\s(\d+)\s(.*)$/.exec(status_line);
-                response.statusCode = +m[2];
-                response.reasonPhrase = m[3] || '';
-            }
-            //header
-            {
-                KIKAKU.Utils.forEach(headers, function (line) {
-                    var m = /^(.*):\s(.*)$/.exec(line);
-                    if (m) {
-                        var name = m[1];
-                        var value = m[2];
-                        response.headers[name] = value;
-                    }
-                });
-            }
-            //body
-            {
-                var temp_file = new File(generateTemporaryPath());
-                temp_file.encoding = 'BINARY';
-                if (!temp_file.open('w')) {
-                    throw new Error('File access denied');
-                }
-                temp_file.write(body);
-                temp_file.close();
-                temp_file.encoding = 'UTF-8';
-                if (!temp_file.open('r')) {
-                    throw new Error('File access denied');
-                }
-                response.body = temp_file.read();
-                temp_file.close();
-                temp_file.remove();
-            }
-            return response;
-        }
-        Request.ContentType = {
-            JSON: 'application/json',
-            FORM: 'application/x-www-form-urlencoded'
-        };
-        function request(method, url, options, fn) {
-            var parsed_url = parseURL(url);
-            var scheme = parsed_url.scheme, host = parsed_url.host, path = parsed_url.path, query = parsed_url.query, fragment = parsed_url.fragment;
-            if (!supportScheme(scheme)) {
-                throw new Error("'" + scheme + "' isn't supported");
-            }
-            var port = parsed_url.port || getPortFromShceme(scheme);
-            var socket = new Socket;
-            if (!socket.open(host + ":" + port, 'BINARY')) {
-                throw new Error('Unable to open socket');
-            }
-            var response;
-            try {
-                var request_1 = createRequest(method, path, host, options);
-                socket.write(request_1);
-                var http_response = '';
-                while (!socket.eof) {
-                    http_response += socket.read();
-                }
-                response = createResponse(http_response);
-            }
-            catch (e) {
-                throw e;
-            }
-            finally {
-                socket.close();
-            }
-            fn(response);
-        }
-        function get(url, fn) {
-            request('GET', url, null, fn);
-        }
-        Request.get = get;
-        function post(url, options, fn) {
-            request('POST', url, options, fn);
-        }
-        Request.post = post;
-    })(Request = KIKAKU.Request || (KIKAKU.Request = {}));
-})(KIKAKU || (KIKAKU = {}));
-var KIKAKU;
-(function (KIKAKU) {
     var Unit;
     (function (Unit) {
         var noop = function () { };
@@ -6174,16 +6178,13 @@ var KIKAKU;
         Unit.Utility = Utility;
     })(Unit = KIKAKU.Unit || (KIKAKU.Unit = {}));
 })(KIKAKU || (KIKAKU = {}));
-/// <reference path="KikakuKArray.ts" />
-/// <reference path="KikakuKItem.ts" />
-/// <reference path="KikakuKLayer.ts" />
-/// <reference path="KikakuKProperty.ts" />
 /// <reference path="KikakuConfig.ts" />
-/// <reference path="KikakuUtils.ts" />
 /// <reference path="KikakuJSON.ts" />
+/// <reference path="KikakuUtils.ts" />
+/// <reference path="KikakuWrapper.ts" />
 /// <reference path="KikakuEventDispatcher.ts" />
 /// <reference path="KikakuFileManager.ts" />
+/// <reference path="KikakuRequest.ts" />
 /// <reference path="KikakuSettingManager.ts" />
 /// <reference path="KikakuUIBuilder.ts" />
-/// <reference path="KikakuRequest.ts" />
 /// <reference path="KikakuUnit.ts" /> 

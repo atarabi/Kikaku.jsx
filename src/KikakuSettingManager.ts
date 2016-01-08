@@ -28,7 +28,7 @@ namespace KIKAKU {
 				return;
 			}
 			
-			(<any>app).preferences.deletePref('Settings_' + this._section, key);
+			app.preferences.deletePref('Settings_' + this._section, key);
 		}
 	}
 	
