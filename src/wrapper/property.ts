@@ -66,8 +66,14 @@ namespace KIKAKU {
       return this._prop.selected;
     }
     //methods
-    property(index_or_name: number | number) {
-      return new KPropertyBase(this._prop.property(index_or_name));
+    property(index_or_name: number | string) {
+      return new KPropertyBase(this._prop.property(<any>index_or_name));
+    }
+    propertyAsProperty(index_or_name: number | string) {
+      return new KPropertyBase(this._prop.property(<any>index_or_name)).asProperty();
+    }
+    propertyAsPropertyGroup(index_or_name: number | string) {
+      return new KPropertyBase(this._prop.property(<any>index_or_name)).asPropertyGroup();
     }
     propertyGroup(countUp = 1) {
       return new KPropertyGroup(this._prop.propertyGroup(countUp));
@@ -97,6 +103,12 @@ namespace KIKAKU {
     }
     addProperty(name: string) {
       return new KPropertyBase(this._prop.addProperty(name));
+    }
+    addPropertyAsProperty(name: string) {
+      return new KPropertyBase(this._prop.addProperty(name)).asProperty();
+    }
+    addPropertyAsPropertyGroup(name: string) {
+      return new KPropertyBase(this._prop.addProperty(name)).asPropertyGroup();
     }
   }
 

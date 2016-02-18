@@ -2,11 +2,12 @@ namespace KIKAKU {
 
   export class KLayerCollection {
     constructor(protected _layers: LayerCollection) { }
-    add(item: AVItem, duration?: number) {
+    add<T extends AVItem>(item: AVItem | KAVItem<T>, duration?: number) {
+      const av_item = item instanceof KAVItem ? item.get() : item;
       if (duration !== void 0) {
-        return new KAVLayer(this._layers.add(item, duration));
+        return new KAVLayer(this._layers.add(av_item, duration));
       }
-      return new KAVLayer(this._layers.add(item));
+      return new KAVLayer(this._layers.add(av_item));
     }
     addNull(duration?: number) {
       if (duration !== void 0) {
@@ -74,6 +75,49 @@ namespace KIKAKU {
     asCamera() {
       return new KCameraLayer(<any>this._layer);
     }
+    //properties
+    marker() {
+      return new KProperty(this._layer.marker);
+    }
+    transform() {
+      return new KPropertyGroup(this._layer.transform);
+    }
+    anchorPoint() {
+      return new KProperty(this._layer.transform.anchorPoint);
+    }
+    position() {
+      return new KProperty(this._layer.transform.position);
+    }
+    xPosition() {
+      return new KProperty(this._layer.transform.xPosition);
+    }
+    yPosition() {
+      return new KProperty(this._layer.transform.yPosition);
+    }
+    zPosition() {
+      return new KProperty(this._layer.transform.zPosition);
+    }
+    scale() {
+      return new KProperty(this._layer.transform.scale);
+    }
+    orientation() {
+      return new KProperty(this._layer.transform.orientation);
+    }
+    rotation() {
+      return new KProperty(this._layer.transform.rotation);
+    }
+    xRotation() {
+      return new KProperty(this._layer.transform.xRotation);
+    }
+    yRotation() {
+      return new KProperty(this._layer.transform.yRotation);
+    }
+    zRotation() {
+      return new KProperty(this._layer.transform.zRotation);
+    }
+    opacity() {
+      return new KProperty(this._layer.transform.opacity);
+    }
     //attributes
     index() {
       return this._layer.index;
@@ -82,8 +126,14 @@ namespace KIKAKU {
       if (name !== void 0) this._layer.name = name;
       return this._layer.name;
     }
-    parent(parent?: Layer) {
-      if (parent !== void 0) this._layer.parent = parent;
+    parent<U extends Layer>(parent?: Layer | KLayer<U>) {
+      if (parent !== void 0) {
+        if (parent instanceof KLayer) {
+          this._layer.parent = parent.get();
+        } else {
+          this._layer.parent = parent;
+        }
+      }
       return this._layer.parent;
     }
     time(time?: number) {
@@ -154,28 +204,46 @@ namespace KIKAKU {
     moveToEnd() {
       this._layer.moveToEnd();
     }
-    moveAfter(layer: Layer) {
-      this._layer.moveAfter(layer);
+    moveAfter<U extends Layer>(layer: Layer | KLayer<U>) {
+      if (layer instanceof KLayer) {
+        this._layer.moveAfter(layer.get());
+      } else {
+        this._layer.moveAfter(layer);
+      }
     }
-    moveBefore(layer: Layer) {
-      this._layer.moveBefore(layer);
+    moveBefore<U extends Layer>(layer: Layer | KLayer<U>) {
+      if (layer instanceof KLayer) {
+        this._layer.moveBefore(layer.get());
+      } else {
+        this._layer.moveBefore(layer);
+      }
     }
     duplicate() {
       return new KLayer(this._layer.duplicate());
     }
-    copyToComp(intoComp: CompItem) {
-      this._layer.copyToComp(intoComp);
-      return new KLayer(intoComp.layer(1));
+    copyToComp(intoComp: CompItem | KCompItem) {
+      const comp = intoComp instanceof KCompItem ? intoComp.get() : intoComp;
+      this._layer.copyToComp(comp);
+      return new KLayer(comp.layer(1));
     }
     activeAtTime(time: number) {
       return this._layer.activeAtTime(time);
     }
-    setParentWithJump(newParent?: Layer) {
-      if (newParent !== void 0) this._layer.setParentWithJump(newParent);
+    setParentWithJump<U extends Layer>(newParent?: Layer | KLayer<U>) {
+      if (newParent !== void 0) {
+        const parent = newParent instanceof KLayer ? newParent.get() : newParent;
+        this._layer.setParentWithJump(parent);
+      }
       else this._layer.setParentWithJump();
     }
-    applyPreset(presetName: File) {
-      this._layer.applyPreset(presetName);
+    applyPreset(presetName: File | KFile) {
+      if (presetName instanceof KFile) {
+        this._layer.applyPreset(presetName.get());
+
+      } else {
+        this._layer.applyPreset(presetName);
+
+      }
     }
   }
 
@@ -183,6 +251,28 @@ namespace KIKAKU {
     isValid() {
       let layer = this._layer;
       return layer && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
+    }
+    //properties
+    timeRemap() {
+      return new KProperty(this._layer.timeRemap);
+    }
+    mask() {
+      return new KPropertyGroup(this._layer.mask);
+    }
+    effect() {
+      return new KPropertyGroup(this._layer.effect);
+    }
+    layerStyle() {
+      return new KPropertyGroup(this._layer.layerStyle);
+    }
+    geometryOption() {
+      return new KPropertyGroup(this._layer.geometryOption);
+    }
+    materialOption() {
+      return new KPropertyGroup(this._layer.materialOption);
+    }
+    audio() {
+      return new KPropertyGroup(this._layer.audio);
     }
     //attributes
     source() {
@@ -294,8 +384,9 @@ namespace KIKAKU {
     calculateTransformFromPoints(pointTopLeft: [number, number, number], pointTopRight: [number, number, number], pointBottomRight: [number, number, number]) {
       return this._layer.calculateTransformFromPoints(pointTopLeft, pointTopRight, pointBottomRight);
     }
-    replaceSource(newSource: AVItem, fixExpressions: boolean) {
-      this._layer.replaceSource(newSource, fixExpressions);
+    replaceSource<U extends AVItem>(newSource: AVItem | KAVItem<U>, fixExpressions: boolean) {
+      const source = newSource instanceof KAVItem ? newSource.get() : newSource;
+      this._layer.replaceSource(source, fixExpressions);
     }
     sourceRectAtTime(timeT: number, extents: boolean) {
       return this._layer.sourceRectAtTime(timeT, extents);
@@ -310,12 +401,23 @@ namespace KIKAKU {
       let layer = this._layer;
       return layer && layer instanceof ShapeLayer && isValid(layer);
     }
+    //properties
+    contents() {
+      return new KPropertyBase(this._layer.property('ADBE Root Vectors Group')).asPropertyGroup();
+    }
   }
 
   export class KTextLayer extends KAVLayer<TextLayer> {
     isValid() {
       let layer = this._layer;
       return layer && layer instanceof TextLayer && isValid(layer);
+    }
+    //properties
+    text() {
+      return new KPropertyGroup(this._layer.text);
+    }
+    sourceText() {
+      return new KProperty(this._layer.text.sourceText);
     }
   }
 
@@ -324,12 +426,20 @@ namespace KIKAKU {
       let layer = this._layer;
       return layer && layer instanceof CameraLayer && isValid(layer);
     }
+    //properties
+    cameraOption() {
+      return new KPropertyGroup(this._layer.cameraOption);
+    }
   }
 
   export class KLightLayer extends KLayer<LightLayer> {
     isValid() {
       let layer = this._layer;
       return layer && layer instanceof LightLayer && isValid(layer);
+    }
+    //properties
+    lightOption() {
+      return new KPropertyGroup(this._layer.lightOption);
     }
   }
 

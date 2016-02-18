@@ -819,12 +819,12 @@ namespace KIKAKU {
       path_ui.onActivate = () => { this.on('onActivate', false); };
       path_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 
-      let filter = this._options.filter;
+      let filter = Utils.isString(this._options.filter) ? this._options.filter : undefined;
       let browse_ui: Button = group.add('button', undefined, '...');
       browse_ui.maximumSize = [20, height];
       browse_ui.alignment = ['right', 'fill'];
       browse_ui.onClick = browse_ui.onEnterKey = () => {
-        let file: File = File.openDialog(undefined, filter, false);
+        let file = <File>File.openDialog(undefined, filter, false);
         if (file) {
           if (path_ui.text !== file.absoluteURI) {
             path_ui.text = file.absoluteURI;
@@ -854,8 +854,8 @@ namespace KIKAKU {
       browse_ui.maximumSize = [20, height];
       browse_ui.alignment = ['right', 'fill'];
       browse_ui.onClick = browse_ui.onEnterKey = () => {
-        let folder: Folder = Folder.selectDialog();
-        if (folder) {
+        let folder = <Folder>Folder.selectDialog();
+        if (folder && folder instanceof Folder) {
           if (path_ui.text !== folder.absoluteURI) {
             path_ui.text = folder.absoluteURI;
             this.onChange();

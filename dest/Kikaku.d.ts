@@ -312,6 +312,174 @@ declare namespace KIKAKU {
     }
 }
 declare namespace KIKAKU {
+    class KFile {
+        protected _file: File;
+        constructor(file?: File | string);
+        get(): File;
+        static fs(): string;
+        static decode(uri: string): string;
+        static encode(name: string): string;
+        static isEncodingAvailable(name: string): boolean;
+        static openDialog(prompt_?: string, filter?: string, multiSelect?: boolean): KFile | KArray<KFile>;
+        static saveDialog(prompt_?: string, filter?: string): KFile;
+        absoluteURI(): string;
+        alias(): boolean;
+        created(): Date;
+        creator(): string;
+        displayName(): string;
+        encoding(encoding?: string): string;
+        eof(): boolean;
+        error(): string;
+        exists(): boolean;
+        fsName(): string;
+        fullName(): string;
+        hidden(hidden?: boolean): boolean;
+        length(): number;
+        lineFeed(): string;
+        localizedName(): string;
+        modified(): Date;
+        name(): string;
+        parent(): KFolder;
+        path(): string;
+        readonly(): boolean;
+        relativeURI(): string;
+        type(): string;
+        changePath(path: string): boolean;
+        close(): boolean;
+        copy(target: string): boolean;
+        createAlias(path?: string): boolean;
+        execute(): boolean;
+        getRelativeURI(basePath?: string): string;
+        open(mode: string, type?: string, creator?: string): boolean;
+        openDlg(prompt_?: string, filter?: string, multiSelect?: boolean): KFile | KArray<KFile>;
+        read(chars?: number): string;
+        readch(): string;
+        readln(): string;
+        remove(): boolean;
+        rename(newName: string): boolean;
+        resolve(): any;
+        saveDlg(prompt_?: string, preset?: string): KFile;
+        seek(pos: number, mode?: number): boolean;
+        tell(): number;
+        write(text: string, ...texts: string[]): any;
+        writeln(text: string, ...texts: string[]): any;
+    }
+    class KFolder {
+        protected _folder: Folder;
+        constructor(folder?: Folder | string);
+        get(): Folder;
+        static appData(): KFolder;
+        static appPackage(): KFolder;
+        static commonFiles(): KFolder;
+        static current(): KFolder;
+        static desktop(): KFolder;
+        static fs(): string;
+        static myDocuments(): KFolder;
+        static startup(): KFolder;
+        static system(): KFolder;
+        static temp(): KFolder;
+        static trash(): KFolder;
+        static userData(): KFolder;
+        static decode(uri: string): string;
+        static encode(name: string): string;
+        static selectDialog(prompt?: string): KFile | KFolder;
+        absoluteURI(): string;
+        alias(): boolean;
+        created(): Date;
+        displayName(): string;
+        error(): string;
+        exists(): boolean;
+        fsName(): string;
+        fullName(): string;
+        localizedName(): string;
+        modified(): Date;
+        name(): string;
+        parent(): KFolder;
+        path(): string;
+        relativeURI(): string;
+        changePath(path: string): boolean;
+        create(): boolean;
+        execute(): boolean;
+        getFiles(mask?: string): KArray<KFile | KFolder>;
+        getRelativeURI(basePath?: string): string;
+        remove(): boolean;
+        rename(newName: string): boolean;
+        resolve(): KFolder;
+        selectDlg(prompt_: string): KFile | KFolder;
+    }
+}
+declare namespace KIKAKU {
+    class KProject {
+        get(): Project;
+        file(): KFile;
+        rootFolder(): KFolderItem;
+        items(): KItemCollection;
+        activeItem(): KItem<Item>;
+        bitsPerChannel(bitsPerChannel?: number): number;
+        transparencyGridThumbnails(transparencyGridThumbnails?: boolean): boolean;
+        numItems(): number;
+        selection(): KArray<KItem<Item>>;
+        renderQueue(): RenderQueue;
+        timeDisplayType(timeDisplayType?: TimeDisplayType): TimeDisplayType;
+        footageTimecodeDisplayStartType(footageTimecodeDisplayStartType?: FootageTimecodeDisplayStartType): FootageTimecodeDisplayStartType;
+        framesUseFeetFrames(framesUseFeetFrames?: boolean): boolean;
+        feetFramesFilmType(feetFramesFilmType?: FeetFramesFilmType): FeetFramesFilmType;
+        framesCountType(framesCountType?: FramesCountType): FramesCountType;
+        displayStartFrame(displayStartFrame?: number): number;
+        linearBlending(linearBlending?: boolean): boolean;
+        xmpPacket(xmpPacket?: string): string;
+        item(index: number): KItem<Item>;
+        consolidateFootage(): number;
+        removeUnusedFootage(): number;
+        close(closeOptions: CloseOptions): boolean;
+        save(file?: File | KFile): void;
+        saveWithDialog(): boolean;
+        importPlaceholder(name: string, width: number, height: number, frameRate: number, duration: number): PlaceholderItem;
+        importFile(importOptions: ImportOptions): KFootageItem;
+        importFileWithDialog(): KArray<KItem<Item>>;
+        showWindow(doShow: boolean): void;
+        autoFixExpressions(oldText: string, newText: string): void;
+    }
+}
+declare namespace KIKAKU {
+    class KFootageSource<T extends FootageSource> {
+        protected _source: T;
+        constructor(_source: T);
+        get(): T;
+        isValid(): boolean;
+        asSolid(): KSolidSource;
+        asPlaceholder(): KPlaceholderSource;
+        asFile(): KFileSource;
+        hasAlpha(hasAlpha?: boolean): boolean;
+        alphaMode(alphaMode?: AlphaMode): AlphaMode;
+        premulColor(premulColor?: [number, number, number]): [number, number, number];
+        invertAlpha(invertAlpha?: boolean): boolean;
+        isStill(): boolean;
+        fieldSeparationType(fieldSeparationType?: FieldSeparationType): FieldSeparationType;
+        highQualityFieldSeparation(highQualityFieldSeparation?: boolean): boolean;
+        removePulldown(removePulldown?: PulldownPhase): PulldownPhase;
+        loop(loop?: number): number;
+        nativeFrameRate(nativeFrameRate?: number): number;
+        displayFrameRate(): number;
+        conformFrameRate(conformFrameRate?: number): number;
+        guessAlphaMode(): void;
+        guessPulldown(method: PulldownMethod): void;
+    }
+    class KSolidSource extends KFootageSource<SolidSource> {
+        isValid(): boolean;
+        color(color?: [number, number, number]): [number, number, number];
+    }
+    class KPlaceholderSource extends KFootageSource<PlaceholderSource> {
+        isValid(): boolean;
+    }
+    class KFileSource extends KFootageSource<FileSource> {
+        isValid(): boolean;
+        file(): KFile;
+        missingFootagePath(): string;
+        reload(): void;
+    }
+}
+declare namespace KIKAKU {
     class KItemCollection {
         protected _items: ItemCollection;
         constructor(_items: ItemCollection);
@@ -351,14 +519,14 @@ declare namespace KIKAKU {
         frameDuration(frameDuration?: number): number;
         duration(duration?: number): number;
         useProxy(useProxy?: boolean): boolean;
-        proxySource(): FootageSource;
+        proxySource(): KFootageSource<FootageSource>;
         time(time?: number): number;
         usedIn(): CompItem[];
         hasVideo(): boolean;
         hasAudio(): boolean;
         footageMissing(): boolean;
-        setProxy(file: File): void;
-        setProxyWithSequence(file: File, forceAlphabetical: boolean): void;
+        setProxy(file: File | KFile): void;
+        setProxyWithSequence(file: File | KFile, forceAlphabetical: boolean): void;
         setProxyWithSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number): void;
         setProxyWithPlaceholder(name: string, width: number, height: number, frameRate: number, duration: number): void;
         setProxyToNone(): void;
@@ -394,10 +562,10 @@ declare namespace KIKAKU {
     }
     class KFootageItem extends KAVItem<FootageItem> {
         isValid(): boolean;
-        file(): File;
-        mainSource(): FootageSource;
-        replace(file: File): void;
-        replaceWithSequence(file: File, forceAlphabetical: any): void;
+        file(): KFile;
+        mainSource(): KFootageSource<FootageSource>;
+        replace(file: File | KFile): void;
+        replaceWithSequence(file: File | KFile, forceAlphabetical: any): void;
         replaceWithPlaceholder(name: string, width: number, height: number, frameRate: number, duration: number): void;
         replaceWithSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number): void;
         openInViewer(): Viewer;
@@ -407,7 +575,7 @@ declare namespace KIKAKU {
     class KLayerCollection {
         protected _layers: LayerCollection;
         constructor(_layers: LayerCollection);
-        add(item: AVItem, duration?: number): KAVLayer<AVLayer>;
+        add<T extends AVItem>(item: AVItem | KAVItem<T>, duration?: number): KAVLayer<AVLayer>;
         addNull(duration?: number): KAVLayer<AVLayer>;
         addSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number, duration?: number): KAVLayer<AVLayer>;
         addText(sourceText?: string | TextDocument): KTextLayer;
@@ -428,9 +596,23 @@ declare namespace KIKAKU {
         asText(): KTextLayer;
         asLight(): KLightLayer;
         asCamera(): KCameraLayer;
+        marker(): KProperty;
+        transform(): KPropertyGroup<_TransformGroup>;
+        anchorPoint(): KProperty;
+        position(): KProperty;
+        xPosition(): KProperty;
+        yPosition(): KProperty;
+        zPosition(): KProperty;
+        scale(): KProperty;
+        orientation(): KProperty;
+        rotation(): KProperty;
+        xRotation(): KProperty;
+        yRotation(): KProperty;
+        zRotation(): KProperty;
+        opacity(): KProperty;
         index(): number;
         name(name?: string): string;
-        parent(parent?: Layer): Layer;
+        parent<U extends Layer>(parent?: Layer | KLayer<U>): Layer;
         time(time?: number): number;
         startTime(startTime?: number): number;
         stretch(stretch?: number): number;
@@ -450,16 +632,23 @@ declare namespace KIKAKU {
         remove(): void;
         moveToBeginning(): void;
         moveToEnd(): void;
-        moveAfter(layer: Layer): void;
-        moveBefore(layer: Layer): void;
+        moveAfter<U extends Layer>(layer: Layer | KLayer<U>): void;
+        moveBefore<U extends Layer>(layer: Layer | KLayer<U>): void;
         duplicate(): KLayer<Layer>;
-        copyToComp(intoComp: CompItem): KLayer<Layer>;
+        copyToComp(intoComp: CompItem | KCompItem): KLayer<Layer>;
         activeAtTime(time: number): boolean;
-        setParentWithJump(newParent?: Layer): void;
-        applyPreset(presetName: File): void;
+        setParentWithJump<U extends Layer>(newParent?: Layer | KLayer<U>): void;
+        applyPreset(presetName: File | KFile): void;
     }
     class KAVLayer<T extends AVLayer> extends KLayer<T> {
         isValid(): boolean;
+        timeRemap(): KProperty;
+        mask(): KPropertyGroup<PropertyGroup>;
+        effect(): KPropertyGroup<PropertyGroup>;
+        layerStyle(): KPropertyGroup<_LayerStyles>;
+        geometryOption(): KPropertyGroup<_GeometryOptionsGroup>;
+        materialOption(): KPropertyGroup<_MaterialOptionsGroup>;
+        audio(): KPropertyGroup<_AudioGroup>;
         source(): KAVItem<AVItem>;
         isNameFromSource(): boolean;
         height(): number;
@@ -490,7 +679,7 @@ declare namespace KIKAKU {
         samplingQuality(samplingQuality?: LayerSamplingQuality): LayerSamplingQuality;
         audioActiveAtTime(time: number): boolean;
         calculateTransformFromPoints(pointTopLeft: [number, number, number], pointTopRight: [number, number, number], pointBottomRight: [number, number, number]): Object;
-        replaceSource(newSource: AVItem, fixExpressions: boolean): void;
+        replaceSource<U extends AVItem>(newSource: AVItem | KAVItem<U>, fixExpressions: boolean): void;
         sourceRectAtTime(timeT: number, extents: boolean): {
             top: number;
             left: number;
@@ -501,15 +690,20 @@ declare namespace KIKAKU {
     }
     class KShapeLayer extends KAVLayer<ShapeLayer> {
         isValid(): boolean;
+        contents(): KPropertyGroup<PropertyGroup>;
     }
     class KTextLayer extends KAVLayer<TextLayer> {
         isValid(): boolean;
+        text(): KPropertyGroup<_TextProperties>;
+        sourceText(): KProperty;
     }
     class KCameraLayer extends KLayer<CameraLayer> {
         isValid(): boolean;
+        cameraOption(): KPropertyGroup<_CameraOptionsGroup>;
     }
     class KLightLayer extends KLayer<LightLayer> {
         isValid(): boolean;
+        lightOption(): KPropertyGroup<_LightOptionsGroup>;
     }
 }
 declare namespace KIKAKU {
@@ -535,7 +729,9 @@ declare namespace KIKAKU {
         isEffect(): boolean;
         isMask(): boolean;
         selected(selected?: boolean): boolean;
-        property(index_or_name: number | number): KPropertyBase<PropertyBase>;
+        property(index_or_name: number | string): KPropertyBase<PropertyBase>;
+        propertyAsProperty(index_or_name: number | string): KProperty;
+        propertyAsPropertyGroup(index_or_name: number | string): KPropertyGroup<PropertyGroup>;
         propertyGroup(countUp?: number): KPropertyGroup<PropertyGroup>;
         remove(): void;
         moveTo(newIndex: number): void;
@@ -546,6 +742,8 @@ declare namespace KIKAKU {
         numProperties(): number;
         canAddProperty(name: string): boolean;
         addProperty(name: string): KPropertyBase<PropertyBase>;
+        addPropertyAsProperty(name: string): KProperty;
+        addPropertyAsPropertyGroup(name: string): KPropertyGroup<PropertyGroup>;
     }
     class KMaskPropertyGroup extends KPropertyGroup<MaskPropertyGroup> {
         isValid(): boolean;

@@ -1,6 +1,11 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.4.1';
+    KIKAKU.VERSION = '0.5.0';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -1971,11 +1976,637 @@ var KIKAKU;
     }());
     KIKAKU.KArray = KArray;
 })(KIKAKU || (KIKAKU = {}));
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var KIKAKU;
+(function (KIKAKU) {
+    var KFile = (function () {
+        function KFile(file) {
+            if (file instanceof File) {
+                this._file = file;
+            }
+            else {
+                this._file = new File(file);
+            }
+        }
+        KFile.prototype.get = function () {
+            return this._file;
+        };
+        //static
+        KFile.fs = function () {
+            return File.fs;
+        };
+        KFile.decode = function (uri) {
+            return File.decode(uri);
+        };
+        KFile.encode = function (name) {
+            return File.encode(name);
+        };
+        KFile.isEncodingAvailable = function (name) {
+            return File.isEncodingAvailable(name);
+        };
+        KFile.openDialog = function (prompt_, filter, multiSelect) {
+            var file = File.openDialog(prompt_, filter, multiSelect);
+            if (file === null) {
+                return null;
+            }
+            else if (file instanceof File) {
+                return new KFile(file);
+            }
+            else {
+                return new KIKAKU.KArray(file).map(function (file) { return new KFile(file); });
+            }
+        };
+        KFile.saveDialog = function (prompt_, filter) {
+            return new KFile(File.saveDialog(prompt_, filter));
+        };
+        //attributes
+        KFile.prototype.absoluteURI = function () {
+            return this._file.absoluteURI;
+        };
+        KFile.prototype.alias = function () {
+            return this._file.alias;
+        };
+        KFile.prototype.created = function () {
+            return this._file.created;
+        };
+        KFile.prototype.creator = function () {
+            return this._file.creator;
+        };
+        KFile.prototype.displayName = function () {
+            return this._file.displayName;
+        };
+        KFile.prototype.encoding = function (encoding) {
+            if (encoding !== void 0)
+                this._file.encoding = encoding;
+            return this._file.encoding;
+        };
+        KFile.prototype.eof = function () {
+            return this._file.eof;
+        };
+        KFile.prototype.error = function () {
+            return this._file.error;
+        };
+        KFile.prototype.exists = function () {
+            return this._file.exists;
+        };
+        KFile.prototype.fsName = function () {
+            return this._file.fsName;
+        };
+        KFile.prototype.fullName = function () {
+            return this._file.fullName;
+        };
+        KFile.prototype.hidden = function (hidden) {
+            if (hidden !== void 0)
+                this._file.hidden = hidden;
+            return this._file.hidden;
+        };
+        KFile.prototype.length = function () {
+            return this._file.length;
+        };
+        KFile.prototype.lineFeed = function () {
+            return this._file.lineFeed;
+        };
+        KFile.prototype.localizedName = function () {
+            return this._file.localizedName;
+        };
+        KFile.prototype.modified = function () {
+            return this._file.modified;
+        };
+        KFile.prototype.name = function () {
+            return this._file.name;
+        };
+        KFile.prototype.parent = function () {
+            return new KFolder(this._file.parent);
+        };
+        KFile.prototype.path = function () {
+            return this._file.path;
+        };
+        KFile.prototype.readonly = function () {
+            return this._file.readonly;
+        };
+        KFile.prototype.relativeURI = function () {
+            return this._file.relativeURI;
+        };
+        KFile.prototype.type = function () {
+            return this._file.type;
+        };
+        //methods
+        KFile.prototype.changePath = function (path) {
+            return this._file.changePath(path);
+        };
+        KFile.prototype.close = function () {
+            return this._file.close();
+        };
+        KFile.prototype.copy = function (target) {
+            return this._file.copy(target);
+        };
+        KFile.prototype.createAlias = function (path) {
+            return this._file.createAlias(path);
+        };
+        KFile.prototype.execute = function () {
+            return this._file.execute();
+        };
+        KFile.prototype.getRelativeURI = function (basePath) {
+            return this._file.getRelativeURI(basePath);
+        };
+        KFile.prototype.open = function (mode, type, creator) {
+            return this._file.open(mode, type, creator);
+        };
+        KFile.prototype.openDlg = function (prompt_, filter, multiSelect) {
+            var file = this._file.openDlg(prompt_, filter, multiSelect);
+            if (file === null) {
+                return null;
+            }
+            else if (file instanceof File) {
+                return new KFile(file);
+            }
+            else {
+                return new KIKAKU.KArray(file).map(function (file) { return new KFile(file); });
+            }
+        };
+        KFile.prototype.read = function (chars) {
+            return this._file.read(chars);
+        };
+        KFile.prototype.readch = function () {
+            return this._file.readch();
+        };
+        KFile.prototype.readln = function () {
+            return this._file.readln();
+        };
+        KFile.prototype.remove = function () {
+            return this._file.remove();
+        };
+        KFile.prototype.rename = function (newName) {
+            return this._file.rename(newName);
+        };
+        KFile.prototype.resolve = function () {
+            return this._file.resolve();
+        };
+        KFile.prototype.saveDlg = function (prompt_, preset) {
+            var file = this._file.saveDlg(prompt_, preset);
+            if (file === null) {
+                return null;
+            }
+            return new KFile(file);
+        };
+        KFile.prototype.seek = function (pos, mode) {
+            return this._file.seek(pos, mode);
+        };
+        KFile.prototype.tell = function () {
+            return this._file.tell();
+        };
+        KFile.prototype.write = function (text) {
+            var texts = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                texts[_i - 1] = arguments[_i];
+            }
+            return (_a = this._file).write.apply(_a, [text].concat(texts));
+            var _a;
+        };
+        KFile.prototype.writeln = function (text) {
+            var texts = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                texts[_i - 1] = arguments[_i];
+            }
+            return (_a = this._file).writeln.apply(_a, [text].concat(texts));
+            var _a;
+        };
+        return KFile;
+    }());
+    KIKAKU.KFile = KFile;
+    var KFolder = (function () {
+        function KFolder(folder) {
+            if (folder instanceof Folder) {
+                this._folder = folder;
+            }
+            else {
+                this._folder = new Folder(folder);
+            }
+        }
+        KFolder.prototype.get = function () {
+            return this._folder;
+        };
+        //static
+        KFolder.appData = function () {
+            return new KFolder(Folder.appData);
+        };
+        KFolder.appPackage = function () {
+            return new KFolder(Folder.appPackage);
+        };
+        KFolder.commonFiles = function () {
+            return new KFolder(Folder.commonFiles);
+        };
+        KFolder.current = function () {
+            return new KFolder(Folder.current);
+        };
+        KFolder.desktop = function () {
+            return new KFolder(Folder.desktop);
+        };
+        KFolder.fs = function () {
+            return Folder.fs;
+        };
+        KFolder.myDocuments = function () {
+            return new KFolder(Folder.myDocuments);
+        };
+        KFolder.startup = function () {
+            return new KFolder(Folder.startup);
+        };
+        KFolder.system = function () {
+            return new KFolder(Folder.system);
+        };
+        KFolder.temp = function () {
+            return new KFolder(Folder.temp);
+        };
+        KFolder.trash = function () {
+            return new KFolder(Folder.trash);
+        };
+        KFolder.userData = function () {
+            return new KFolder(Folder.userData);
+        };
+        KFolder.decode = function (uri) {
+            return File.decode(uri);
+        };
+        KFolder.encode = function (name) {
+            return File.encode(name);
+        };
+        KFolder.selectDialog = function (prompt) {
+            var file = Folder.selectDialog(prompt);
+            if (file === null) {
+                return null;
+            }
+            else if (file instanceof File) {
+                return new KFile(file);
+            }
+            else {
+                return new KFolder(file);
+            }
+        };
+        //attributes
+        KFolder.prototype.absoluteURI = function () {
+            return this._folder.absoluteURI;
+        };
+        KFolder.prototype.alias = function () {
+            return this._folder.alias;
+        };
+        KFolder.prototype.created = function () {
+            return this._folder.created;
+        };
+        KFolder.prototype.displayName = function () {
+            return this._folder.displayName;
+        };
+        KFolder.prototype.error = function () {
+            return this._folder.error;
+        };
+        KFolder.prototype.exists = function () {
+            return this._folder.exists;
+        };
+        KFolder.prototype.fsName = function () {
+            return this._folder.fsName;
+        };
+        KFolder.prototype.fullName = function () {
+            return this._folder.fullName;
+        };
+        KFolder.prototype.localizedName = function () {
+            return this._folder.localizedName;
+        };
+        KFolder.prototype.modified = function () {
+            return this._folder.modified;
+        };
+        KFolder.prototype.name = function () {
+            return this._folder.name;
+        };
+        KFolder.prototype.parent = function () {
+            return new KFolder(this._folder.parent);
+        };
+        KFolder.prototype.path = function () {
+            return this._folder.path;
+        };
+        KFolder.prototype.relativeURI = function () {
+            return this._folder.relativeURI;
+        };
+        //methods
+        KFolder.prototype.changePath = function (path) {
+            return this._folder.changePath(path);
+        };
+        KFolder.prototype.create = function () {
+            return this._folder.create();
+        };
+        KFolder.prototype.execute = function () {
+            return this._folder.execute();
+        };
+        KFolder.prototype.getFiles = function (mask) {
+            var files = this._folder.getFiles(mask);
+            if (files === null) {
+                return new KIKAKU.KArray([]);
+            }
+            return new KIKAKU.KArray(files).map(function (file) {
+                if (file instanceof File) {
+                    return new KFile(file);
+                }
+                else {
+                    return new KFolder(file);
+                }
+            });
+        };
+        KFolder.prototype.getRelativeURI = function (basePath) {
+            return this._folder.getRelativeURI(basePath);
+        };
+        KFolder.prototype.remove = function () {
+            return this._folder.remove();
+        };
+        KFolder.prototype.rename = function (newName) {
+            return this._folder.rename(newName);
+        };
+        KFolder.prototype.resolve = function () {
+            return new KFolder(this._folder.resolve());
+        };
+        KFolder.prototype.selectDlg = function (prompt_) {
+            var file = this._folder.selectDlg(prompt_);
+            if (file === null) {
+                return null;
+            }
+            else if (file instanceof File) {
+                return new KFile(file);
+            }
+            else {
+                return new KFolder(file);
+            }
+        };
+        return KFolder;
+    }());
+    KIKAKU.KFolder = KFolder;
+})(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    var getProject = function () { return app.project; };
+    var KProject = (function () {
+        function KProject() {
+        }
+        KProject.prototype.get = function () {
+            return getProject();
+        };
+        //attributes
+        KProject.prototype.file = function () {
+            return new KIKAKU.KFile(getProject().file);
+        };
+        KProject.prototype.rootFolder = function () {
+            return new KIKAKU.KFolderItem(getProject().rootFolder);
+        };
+        KProject.prototype.items = function () {
+            return new KIKAKU.KItemCollection(getProject().items);
+        };
+        KProject.prototype.activeItem = function () {
+            return new KIKAKU.KItem(getProject().activeItem);
+        };
+        KProject.prototype.bitsPerChannel = function (bitsPerChannel) {
+            if (bitsPerChannel !== void 0)
+                getProject().bitsPerChannel = bitsPerChannel;
+            return getProject().bitsPerChannel;
+        };
+        KProject.prototype.transparencyGridThumbnails = function (transparencyGridThumbnails) {
+            if (transparencyGridThumbnails !== void 0)
+                getProject().transparencyGridThumbnails = transparencyGridThumbnails;
+            return getProject().transparencyGridThumbnails;
+        };
+        KProject.prototype.numItems = function () {
+            return getProject().numItems;
+        };
+        KProject.prototype.selection = function () {
+            return new KIKAKU.KArray(getProject().selection).map(function (item) { return new KIKAKU.KItem(item); });
+        };
+        KProject.prototype.renderQueue = function () {
+            return getProject().renderQueue;
+        };
+        KProject.prototype.timeDisplayType = function (timeDisplayType) {
+            if (timeDisplayType !== void 0)
+                getProject().timeDisplayType = timeDisplayType;
+            return getProject().timeDisplayType;
+        };
+        KProject.prototype.footageTimecodeDisplayStartType = function (footageTimecodeDisplayStartType) {
+            if (footageTimecodeDisplayStartType !== void 0)
+                getProject().footageTimecodeDisplayStartType = footageTimecodeDisplayStartType;
+            return getProject().footageTimecodeDisplayStartType;
+        };
+        KProject.prototype.framesUseFeetFrames = function (framesUseFeetFrames) {
+            if (framesUseFeetFrames !== void 0)
+                getProject().framesUseFeetFrames = framesUseFeetFrames;
+            return getProject().framesUseFeetFrames;
+        };
+        KProject.prototype.feetFramesFilmType = function (feetFramesFilmType) {
+            if (feetFramesFilmType !== void 0)
+                getProject().feetFramesFilmType = feetFramesFilmType;
+            return getProject().feetFramesFilmType;
+        };
+        KProject.prototype.framesCountType = function (framesCountType) {
+            if (framesCountType !== void 0)
+                getProject().framesCountType = framesCountType;
+            return getProject().framesCountType;
+        };
+        KProject.prototype.displayStartFrame = function (displayStartFrame) {
+            if (displayStartFrame !== void 0)
+                getProject().displayStartFrame = displayStartFrame;
+            return getProject().displayStartFrame;
+        };
+        KProject.prototype.linearBlending = function (linearBlending) {
+            if (linearBlending !== void 0)
+                getProject().linearBlending = linearBlending;
+            return getProject().linearBlending;
+        };
+        KProject.prototype.xmpPacket = function (xmpPacket) {
+            if (xmpPacket !== void 0)
+                getProject().xmpPacket = xmpPacket;
+            return getProject().xmpPacket;
+        };
+        //methods
+        KProject.prototype.item = function (index) {
+            return new KIKAKU.KItem(getProject().item(index));
+        };
+        KProject.prototype.consolidateFootage = function () {
+            return getProject().consolidateFootage();
+        };
+        KProject.prototype.removeUnusedFootage = function () {
+            return getProject().removeUnusedFootage();
+        };
+        KProject.prototype.close = function (closeOptions) {
+            return getProject().close(closeOptions);
+        };
+        KProject.prototype.save = function (file) {
+            if (file === void 0) {
+                return getProject().save();
+            }
+            else if (file instanceof KIKAKU.KFile) {
+                return getProject().save(file.get());
+            }
+            else {
+                return getProject().save(file);
+            }
+        };
+        KProject.prototype.saveWithDialog = function () {
+            return getProject().saveWithDialog();
+        };
+        KProject.prototype.importPlaceholder = function (name, width, height, frameRate, duration) {
+            return getProject().importPlaceholder(name, width, height, frameRate, duration);
+        };
+        KProject.prototype.importFile = function (importOptions) {
+            return new KIKAKU.KFootageItem(getProject().importFile(importOptions));
+        };
+        KProject.prototype.importFileWithDialog = function () {
+            var items = getProject().importFileWithDialog() || [];
+            return new KIKAKU.KArray(items).map(function (item) { return new KIKAKU.KItem(item); });
+        };
+        KProject.prototype.showWindow = function (doShow) {
+            return getProject().showWindow(doShow);
+        };
+        KProject.prototype.autoFixExpressions = function (oldText, newText) {
+            return getProject().autoFixExpressions(oldText, newText);
+        };
+        return KProject;
+    }());
+    KIKAKU.KProject = KProject;
+})(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    var KFootageSource = (function () {
+        function KFootageSource(_source) {
+            this._source = _source;
+        }
+        KFootageSource.prototype.get = function () {
+            return this._source;
+        };
+        KFootageSource.prototype.isValid = function () {
+            var source = this._source;
+            return source && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource) && isValid(source);
+        };
+        //cast
+        KFootageSource.prototype.asSolid = function () {
+            return new KSolidSource(this._source);
+        };
+        KFootageSource.prototype.asPlaceholder = function () {
+            return new KPlaceholderSource(this._source);
+        };
+        KFootageSource.prototype.asFile = function () {
+            return new KFileSource(this._source);
+        };
+        //attributes
+        KFootageSource.prototype.hasAlpha = function (hasAlpha) {
+            if (hasAlpha !== void 0)
+                this._source.hasAlpha = hasAlpha;
+            return this._source.hasAlpha;
+        };
+        KFootageSource.prototype.alphaMode = function (alphaMode) {
+            if (alphaMode !== void 0)
+                this._source.alphaMode = alphaMode;
+            return this._source.alphaMode;
+        };
+        KFootageSource.prototype.premulColor = function (premulColor) {
+            if (premulColor !== void 0)
+                this._source.premulColor = premulColor;
+            return this._source.premulColor;
+        };
+        KFootageSource.prototype.invertAlpha = function (invertAlpha) {
+            if (invertAlpha !== void 0)
+                this._source.invertAlpha = invertAlpha;
+            return this._source.invertAlpha;
+        };
+        KFootageSource.prototype.isStill = function () {
+            return this._source.isStill;
+        };
+        KFootageSource.prototype.fieldSeparationType = function (fieldSeparationType) {
+            if (fieldSeparationType !== void 0)
+                this._source.fieldSeparationType = fieldSeparationType;
+            return this._source.fieldSeparationType;
+        };
+        KFootageSource.prototype.highQualityFieldSeparation = function (highQualityFieldSeparation) {
+            if (highQualityFieldSeparation !== void 0)
+                this._source.highQualityFieldSeparation = highQualityFieldSeparation;
+            return this._source.highQualityFieldSeparation;
+        };
+        KFootageSource.prototype.removePulldown = function (removePulldown) {
+            if (removePulldown !== void 0)
+                this._source.removePulldown = removePulldown;
+            return this._source.removePulldown;
+        };
+        KFootageSource.prototype.loop = function (loop) {
+            if (loop !== void 0)
+                this._source.loop = loop;
+            return this._source.loop;
+        };
+        KFootageSource.prototype.nativeFrameRate = function (nativeFrameRate) {
+            if (nativeFrameRate !== void 0)
+                this._source.nativeFrameRate = nativeFrameRate;
+            return this._source.nativeFrameRate;
+        };
+        KFootageSource.prototype.displayFrameRate = function () {
+            return this._source.displayFrameRate;
+        };
+        KFootageSource.prototype.conformFrameRate = function (conformFrameRate) {
+            if (conformFrameRate !== void 0)
+                this._source.conformFrameRate = conformFrameRate;
+            return this._source.conformFrameRate;
+        };
+        //methods
+        KFootageSource.prototype.guessAlphaMode = function () {
+            this._source.guessAlphaMode();
+        };
+        KFootageSource.prototype.guessPulldown = function (method) {
+            this._source.guessPulldown(method);
+        };
+        return KFootageSource;
+    }());
+    KIKAKU.KFootageSource = KFootageSource;
+    var KSolidSource = (function (_super) {
+        __extends(KSolidSource, _super);
+        function KSolidSource() {
+            _super.apply(this, arguments);
+        }
+        KSolidSource.prototype.isValid = function () {
+            var source = this._source;
+            return source && source instanceof SolidSource && isValid(source);
+        };
+        //attributes
+        KSolidSource.prototype.color = function (color) {
+            if (color !== void 0)
+                this._source.color = color;
+            return this._source.color;
+        };
+        return KSolidSource;
+    }(KFootageSource));
+    KIKAKU.KSolidSource = KSolidSource;
+    var KPlaceholderSource = (function (_super) {
+        __extends(KPlaceholderSource, _super);
+        function KPlaceholderSource() {
+            _super.apply(this, arguments);
+        }
+        KPlaceholderSource.prototype.isValid = function () {
+            var source = this._source;
+            return source && source instanceof PlaceholderSource && isValid(source);
+        };
+        return KPlaceholderSource;
+    }(KFootageSource));
+    KIKAKU.KPlaceholderSource = KPlaceholderSource;
+    var KFileSource = (function (_super) {
+        __extends(KFileSource, _super);
+        function KFileSource() {
+            _super.apply(this, arguments);
+        }
+        KFileSource.prototype.isValid = function () {
+            var source = this._source;
+            return source && source instanceof FileSource && isValid(source);
+        };
+        //attributes
+        KFileSource.prototype.file = function () {
+            return new KIKAKU.KFile(this._source.file);
+        };
+        KFileSource.prototype.missingFootagePath = function () {
+            return this._source.missingFootagePath;
+        };
+        //methods
+        KFileSource.prototype.reload = function () {
+            return this._source.reload();
+        };
+        return KFileSource;
+    }(KFootageSource));
+    KIKAKU.KFileSource = KFileSource;
+})(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
 (function (KIKAKU) {
     var KItemCollection = (function () {
@@ -2121,7 +2752,7 @@ var KIKAKU;
             return this._item.useProxy;
         };
         KAVItem.prototype.proxySource = function () {
-            return this._item.proxySource;
+            return new KIKAKU.KFootageSource(this._item.proxySource);
         };
         KAVItem.prototype.time = function (time) {
             if (time !== void 0)
@@ -2141,10 +2772,20 @@ var KIKAKU;
             return this._item.footageMissing;
         };
         KAVItem.prototype.setProxy = function (file) {
-            this._item.setProxy(file);
+            if (file instanceof KIKAKU.KFile) {
+                this._item.setProxy(file.get());
+            }
+            else {
+                this._item.setProxy(file);
+            }
         };
         KAVItem.prototype.setProxyWithSequence = function (file, forceAlphabetical) {
-            this._item.setProxyWithSequence(file, forceAlphabetical);
+            if (file instanceof KIKAKU.KFile) {
+                this._item.setProxyWithSequence(file.get(), forceAlphabetical);
+            }
+            else {
+                this._item.setProxyWithSequence(file, forceAlphabetical);
+            }
         };
         KAVItem.prototype.setProxyWithSolid = function (color, name, width, height, pixelAspect) {
             this._item.setProxyWithSolid(color, name, width, height, pixelAspect);
@@ -2295,17 +2936,27 @@ var KIKAKU;
         };
         //attributes
         KFootageItem.prototype.file = function () {
-            return this._item.file;
+            return new KIKAKU.KFile(this._item.file);
         };
         KFootageItem.prototype.mainSource = function () {
-            return this._item.mainSource;
+            return new KIKAKU.KFootageSource(this._item.mainSource);
         };
         //methods
         KFootageItem.prototype.replace = function (file) {
-            this._item.replace(file);
+            if (file instanceof KIKAKU.KFile) {
+                this._item.replace(file.get());
+            }
+            else {
+                this._item.replace(file);
+            }
         };
         KFootageItem.prototype.replaceWithSequence = function (file, forceAlphabetical) {
-            this._item.replaceWithSequence(file, forceAlphabetical);
+            if (file instanceof KIKAKU.KFile) {
+                this._item.replaceWithSequence(file.get(), forceAlphabetical);
+            }
+            else {
+                this._item.replaceWithSequence(file, forceAlphabetical);
+            }
         };
         KFootageItem.prototype.replaceWithPlaceholder = function (name, width, height, frameRate, duration) {
             this._item.replaceWithPlaceholder(name, width, height, frameRate, duration);
@@ -2327,10 +2978,11 @@ var KIKAKU;
             this._layers = _layers;
         }
         KLayerCollection.prototype.add = function (item, duration) {
+            var av_item = item instanceof KIKAKU.KAVItem ? item.get() : item;
             if (duration !== void 0) {
-                return new KAVLayer(this._layers.add(item, duration));
+                return new KAVLayer(this._layers.add(av_item, duration));
             }
-            return new KAVLayer(this._layers.add(item));
+            return new KAVLayer(this._layers.add(av_item));
         };
         KLayerCollection.prototype.addNull = function (duration) {
             if (duration !== void 0) {
@@ -2402,6 +3054,49 @@ var KIKAKU;
         KLayer.prototype.asCamera = function () {
             return new KCameraLayer(this._layer);
         };
+        //properties
+        KLayer.prototype.marker = function () {
+            return new KIKAKU.KProperty(this._layer.marker);
+        };
+        KLayer.prototype.transform = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.transform);
+        };
+        KLayer.prototype.anchorPoint = function () {
+            return new KIKAKU.KProperty(this._layer.transform.anchorPoint);
+        };
+        KLayer.prototype.position = function () {
+            return new KIKAKU.KProperty(this._layer.transform.position);
+        };
+        KLayer.prototype.xPosition = function () {
+            return new KIKAKU.KProperty(this._layer.transform.xPosition);
+        };
+        KLayer.prototype.yPosition = function () {
+            return new KIKAKU.KProperty(this._layer.transform.yPosition);
+        };
+        KLayer.prototype.zPosition = function () {
+            return new KIKAKU.KProperty(this._layer.transform.zPosition);
+        };
+        KLayer.prototype.scale = function () {
+            return new KIKAKU.KProperty(this._layer.transform.scale);
+        };
+        KLayer.prototype.orientation = function () {
+            return new KIKAKU.KProperty(this._layer.transform.orientation);
+        };
+        KLayer.prototype.rotation = function () {
+            return new KIKAKU.KProperty(this._layer.transform.rotation);
+        };
+        KLayer.prototype.xRotation = function () {
+            return new KIKAKU.KProperty(this._layer.transform.xRotation);
+        };
+        KLayer.prototype.yRotation = function () {
+            return new KIKAKU.KProperty(this._layer.transform.yRotation);
+        };
+        KLayer.prototype.zRotation = function () {
+            return new KIKAKU.KProperty(this._layer.transform.zRotation);
+        };
+        KLayer.prototype.opacity = function () {
+            return new KIKAKU.KProperty(this._layer.transform.opacity);
+        };
         //attributes
         KLayer.prototype.index = function () {
             return this._layer.index;
@@ -2412,8 +3107,14 @@ var KIKAKU;
             return this._layer.name;
         };
         KLayer.prototype.parent = function (parent) {
-            if (parent !== void 0)
-                this._layer.parent = parent;
+            if (parent !== void 0) {
+                if (parent instanceof KLayer) {
+                    this._layer.parent = parent.get();
+                }
+                else {
+                    this._layer.parent = parent;
+                }
+            }
             return this._layer.parent;
         };
         KLayer.prototype.time = function (time) {
@@ -2495,29 +3196,47 @@ var KIKAKU;
             this._layer.moveToEnd();
         };
         KLayer.prototype.moveAfter = function (layer) {
-            this._layer.moveAfter(layer);
+            if (layer instanceof KLayer) {
+                this._layer.moveAfter(layer.get());
+            }
+            else {
+                this._layer.moveAfter(layer);
+            }
         };
         KLayer.prototype.moveBefore = function (layer) {
-            this._layer.moveBefore(layer);
+            if (layer instanceof KLayer) {
+                this._layer.moveBefore(layer.get());
+            }
+            else {
+                this._layer.moveBefore(layer);
+            }
         };
         KLayer.prototype.duplicate = function () {
             return new KLayer(this._layer.duplicate());
         };
         KLayer.prototype.copyToComp = function (intoComp) {
-            this._layer.copyToComp(intoComp);
-            return new KLayer(intoComp.layer(1));
+            var comp = intoComp instanceof KIKAKU.KCompItem ? intoComp.get() : intoComp;
+            this._layer.copyToComp(comp);
+            return new KLayer(comp.layer(1));
         };
         KLayer.prototype.activeAtTime = function (time) {
             return this._layer.activeAtTime(time);
         };
         KLayer.prototype.setParentWithJump = function (newParent) {
-            if (newParent !== void 0)
-                this._layer.setParentWithJump(newParent);
+            if (newParent !== void 0) {
+                var parent = newParent instanceof KLayer ? newParent.get() : newParent;
+                this._layer.setParentWithJump(parent);
+            }
             else
                 this._layer.setParentWithJump();
         };
         KLayer.prototype.applyPreset = function (presetName) {
-            this._layer.applyPreset(presetName);
+            if (presetName instanceof KIKAKU.KFile) {
+                this._layer.applyPreset(presetName.get());
+            }
+            else {
+                this._layer.applyPreset(presetName);
+            }
         };
         return KLayer;
     }());
@@ -2530,6 +3249,28 @@ var KIKAKU;
         KAVLayer.prototype.isValid = function () {
             var layer = this._layer;
             return layer && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
+        };
+        //properties
+        KAVLayer.prototype.timeRemap = function () {
+            return new KIKAKU.KProperty(this._layer.timeRemap);
+        };
+        KAVLayer.prototype.mask = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.mask);
+        };
+        KAVLayer.prototype.effect = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.effect);
+        };
+        KAVLayer.prototype.layerStyle = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.layerStyle);
+        };
+        KAVLayer.prototype.geometryOption = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.geometryOption);
+        };
+        KAVLayer.prototype.materialOption = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.materialOption);
+        };
+        KAVLayer.prototype.audio = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.audio);
         };
         //attributes
         KAVLayer.prototype.source = function () {
@@ -2660,7 +3401,8 @@ var KIKAKU;
             return this._layer.calculateTransformFromPoints(pointTopLeft, pointTopRight, pointBottomRight);
         };
         KAVLayer.prototype.replaceSource = function (newSource, fixExpressions) {
-            this._layer.replaceSource(newSource, fixExpressions);
+            var source = newSource instanceof KIKAKU.KAVItem ? newSource.get() : newSource;
+            this._layer.replaceSource(source, fixExpressions);
         };
         KAVLayer.prototype.sourceRectAtTime = function (timeT, extents) {
             return this._layer.sourceRectAtTime(timeT, extents);
@@ -2680,6 +3422,10 @@ var KIKAKU;
             var layer = this._layer;
             return layer && layer instanceof ShapeLayer && isValid(layer);
         };
+        //properties
+        KShapeLayer.prototype.contents = function () {
+            return new KIKAKU.KPropertyBase(this._layer.property('ADBE Root Vectors Group')).asPropertyGroup();
+        };
         return KShapeLayer;
     }(KAVLayer));
     KIKAKU.KShapeLayer = KShapeLayer;
@@ -2691,6 +3437,13 @@ var KIKAKU;
         KTextLayer.prototype.isValid = function () {
             var layer = this._layer;
             return layer && layer instanceof TextLayer && isValid(layer);
+        };
+        //properties
+        KTextLayer.prototype.text = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.text);
+        };
+        KTextLayer.prototype.sourceText = function () {
+            return new KIKAKU.KProperty(this._layer.text.sourceText);
         };
         return KTextLayer;
     }(KAVLayer));
@@ -2704,6 +3457,10 @@ var KIKAKU;
             var layer = this._layer;
             return layer && layer instanceof CameraLayer && isValid(layer);
         };
+        //properties
+        KCameraLayer.prototype.cameraOption = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.cameraOption);
+        };
         return KCameraLayer;
     }(KLayer));
     KIKAKU.KCameraLayer = KCameraLayer;
@@ -2715,6 +3472,10 @@ var KIKAKU;
         KLightLayer.prototype.isValid = function () {
             var layer = this._layer;
             return layer && layer instanceof LightLayer && isValid(layer);
+        };
+        //properties
+        KLightLayer.prototype.lightOption = function () {
+            return new KIKAKU.KPropertyGroup(this._layer.lightOption);
         };
         return KLightLayer;
     }(KLayer));
@@ -2796,6 +3557,12 @@ var KIKAKU;
         KPropertyBase.prototype.property = function (index_or_name) {
             return new KPropertyBase(this._prop.property(index_or_name));
         };
+        KPropertyBase.prototype.propertyAsProperty = function (index_or_name) {
+            return new KPropertyBase(this._prop.property(index_or_name)).asProperty();
+        };
+        KPropertyBase.prototype.propertyAsPropertyGroup = function (index_or_name) {
+            return new KPropertyBase(this._prop.property(index_or_name)).asPropertyGroup();
+        };
         KPropertyBase.prototype.propertyGroup = function (countUp) {
             if (countUp === void 0) { countUp = 1; }
             return new KPropertyGroup(this._prop.propertyGroup(countUp));
@@ -2830,6 +3597,12 @@ var KIKAKU;
         };
         KPropertyGroup.prototype.addProperty = function (name) {
             return new KPropertyBase(this._prop.addProperty(name));
+        };
+        KPropertyGroup.prototype.addPropertyAsProperty = function (name) {
+            return new KPropertyBase(this._prop.addProperty(name)).asProperty();
+        };
+        KPropertyGroup.prototype.addPropertyAsPropertyGroup = function (name) {
+            return new KPropertyBase(this._prop.addProperty(name)).asPropertyGroup();
         };
         return KPropertyGroup;
     }(KPropertyBase));
@@ -3069,6 +3842,9 @@ var KIKAKU;
     KIKAKU.KProperty = KProperty;
 })(KIKAKU || (KIKAKU = {}));
 /// <reference path="wrapper/array.ts" />
+/// <reference path="wrapper/file.ts" />
+/// <reference path="wrapper/project.ts" />
+/// <reference path="wrapper/source.ts" />
 /// <reference path="wrapper/item.ts" />
 /// <reference path="wrapper/layer.ts" />
 /// <reference path="wrapper/property.ts" /> 
@@ -4327,7 +5103,7 @@ var KIKAKU;
             path_ui.onEnterKey = function () { _this.on('onEnterKey', false); };
             path_ui.onActivate = function () { _this.on('onActivate', false); };
             path_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
-            var filter = this._options.filter;
+            var filter = KIKAKU.Utils.isString(this._options.filter) ? this._options.filter : undefined;
             var browse_ui = group.add('button', undefined, '...');
             browse_ui.maximumSize = [20, height];
             browse_ui.alignment = ['right', 'fill'];
@@ -4366,7 +5142,7 @@ var KIKAKU;
             browse_ui.alignment = ['right', 'fill'];
             browse_ui.onClick = browse_ui.onEnterKey = function () {
                 var folder = Folder.selectDialog();
-                if (folder) {
+                if (folder && folder instanceof Folder) {
                     if (path_ui.text !== folder.absoluteURI) {
                         path_ui.text = folder.absoluteURI;
                         _this.onChange();
@@ -4935,11 +5711,11 @@ var KIKAKU;
                 if (index < 0 || index >= this._uis.length) {
                     throw new RangeError;
                 }
-                var items = items2;
+                var items_3 = items2;
                 processItemUI(this._uis[index], this._locks[index], this._builder, function (ui) {
                     ui.removeAll();
-                    for (var _i = 0, items_3 = items; _i < items_3.length; _i++) {
-                        var item = items_3[_i];
+                    for (var _i = 0, items_4 = items_3; _i < items_4.length; _i++) {
+                        var item = items_4[_i];
                         ui.add('item', item);
                     }
                 });
@@ -4956,10 +5732,10 @@ var KIKAKU;
                 if (index < 0 || index >= this._uis.length) {
                     throw new RangeError;
                 }
-                var items = KIKAKU.Utils.isArray(items2) ? items2 : [items2];
+                var items_5 = KIKAKU.Utils.isArray(items2) ? items2 : [items2];
                 processItemUI(this._uis[index], this._locks[index], this._builder, function (ui) {
-                    for (var _i = 0, items_4 = items; _i < items_4.length; _i++) {
-                        var item = items_4[_i];
+                    for (var _i = 0, items_6 = items_5; _i < items_6.length; _i++) {
+                        var item = items_6[_i];
                         ui.add('item', item);
                     }
                 });
@@ -4976,9 +5752,9 @@ var KIKAKU;
                 if (index < 0 || index >= this._uis.length) {
                     throw new RangeError;
                 }
-                var item = item2;
+                var item_1 = item2;
                 processItemUI(this._uis[index], this._locks[index], this._builder, function (ui) {
-                    ui.remove(item);
+                    ui.remove(item_1);
                 });
                 return;
             }
@@ -6145,7 +6921,7 @@ var KIKAKU;
             Utility.prototype.removeLayer = function (name) {
                 if (this._layers[name]) {
                     try {
-                        var folder_item;
+                        var folder_item = void 0;
                         var layer = this._layers[name];
                         if (KIKAKU.Utils.isSolidLayer(layer)) {
                             var source = layer.source;

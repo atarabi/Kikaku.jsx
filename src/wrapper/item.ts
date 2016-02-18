@@ -117,7 +117,7 @@ namespace KIKAKU {
       return this._item.useProxy;
     }
     proxySource() {
-      return this._item.proxySource;
+      return new KFootageSource(this._item.proxySource);
     }
     time(time?: number) {
       if (time !== void 0) this._item.time = time;
@@ -135,11 +135,19 @@ namespace KIKAKU {
     footageMissing() {
       return this._item.footageMissing;
     }
-    setProxy(file: File) {
-      this._item.setProxy(file);
+    setProxy(file: File | KFile) {
+      if (file instanceof KFile) {
+        this._item.setProxy(file.get());
+      } else {
+        this._item.setProxy(file);
+      }
     }
-    setProxyWithSequence(file: File, forceAlphabetical: boolean) {
-      this._item.setProxyWithSequence(file, forceAlphabetical);
+    setProxyWithSequence(file: File | KFile, forceAlphabetical: boolean) {
+      if (file instanceof KFile) {
+        this._item.setProxyWithSequence(file.get(), forceAlphabetical);
+      } else {
+        this._item.setProxyWithSequence(file, forceAlphabetical);
+      }
     }
     setProxyWithSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number) {
       this._item.setProxyWithSolid(color, name, width, height, pixelAspect);
@@ -263,17 +271,25 @@ namespace KIKAKU {
     }
     //attributes
     file() {
-      return this._item.file;
+      return new KFile(this._item.file);
     }
     mainSource() {
-      return this._item.mainSource;
+      return new KFootageSource(this._item.mainSource);
     }
     //methods
-    replace(file: File) {
-      this._item.replace(file);
+    replace(file: File | KFile) {
+      if (file instanceof KFile) {
+        this._item.replace(file.get());
+      } else {
+        this._item.replace(file);
+      }
     }
-    replaceWithSequence(file: File, forceAlphabetical) {
-      this._item.replaceWithSequence(file, forceAlphabetical);
+    replaceWithSequence(file: File | KFile, forceAlphabetical) {
+      if (file instanceof KFile) {
+        this._item.replaceWithSequence(file.get(), forceAlphabetical);
+      } else {
+        this._item.replaceWithSequence(file, forceAlphabetical);
+      }
     }
     replaceWithPlaceholder(name: string, width: number, height: number, frameRate: number, duration: number) {
       this._item.replaceWithPlaceholder(name, width, height, frameRate, duration);
