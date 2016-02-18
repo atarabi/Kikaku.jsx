@@ -39,6 +39,9 @@ declare class Application {
   /** When true, the local After Effects application is running as a render engine. */
   isRenderEngine: boolean;
 	
+  /** The language After Effects is running. */
+  language: Language;
+	
   /** Application settings that can be set via scripting. */
   settings: Settings;
 	
@@ -407,6 +410,9 @@ declare class CompItem extends AVItem {
 	
   /** Opens the composition in a Composition panel. */
   openInViewer(): Viewer;
+  
+  /** Save the specific frame to a png file */
+  saveFrameToPng(time: number, file: File);
 }
 
 /** The FileSource object describes footage that comes from a file. */
@@ -1468,6 +1474,7 @@ declare class _TransformGroup extends PropertyGroup {
   zPosition: Property;
   scale: Property;
   orientation: Property;
+  rotation: Property;
   xRotation: Property;
   yRotation: Property;
   zRotation: Property;
