@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.5.0';
+    KIKAKU.VERSION = '0.6.0';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -3878,13 +3878,16 @@ var KIKAKU;
             }
         };
         EventDispatcher.prototype.dispatchEvent = function (type) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
             var listeners = this._listners[type];
             if (!listeners) {
                 return;
             }
-            var args = Array.prototype.slice.call(arguments, 1);
-            for (var _i = 0, listeners_1 = listeners; _i < listeners_1.length; _i++) {
-                var listener = listeners_1[_i];
+            for (var _a = 0, listeners_1 = listeners; _a < listeners_1.length; _a++) {
+                var listener = listeners_1[_a];
                 listener.fn.apply(listener.ctx, args);
             }
         };
@@ -5379,7 +5382,7 @@ var KIKAKU;
             var _this = this;
             var group = this._group;
             this._color = parseColor(this._value);
-            var color_ui = this._ui = group.add('checkbox', undefined);
+            var color_ui = this._ui = group.add('button', undefined);
             if (this._options.helpTip) {
                 color_ui.helpTip = this._options.helpTip;
             }
@@ -6342,6 +6345,99 @@ var KIKAKU;
             }
             return this;
         };
+        UIBuilder.prototype.addHeading = function (name, title, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.HEADING, name, title, options);
+        };
+        UIBuilder.prototype.addSeparator = function (name) {
+            this.add(UIBuilder.PARAMETER_TYPE.SEPARATOR, name);
+        };
+        UIBuilder.prototype.addSpace = function (name, height) {
+            this.add(UIBuilder.PARAMETER_TYPE.SPACE, name, height);
+        };
+        UIBuilder.prototype.addPanel = function (name, title, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.PANEL, name, title, options);
+        };
+        UIBuilder.prototype.addPanelEnd = function (name) {
+            this.add(UIBuilder.PARAMETER_TYPE.PANEL_END, name);
+        };
+        UIBuilder.prototype.addGroup = function (name) {
+            this.add(UIBuilder.PARAMETER_TYPE.GROUP, name);
+        };
+        UIBuilder.prototype.addGroupEnd = function (name) {
+            this.add(UIBuilder.PARAMETER_TYPE.GROUP_END, name);
+        };
+        UIBuilder.prototype.addText = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.TEXT, name, initial_value, options);
+        };
+        UIBuilder.prototype.addTexts = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.TEXTS, name, initial_values, options);
+        };
+        UIBuilder.prototype.addTextarea = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.TEXTAREA, name, initial_value, options);
+        };
+        UIBuilder.prototype.addTextareas = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.TEXTAREAS, name, initial_values, options);
+        };
+        UIBuilder.prototype.addStatictext = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.STATICTEXT, name, initial_value, options);
+        };
+        UIBuilder.prototype.addStatictexts = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTS, name, initial_values, options);
+        };
+        UIBuilder.prototype.addNumber = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.NUMBER, name, initial_value, options);
+        };
+        UIBuilder.prototype.addNumbers = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.NUMBERS, name, initial_values, options);
+        };
+        UIBuilder.prototype.addSlider = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.SLIDER, name, initial_value, options);
+        };
+        UIBuilder.prototype.addPoint = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.POINT, name, initial_value, options);
+        };
+        UIBuilder.prototype.addPoint3d = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.POINT3D, name, initial_value, options);
+        };
+        UIBuilder.prototype.addFile = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.FILE, name, initial_value, options);
+        };
+        UIBuilder.prototype.addFolder = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.FOLDER, name, initial_value, options);
+        };
+        UIBuilder.prototype.addCheckbox = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.CHECKBOX, name, initial_value, options);
+        };
+        UIBuilder.prototype.addCheckboxes = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.CHECKBOXES, name, initial_values, options);
+        };
+        UIBuilder.prototype.addRadiobutton = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.RADIOBUTTON, name, initial_values, options);
+        };
+        UIBuilder.prototype.addColor = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.COLOR, name, initial_value, options);
+        };
+        UIBuilder.prototype.addColors = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.COLORS, name, initial_values, options);
+        };
+        UIBuilder.prototype.addPopup = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.POPUP, name, initial_value, options);
+        };
+        UIBuilder.prototype.addPopups = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.POPUPS, name, initial_values, options);
+        };
+        UIBuilder.prototype.addListbox = function (name, initial_value, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.LISTBOX, name, initial_value, options);
+        };
+        UIBuilder.prototype.addListboxes = function (name, initial_values, options) {
+            this.add(UIBuilder.PARAMETER_TYPE.LISTBOXES, name, initial_values, options);
+        };
+        UIBuilder.prototype.addScript = function (name, value) {
+            this.add(UIBuilder.PARAMETER_TYPE.SCRIPT, name, value);
+        };
+        UIBuilder.prototype.addHelp = function (name, value) {
+            this.add(UIBuilder.PARAMETER_TYPE.HEADING, name, value);
+        };
         UIBuilder.prototype.api = function (name, fn) {
             UIBuilder.API.add(this.getName(), name, fn, this);
             return this;
@@ -6355,7 +6451,11 @@ var KIKAKU;
             return this;
         };
         UIBuilder.prototype.trigger = function (type) {
-            this._event_dispatcher.dispatchEvent.apply(this._event_dispatcher, arguments);
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            this._event_dispatcher.dispatchEvent.apply(this._event_dispatcher, [type].concat(args));
             return this;
         };
         UIBuilder.prototype.validateParameter = function (name) {
@@ -6587,7 +6687,7 @@ var KIKAKU;
                     this.api(method, this[method]);
                 }
             }
-            //init
+            //events
             var init = function () {
                 var auto_save = _this._options.autoSave;
                 var values = {};
@@ -6600,13 +6700,24 @@ var KIKAKU;
                 for (var name in _this._parameters) {
                     _this._parameters[name].init(values[name]);
                 }
-                _this.trigger('init');
+                _this.trigger(UIBuilder.EVENT_TYPE.INIT);
             };
+            var _loop_1 = function(event_key) {
+                var event_type = UIBuilder.EVENT_TYPE[event_key];
+                if (event_type !== UIBuilder.EVENT_TYPE.INIT && event_type !== UIBuilder.EVENT_TYPE.CLOSE) {
+                    w.addEventListener(event_type, function (ev) {
+                        _this.trigger(event_type, ev);
+                    });
+                }
+            };
+            for (var event_key in UIBuilder.EVENT_TYPE) {
+                _loop_1(event_key);
+            }
             if (w instanceof Window) {
                 w.onShow = function () { init(); };
                 w.onClose = function () {
                     UIBuilder.API.remove(_this.getName());
-                    _this.trigger('close');
+                    _this.trigger(UIBuilder.EVENT_TYPE.CLOSE);
                 };
                 w.center();
                 w.show();
@@ -6652,6 +6763,15 @@ var KIKAKU;
             LISTBOXES: 'listboxes',
             SCRIPT: 'script',
             HELP: 'help'
+        };
+        UIBuilder.EVENT_TYPE = {
+            INIT: 'init',
+            MOUSEDOWN: 'mousedown',
+            MOUSEUP: 'mouseup',
+            MOUSEMOVE: 'mousemove',
+            MOUSEOVER: 'mouseover',
+            MOUSEOUT: 'mouseout',
+            CLOSE: 'close'
         };
         UIBuilder.PARAMETERS_KEY = '__parameters__';
         UIBuilder.SPACING_SIZE = 2;

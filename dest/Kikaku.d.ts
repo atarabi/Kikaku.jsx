@@ -821,7 +821,7 @@ declare namespace KIKAKU {
         private _listners;
         addEventListener(type: string, fn: Function, ctx?: any): void;
         removeEventListener(type: string, fn: Function | string, ctx?: any): void;
-        dispatchEvent(type: string): void;
+        dispatchEvent(type: string, ...args: any[]): void;
     }
 }
 declare namespace KIKAKU {
@@ -984,6 +984,15 @@ declare namespace KIKAKU {
             SCRIPT: string;
             HELP: string;
         };
+        static EVENT_TYPE: {
+            INIT: string;
+            MOUSEDOWN: string;
+            MOUSEUP: string;
+            MOUSEMOVE: string;
+            MOUSEOVER: string;
+            MOUSEOUT: string;
+            CLOSE: string;
+        };
         private static PARAMETERS_KEY;
         private static SPACING_SIZE;
         private static MARGINS_SIZE;
@@ -1008,10 +1017,212 @@ declare namespace KIKAKU {
         getTitleWidth(): number;
         getWidth(): number;
         add(type: string, name: string, value?: any, options?: UIParameterOptions | Function): this;
+        addHeading(name: string, title?: string, options?: {
+            title?: string;
+            helpTip?: string;
+        }): void;
+        addSeparator(name: string): void;
+        addSpace(name: string, height?: number): void;
+        addPanel(name: string, title?: string, options?: {
+            stack?: boolean;
+        }): void;
+        addPanelEnd(name: string): void;
+        addGroup(name: string): void;
+        addGroupEnd(name: string): void;
+        addText(name: string, initial_value?: string, options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onChanging?: Function;
+            onEnterKey?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addTexts(name: string, initial_values?: string[], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+            onChanging?: Function | Function[];
+            onEnterKey?: Function | Function[];
+            onActivate?: Function | Function[];
+            onDeactivate?: Function | Function[];
+        }): void;
+        addTextarea(name: string, initial_value?: string, options?: Function | {
+            title?: boolean | string;
+            height?: number;
+            helpTip?: string;
+            callback?: Function;
+            onChanging?: Function;
+            onEnterKey?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addTextareas(name: string, initial_values?: string[], options?: Function | {
+            title?: boolean | string;
+            height?: number;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+            onChanging?: Function | Function[];
+            onEnterKey?: Function | Function[];
+            onActivate?: Function | Function[];
+            onDeactivate?: Function | Function[];
+        }): void;
+        addStatictext(name: string, initial_value?: string, options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+        }): void;
+        addStatictexts(name: string, initial_values?: string[], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+        }): void;
+        addNumber(name: string, initial_value?: number | {
+            value?: number;
+            minvalue?: number;
+            maxvalue?: number;
+        }, options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onEnterKey?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addNumbers(name: string, initial_values?: (number | {
+            value?: number;
+            minvalue?: number;
+            maxvalue?: number;
+        })[], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+            onEnterKey?: Function | Function[];
+            onActivate?: Function | Function[];
+            onDeactivate?: Function | Function[];
+        }): void;
+        addSlider(name: string, initial_value?: number | {
+            value?: number;
+            minvalue?: number;
+            maxvalue?: number;
+        }, options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onEnterKey?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addPoint(name: string, initial_value?: [number, number], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onEnterKey?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addPoint3d(name: string, initial_value?: [number, number, number], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onEnterKey?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addFile(name: string, initial_value?: string, options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onEnterKey?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addFolder(name: string, initial_value?: string, options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onEnterKey?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addCheckbox(name: string, initial_value?: boolean | {
+            value?: boolean;
+            text?: string;
+        }, options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addCheckboxes(name: string, initial_values?: (boolean | {
+            value?: boolean;
+            text?: string;
+        })[], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+            onActivate?: Function | Function[];
+            onDeactivate?: Function | Function[];
+        }): void;
+        addRadiobutton(name: string, initial_values: string[], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+        }): void;
+        addColor(name: string, initial_value?: [number, number, number], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addColors(name: string, initial_values?: ([number, number, number])[], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+            onActivate?: Function | Function[];
+            onDeactivate?: Function | Function[];
+        }): void;
+        addPopup(name: string, initial_value?: string[], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addPopups(name: string, initial_values?: string[][], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+            onActivate?: Function | Function[];
+            onDeactivate?: Function | Function[];
+        }): void;
+        addListbox(name: string, initial_value?: string[], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string;
+            callback?: Function;
+            onActivate?: Function;
+            onDeactivate?: Function;
+        }): void;
+        addListboxes(name: string, initial_values?: string[][], options?: Function | {
+            title?: boolean | string;
+            helpTip?: string | string[];
+            callback?: Function | Function[];
+            onActivate?: Function | Function[];
+            onDeactivate?: Function | Function[];
+        }): void;
+        addScript(name: string, value?: Function | {
+            title?: string;
+            helpTip?: string | string[];
+            callback?: Function;
+            undo?: boolean;
+        }): void;
+        addHelp(name: string, value?: string | Function): void;
         api(name: string, fn: Function): this;
         on(type: string, fn: Function): this;
         off(type: string, fn: Function): this;
-        trigger(type: string): this;
+        trigger(type: string, ...args: any[]): this;
         private validateParameter(name);
         get(name: string, index?: number): any;
         set(name: string, arg1?: any, arg2?: any): this;

@@ -322,7 +322,7 @@ namespace KIKAKU {
   }
 
   class GroupEndParameter extends ParameterBase { }
-  
+
   //text parameter
   class TextParameter extends SingleParameter {
     protected _ui: EditText | StaticText;
@@ -491,7 +491,7 @@ namespace KIKAKU {
       });
     }
   }
-	
+
   //number parameter
   function numberOnChange(parameter: ParameterBase, options?: { minvalue?: number; maxvalue?: number; index?: number; }) {
     let _options: { minvalue?: number; maxvalue?: number; index?: number; } = Utils.assign({
@@ -730,7 +730,7 @@ namespace KIKAKU {
       }
     }
   }
-	
+
   //point parameter
   class PointParameterBase extends SingleParameter {
     protected _uis: EditText[] = [];
@@ -802,7 +802,7 @@ namespace KIKAKU {
       return 3;
     }
   }
-	
+
   //file parameter
   class FileParameter extends TextParameter {
     buildParameter(width: number) {
@@ -864,7 +864,7 @@ namespace KIKAKU {
       };
     }
   }
-	
+
   //checkbox parameter
   function extractCheckboxValue(obj): { value: boolean; text: string; } {
     let value: boolean = true;
@@ -988,7 +988,7 @@ namespace KIKAKU {
       }
     }
   }
-	
+
   //radiobutton parameter
   class RadiobuttonParameter extends SingleParameter {
     protected _uis: RadioButton[] = [];
@@ -1041,7 +1041,7 @@ namespace KIKAKU {
       }
     }
   }
-	
+
   //color paramter
   type Color = [number, number, number, number];
 
@@ -1085,7 +1085,7 @@ namespace KIKAKU {
       let group = this._group;
       this._color = parseColor(this._value);
 
-      let color_ui = this._ui = <Button>group.add('checkbox', undefined);
+      let color_ui = this._ui = <Button>group.add('button', undefined);
       if (this._options.helpTip) {
         color_ui.helpTip = <string>this._options.helpTip;
       }
@@ -1207,7 +1207,7 @@ namespace KIKAKU {
       }
     }
   }
-	
+
   //item parameter
   function extractItemValue(obj): { value: string; items: string[]; } {
     var value: string = null,
@@ -1594,7 +1594,7 @@ namespace KIKAKU {
       });
     }
   }
-	
+
   //script
   class ScriptParameter extends Parameter {
     protected _ui: Button;
@@ -1690,7 +1690,7 @@ namespace KIKAKU {
       return {};
     }
   }
-	
+
   //help parameter
   class HelpParameter extends ParameterBase {
     protected _ui: Button;
@@ -1707,7 +1707,7 @@ namespace KIKAKU {
       };
     }
   }
-  
+
   //setting manager
   class UISettingManger {
     private _setting_manager: SettingManager;
@@ -1772,7 +1772,7 @@ namespace KIKAKU {
       }
     }
   }
-	
+
   //file manager
   class UIFileManager {
     static FILE_TYPE = {
@@ -1825,7 +1825,7 @@ namespace KIKAKU {
       return this._file_manager.delete(filename);
     }
   }
-	
+
   //api
   export interface UIAPI {
     (script_name: string, api_name: string, ...args): any;
@@ -1937,6 +1937,15 @@ namespace KIKAKU {
       LISTBOXES: 'listboxes',
       SCRIPT: 'script',
       HELP: 'help',
+    };
+    static EVENT_TYPE = {
+      INIT: 'init',
+      MOUSEDOWN: 'mousedown',
+      MOUSEUP: 'mouseup',
+      MOUSEMOVE: 'mousemove',
+      MOUSEOVER: 'mouseover',
+      MOUSEOUT: 'mouseout',
+      CLOSE: 'close',
     };
     private static PARAMETERS_KEY = '__parameters__';
     private static SPACING_SIZE = 2;
@@ -2100,6 +2109,252 @@ namespace KIKAKU {
 
       return this;
     }
+    addHeading(name: string, title?: string, options?: {
+      title?: string;
+      helpTip?: string;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.HEADING, name, title, options);
+    }
+    addSeparator(name: string) {
+      this.add(UIBuilder.PARAMETER_TYPE.SEPARATOR, name);
+    }
+    addSpace(name: string, height?: number) {
+      this.add(UIBuilder.PARAMETER_TYPE.SPACE, name, height);
+    }
+    addPanel(name: string, title?: string, options?: {
+      stack?: boolean;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.PANEL, name, title, options);
+    }
+    addPanelEnd(name: string) {
+      this.add(UIBuilder.PARAMETER_TYPE.PANEL_END, name);
+    }
+    addGroup(name: string) {
+      this.add(UIBuilder.PARAMETER_TYPE.GROUP, name);
+    }
+    addGroupEnd(name: string) {
+      this.add(UIBuilder.PARAMETER_TYPE.GROUP_END, name);
+    }
+    addText(name: string, initial_value?: string, options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onChanging?: Function;
+      onEnterKey?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.TEXT, name, initial_value, options);
+    }
+    addTexts(name: string, initial_values?: string[], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+      onChanging?: Function | Function[];
+      onEnterKey?: Function | Function[];
+      onActivate?: Function | Function[];
+      onDeactivate?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.TEXTS, name, initial_values, options);
+    }
+    addTextarea(name: string, initial_value?: string, options?: Function | {
+      title?: boolean | string;
+      height?: number;
+      helpTip?: string;
+      callback?: Function;
+      onChanging?: Function;
+      onEnterKey?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.TEXTAREA, name, initial_value, options);
+    }
+    addTextareas(name: string, initial_values?: string[], options?: Function | {
+      title?: boolean | string;
+      height?: number;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+      onChanging?: Function | Function[];
+      onEnterKey?: Function | Function[];
+      onActivate?: Function | Function[];
+      onDeactivate?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.TEXTAREAS, name, initial_values, options);
+    }
+    addStatictext(name: string, initial_value?: string, options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.STATICTEXT, name, initial_value, options);
+    }
+    addStatictexts(name: string, initial_values?: string[], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTS, name, initial_values, options);
+    }
+    addNumber(name: string, initial_value?: number | { value?: number; minvalue?: number; maxvalue?: number; }, options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onEnterKey?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.NUMBER, name, initial_value, options);
+    }
+    addNumbers(name: string, initial_values?: (number | { value?: number; minvalue?: number; maxvalue?: number; })[], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+      onEnterKey?: Function | Function[];
+      onActivate?: Function | Function[];
+      onDeactivate?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.NUMBERS, name, initial_values, options);
+    }
+    addSlider(name: string, initial_value?: number | { value?: number; minvalue?: number; maxvalue?: number }, options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onEnterKey?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.SLIDER, name, initial_value, options);
+    }
+    addPoint(name: string, initial_value?: [number, number], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onEnterKey?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.POINT, name, initial_value, options);
+    }
+    addPoint3d(name: string, initial_value?: [number, number, number], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onEnterKey?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.POINT3D, name, initial_value, options);
+    }
+    addFile(name: string, initial_value?: string, options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onEnterKey?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.FILE, name, initial_value, options);
+    }
+    addFolder(name: string, initial_value?: string, options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onEnterKey?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.FOLDER, name, initial_value, options);
+    }
+    addCheckbox(name: string, initial_value?: boolean | { value?: boolean; text?: string; }, options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.CHECKBOX, name, initial_value, options);
+    }
+    addCheckboxes(name: string, initial_values?: (boolean | { value?: boolean; text?: string; })[], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+      onActivate?: Function | Function[];
+      onDeactivate?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.CHECKBOXES, name, initial_values, options);
+    }
+    addRadiobutton(name: string, initial_values: string[], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.RADIOBUTTON, name, initial_values, options);
+    }
+    addColor(name: string, initial_value?: [number, number, number], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.COLOR, name, initial_value, options);
+    }
+    addColors(name: string, initial_values?: ([number, number, number])[], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+      onActivate?: Function | Function[];
+      onDeactivate?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.COLORS, name, initial_values, options);
+    }
+    addPopup(name: string, initial_value?: string[], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.POPUP, name, initial_value, options);
+    }
+    addPopups(name: string, initial_values?: string[][], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+      onActivate?: Function | Function[];
+      onDeactivate?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.POPUPS, name, initial_values, options);
+    }
+    addListbox(name: string, initial_value?: string[], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string;
+      callback?: Function;
+      onActivate?: Function;
+      onDeactivate?: Function;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.LISTBOX, name, initial_value, options);
+    }
+    addListboxes(name: string, initial_values?: string[][], options?: Function | {
+      title?: boolean | string;
+      helpTip?: string | string[];
+      callback?: Function | Function[];
+      onActivate?: Function | Function[];
+      onDeactivate?: Function | Function[];
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.LISTBOXES, name, initial_values, options);
+    }
+    addScript(name: string, value?: Function | {
+      title?: string;
+      helpTip?: string | string[];
+      callback?: Function;
+      undo?: boolean;
+    }) {
+      this.add(UIBuilder.PARAMETER_TYPE.SCRIPT, name, value);
+    }
+    addHelp(name: string, value?: string | Function) {
+      this.add(UIBuilder.PARAMETER_TYPE.HEADING, name, value);
+    }
 
     api(name: string, fn: Function) {
       UIBuilder.API.add(this.getName(), name, fn, this);
@@ -2114,8 +2369,8 @@ namespace KIKAKU {
       this._event_dispatcher.removeEventListener(type, fn, this);
       return this;
     }
-    trigger(type: string) {
-      this._event_dispatcher.dispatchEvent.apply(this._event_dispatcher, arguments);
+    trigger(type: string, ...args: any[]) {
+      this._event_dispatcher.dispatchEvent.apply(this._event_dispatcher, [type].concat(args));
       return this;
     }
 
@@ -2135,7 +2390,7 @@ namespace KIKAKU {
       this._parameters[name].set(arg1, arg2);
       return this;
     }
-    execute(name: string, undo?: boolean, ...args) {
+    execute(name: string, undo?: boolean, ...args: any[]) {
       this.validateParameter(name);
       return this._parameters[name].execute.apply(this._parameters[name], [undo].concat(args));
     }
@@ -2245,7 +2500,7 @@ namespace KIKAKU {
       w.spacing = UIBuilder.SPACING_SIZE;
       w.margins = UIBuilder.MARGINS_SIZE;
       if (resizeable) {
-        (<Window>w).onResizing = (<Window>w).onResize = function() {
+        w.onResizing = w.onResize = function() {
           this.layout.resize();
         };
       }
@@ -2254,7 +2509,7 @@ namespace KIKAKU {
       let current_width = width - 2 * UIBuilder.MARGINS_SIZE;
       let script_index = 0;
       let script_columns = this._options.numberOfScriptColumns;
-			
+
       //build parameters
       for (let name in this._parameters) {
         let parameter = this._parameters[name];
@@ -2313,7 +2568,7 @@ namespace KIKAKU {
           parameter.build(group, this);
         }
       }
-			
+
       //help
       if (this._options.help && !this._help) {
         let text = this.getName() + ' v' + this.getVersion();
@@ -2333,7 +2588,7 @@ namespace KIKAKU {
         group.alignChildren = ['right', 'top'];
         this._help.build(group, this);
       }
-			
+
       //api
       if (this._options.api) {
         const default_api = {
@@ -2362,8 +2617,8 @@ namespace KIKAKU {
           this.api(method, this[method]);
         }
       }
-			
-      //init
+
+      //events
       let init = () => {
         let auto_save = this._options.autoSave;
         let values: any = {};
@@ -2375,14 +2630,23 @@ namespace KIKAKU {
         for (var name in this._parameters) {
           this._parameters[name].init(values[name]);
         }
-        this.trigger('init');
+        this.trigger(UIBuilder.EVENT_TYPE.INIT);
       };
+
+      for (let event_key in UIBuilder.EVENT_TYPE) {
+        const event_type: string = UIBuilder.EVENT_TYPE[event_key];
+        if (event_type !== UIBuilder.EVENT_TYPE.INIT && event_type !== UIBuilder.EVENT_TYPE.CLOSE) {
+          w.addEventListener(event_type, (ev) => {
+            this.trigger(event_type, ev);
+          });
+        }
+      }
 
       if (w instanceof Window) {
         w.onShow = () => { init(); }
         w.onClose = () => {
           UIBuilder.API.remove(this.getName());
-          this.trigger('close');
+          this.trigger(UIBuilder.EVENT_TYPE.CLOSE);
         };
 
         w.center();

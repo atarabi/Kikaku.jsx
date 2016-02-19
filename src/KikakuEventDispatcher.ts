@@ -30,13 +30,11 @@ namespace KIKAKU {
 				}
 			}
 		}
-		dispatchEvent(type: string) {
+		dispatchEvent(type: string, ...args: any[]) {
 			const listeners = this._listners[type];
 			if (!listeners) {
 				return;
 			}
-			
-			const args = Array.prototype.slice.call(arguments, 1);
 			
 			for (let listener of listeners) {
 				listener.fn.apply(listener.ctx, args);
