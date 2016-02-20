@@ -1020,15 +1020,15 @@ declare namespace KIKAKU {
         addHeading(name: string, title?: string, options?: {
             title?: string;
             helpTip?: string;
-        }): void;
-        addSeparator(name: string): void;
-        addSpace(name: string, height?: number): void;
+        }): this;
+        addSeparator(name: string): this;
+        addSpace(name: string, height?: number): this;
         addPanel(name: string, title?: string, options?: {
             stack?: boolean;
-        }): void;
-        addPanelEnd(name: string): void;
-        addGroup(name: string): void;
-        addGroupEnd(name: string): void;
+        }): this;
+        addPanelEnd(name: string): this;
+        addGroup(name: string): this;
+        addGroupEnd(name: string): this;
         addText(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
@@ -1037,7 +1037,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addTexts(name: string, initial_values?: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
@@ -1046,7 +1046,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
-        }): void;
+        }): this;
         addTextarea(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             height?: number;
@@ -1056,7 +1056,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addTextareas(name: string, initial_values?: string[], options?: Function | {
             title?: boolean | string;
             height?: number;
@@ -1066,17 +1066,17 @@ declare namespace KIKAKU {
             onEnterKey?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
-        }): void;
+        }): this;
         addStatictext(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
             callback?: Function;
-        }): void;
+        }): this;
         addStatictexts(name: string, initial_values?: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
             callback?: Function | Function[];
-        }): void;
+        }): this;
         addNumber(name: string, initial_value?: number | {
             value?: number;
             minvalue?: number;
@@ -1088,7 +1088,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addNumbers(name: string, initial_values?: (number | {
             value?: number;
             minvalue?: number;
@@ -1100,7 +1100,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
-        }): void;
+        }): this;
         addSlider(name: string, initial_value?: number | {
             value?: number;
             minvalue?: number;
@@ -1112,7 +1112,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addPoint(name: string, initial_value?: [number, number], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
@@ -1120,7 +1120,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addPoint3d(name: string, initial_value?: [number, number, number], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
@@ -1128,7 +1128,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addFile(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
@@ -1136,7 +1136,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addFolder(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
@@ -1144,7 +1144,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addCheckbox(name: string, initial_value?: boolean | {
             value?: boolean;
             text?: string;
@@ -1154,7 +1154,7 @@ declare namespace KIKAKU {
             callback?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addCheckboxes(name: string, initial_values?: (boolean | {
             value?: boolean;
             text?: string;
@@ -1164,61 +1164,61 @@ declare namespace KIKAKU {
             callback?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
-        }): void;
+        }): this;
         addRadiobutton(name: string, initial_values: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
             callback?: Function | Function[];
-        }): void;
+        }): this;
         addColor(name: string, initial_value?: [number, number, number], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
             callback?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addColors(name: string, initial_values?: ([number, number, number])[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
             callback?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
-        }): void;
+        }): this;
         addPopup(name: string, initial_value?: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
             callback?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addPopups(name: string, initial_values?: string[][], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
             callback?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
-        }): void;
+        }): this;
         addListbox(name: string, initial_value?: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
             callback?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
-        }): void;
+        }): this;
         addListboxes(name: string, initial_values?: string[][], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
             callback?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
-        }): void;
+        }): this;
         addScript(name: string, value?: Function | {
             title?: string;
             helpTip?: string | string[];
             callback?: Function;
             undo?: boolean;
-        }): void;
-        addHelp(name: string, value?: string | Function): void;
+        }): this;
+        addHelp(name: string, value?: string | Function): this;
         api(name: string, fn: Function): this;
         on(type: string, fn: Function): this;
         off(type: string, fn: Function): this;
