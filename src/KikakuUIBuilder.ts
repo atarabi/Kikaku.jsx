@@ -544,7 +544,7 @@ namespace KIKAKU {
       this._minvalue = minmax.minvalue;
       this._maxvalue = minmax.maxvalue;
 
-      let number_ui = this._ui = <EditText>group.add('edittext', undefined, minmax.value);
+      let number_ui = this._ui = group.add('edittext', undefined, String(minmax.value));
       if (this._options.helpTip) {
         number_ui.helpTip = <string>this._options.helpTip;
       }
@@ -691,7 +691,7 @@ namespace KIKAKU {
       let slider_ui = this._ui = <Slider>group.add('slider', undefined, value.value, value.minvalue, value.maxvalue);
       slider_ui.preferredSize = [slider_width, height];
 
-      let number_ui = this._number_ui = <EditText>group.add('edittext', undefined, value.value);
+      let number_ui = this._number_ui = <EditText>group.add('edittext', undefined, String(value.value));
       number_ui.preferredSize = [number_width, height];
       number_ui.maximumSize = [Math.max(number_width, 100), height];
 
@@ -2328,8 +2328,10 @@ namespace KIKAKU {
     }
     addListbox(name: string, initial_value?: string[], options?: Function | {
       title?: boolean | string;
+      height?: number;
       helpTip?: string;
       callback?: Function;
+      onDoubleClick?: Function;
       onActivate?: Function;
       onDeactivate?: Function;
     }) {
@@ -2337,8 +2339,10 @@ namespace KIKAKU {
     }
     addListboxes(name: string, initial_values?: string[][], options?: Function | {
       title?: boolean | string;
+      height?: number;
       helpTip?: string | string[];
       callback?: Function | Function[];
+      onDoubleClick?: Function | Function[];
       onActivate?: Function | Function[];
       onDeactivate?: Function | Function[];
     }) {

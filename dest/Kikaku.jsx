@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.6.1';
+    KIKAKU.VERSION = '0.6.2';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -4819,7 +4819,7 @@ var KIKAKU;
             var minmax = extractNumberValue(this._value);
             this._minvalue = minmax.minvalue;
             this._maxvalue = minmax.maxvalue;
-            var number_ui = this._ui = group.add('edittext', undefined, minmax.value);
+            var number_ui = this._ui = group.add('edittext', undefined, String(minmax.value));
             if (this._options.helpTip) {
                 number_ui.helpTip = this._options.helpTip;
             }
@@ -4965,7 +4965,7 @@ var KIKAKU;
             var slider_width = width - number_width;
             var slider_ui = this._ui = group.add('slider', undefined, value.value, value.minvalue, value.maxvalue);
             slider_ui.preferredSize = [slider_width, height];
-            var number_ui = this._number_ui = group.add('edittext', undefined, value.value);
+            var number_ui = this._number_ui = group.add('edittext', undefined, String(value.value));
             number_ui.preferredSize = [number_width, height];
             number_ui.maximumSize = [Math.max(number_width, 100), height];
             if (this._options.helpTip) {

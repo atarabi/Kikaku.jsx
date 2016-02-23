@@ -1200,15 +1200,19 @@ declare namespace KIKAKU {
         }): this;
         addListbox(name: string, initial_value?: string[], options?: Function | {
             title?: boolean | string;
+            height?: number;
             helpTip?: string;
             callback?: Function;
+            onDoubleClick?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
         }): this;
         addListboxes(name: string, initial_values?: string[][], options?: Function | {
             title?: boolean | string;
+            height?: number;
             helpTip?: string | string[];
             callback?: Function | Function[];
+            onDoubleClick?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
         }): this;
