@@ -8,14 +8,6 @@
 			"taskName": "build",
 			"isBuildCommand": true,
 			"suppressTaskName": true,
-			"args": [
-        "typings/aftereffects/ae.d.ts",
-				"src/Kikaku.ts",
-				"-d",
-				"--out", "dest/Kikaku.jsx",
-				"-t", "es3",
-				"-noLib"
-			],
 			"problemMatcher": "$tsc"
 		},
 		{
@@ -23,13 +15,7 @@
 			"isWatching": true,
 			"suppressTaskName": true,
 			"args": [
-        "typings/aftereffects/ae.d.ts",
-				"src/Kikaku.ts",
-				"-d",
 				"-w",
-				"--out", "dest/Kikaku.jsx",
-				"-t", "es3",
-				"-noLib"
 			],
 			"problemMatcher": "$tsc"
 		}

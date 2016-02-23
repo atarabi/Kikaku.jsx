@@ -1,7 +1,9 @@
 {
 	"compilerOptions": {
 		"target": "es3",
-		"noLib": true
+		"noLib": true,
+    "declaration": true,
+    "outFile": "dest/Kikaku.jsx"
 	},
   "files": [
     "typings/aftereffects/ae.d.ts",
