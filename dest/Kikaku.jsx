@@ -4248,27 +4248,19 @@ var KIKAKU;
     }
     var ParameterBase = (function () {
         function ParameterBase(name, value, options) {
-            this._default_options = {
-                title: true,
-                helpTip: null,
-                height: null,
-                filter: null,
-                callback: noop,
-                onDoubleClick: noop,
-                onChanging: noop
-            };
             this._name = name;
             this._value = value;
             if (KIKAKU.Utils.isFunction(options)) {
-                this._options = KIKAKU.Utils.assign({}, this._default_options, {
+                this._options = KIKAKU.Utils.assign({}, ParameterBase.DEFAULT_OPTIONS, {
                     callback: options
                 });
             }
             else {
-                this._options = KIKAKU.Utils.assign({}, this._default_options, options);
+                this._options = KIKAKU.Utils.assign({}, ParameterBase.DEFAULT_OPTIONS, options);
             }
         }
         ParameterBase.prototype.getHeight = function () { return Parameter.DEFAULT_HEIGHT; };
+        ParameterBase.prototype.doAutoSave = function () { return KIKAKU.Utils.isUndefined(this._options.autoSave) ? true : this._options.autoSave; };
         ParameterBase.prototype.build = function (group, builder) { };
         ParameterBase.prototype.init = function (obj) { };
         ParameterBase.prototype.get = function (index) { };
@@ -4289,6 +4281,20 @@ var KIKAKU;
         ParameterBase.prototype.replaceItems = function (items_or_index, items2) { };
         ParameterBase.prototype.toJSON = function () { return {}; };
         ParameterBase.DEFAULT_HEIGHT = 24;
+        ParameterBase.DEFAULT_OPTIONS = {
+            title: true,
+            helpTip: null,
+            height: null,
+            filter: null,
+            stack: false,
+            autoSave: true,
+            callback: noop,
+            onDoubleClick: noop,
+            onChanging: noop,
+            onEnterKey: noop,
+            onActivate: noop,
+            onDeactivate: noop
+        };
         return ParameterBase;
     }());
     var Parameter = (function (_super) {
@@ -6550,7 +6556,14 @@ var KIKAKU;
             }
             var auto_save = this._options.autoSave;
             if (auto_save) {
-                this._setting_manager.save(UIBuilder.PARAMETERS_KEY, this._parameters);
+                var parameters = {};
+                for (var name in this._parameters) {
+                    var parameter = this._parameters[name];
+                    if (parameter.doAutoSave()) {
+                        parameters[name] = parameter;
+                    }
+                }
+                this._setting_manager.save(UIBuilder.PARAMETERS_KEY, parameters);
             }
         };
         UIBuilder.prototype.close = function () {

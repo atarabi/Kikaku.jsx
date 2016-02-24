@@ -27,6 +27,7 @@ namespace KIKAKU {
     height?: number;
     filter?: string;
     stack?: boolean;
+    autoSave?: boolean;
     callback?: Function | Function[];
     onDoubleClick?: Function | Function[];
     onChanging?: Function | Function[];
@@ -37,30 +38,36 @@ namespace KIKAKU {
 
   class ParameterBase {
     static DEFAULT_HEIGHT = 24;
-    protected _name: string;
-    protected _value;
-    protected _options: UIParameterOptions;
-    private _default_options: UIParameterOptions = {
+    private static DEFAULT_OPTIONS: UIParameterOptions = {
       title: true,
       helpTip: null,
       height: null,
       filter: null,
+      stack: false,
+      autoSave: true,
       callback: noop,
       onDoubleClick: noop,
-      onChanging: noop
+      onChanging: noop,
+      onEnterKey: noop,
+      onActivate: noop,
+      onDeactivate: noop,
     };
+    protected _name: string;
+    protected _value;
+    protected _options: UIParameterOptions;
     constructor(name: string, value?, options?: UIParameterOptions | Function) {
       this._name = name;
       this._value = value;
       if (Utils.isFunction(options)) {
-        this._options = Utils.assign({}, this._default_options, {
+        this._options = Utils.assign({}, ParameterBase.DEFAULT_OPTIONS, {
           callback: options
         });
       } else {
-        this._options = Utils.assign({}, this._default_options, options);
+        this._options = Utils.assign({}, ParameterBase.DEFAULT_OPTIONS, options);
       }
     }
     getHeight(): number { return Parameter.DEFAULT_HEIGHT; }
+    doAutoSave(): boolean { return Utils.isUndefined(this._options.autoSave) ? true : this._options.autoSave; }
     build(group: Group, builder: UIBuilder): void { }
     init(obj?: { value?, items?: string[] }) { }
     get(index?: number): any { }
@@ -2112,6 +2119,7 @@ namespace KIKAKU {
     addHeading(name: string, title?: string, options?: {
       title?: string;
       helpTip?: string;
+      autoSave?: boolean;
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.HEADING, name, title, options);
     }
@@ -2123,6 +2131,7 @@ namespace KIKAKU {
     }
     addPanel(name: string, title?: string, options?: {
       stack?: boolean;
+      autoSave?: boolean;
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.PANEL, name, title, options);
     }
@@ -2138,6 +2147,7 @@ namespace KIKAKU {
     addText(name: string, initial_value?: string, options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onChanging?: Function;
       onEnterKey?: Function;
@@ -2149,6 +2159,7 @@ namespace KIKAKU {
     addTexts(name: string, initial_values?: string[], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
       onChanging?: Function | Function[];
       onEnterKey?: Function | Function[];
@@ -2161,6 +2172,7 @@ namespace KIKAKU {
       title?: boolean | string;
       height?: number;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onChanging?: Function;
       onEnterKey?: Function;
@@ -2173,6 +2185,7 @@ namespace KIKAKU {
       title?: boolean | string;
       height?: number;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
       onChanging?: Function | Function[];
       onEnterKey?: Function | Function[];
@@ -2184,6 +2197,7 @@ namespace KIKAKU {
     addStatictext(name: string, initial_value?: string, options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.STATICTEXT, name, initial_value, options);
@@ -2191,6 +2205,7 @@ namespace KIKAKU {
     addStatictexts(name: string, initial_values?: string[], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTS, name, initial_values, options);
@@ -2198,6 +2213,7 @@ namespace KIKAKU {
     addNumber(name: string, initial_value?: number | { value?: number; minvalue?: number; maxvalue?: number; }, options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onEnterKey?: Function;
       onActivate?: Function;
@@ -2208,6 +2224,7 @@ namespace KIKAKU {
     addNumbers(name: string, initial_values?: (number | { value?: number; minvalue?: number; maxvalue?: number; })[], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
       onEnterKey?: Function | Function[];
       onActivate?: Function | Function[];
@@ -2218,6 +2235,7 @@ namespace KIKAKU {
     addSlider(name: string, initial_value?: number | { value?: number; minvalue?: number; maxvalue?: number }, options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onEnterKey?: Function;
       onActivate?: Function;
@@ -2228,6 +2246,7 @@ namespace KIKAKU {
     addPoint(name: string, initial_value?: [number, number], options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onEnterKey?: Function;
       onActivate?: Function;
@@ -2238,6 +2257,7 @@ namespace KIKAKU {
     addPoint3d(name: string, initial_value?: [number, number, number], options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onEnterKey?: Function;
       onActivate?: Function;
@@ -2248,6 +2268,7 @@ namespace KIKAKU {
     addFile(name: string, initial_value?: string, options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onEnterKey?: Function;
       onActivate?: Function;
@@ -2258,6 +2279,7 @@ namespace KIKAKU {
     addFolder(name: string, initial_value?: string, options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onEnterKey?: Function;
       onActivate?: Function;
@@ -2268,6 +2290,7 @@ namespace KIKAKU {
     addCheckbox(name: string, initial_value?: boolean | { value?: boolean; text?: string; }, options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onActivate?: Function;
       onDeactivate?: Function;
@@ -2277,6 +2300,7 @@ namespace KIKAKU {
     addCheckboxes(name: string, initial_values?: (boolean | { value?: boolean; text?: string; })[], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
       onActivate?: Function | Function[];
       onDeactivate?: Function | Function[];
@@ -2286,6 +2310,7 @@ namespace KIKAKU {
     addRadiobutton(name: string, initial_values: string[], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.RADIOBUTTON, name, initial_values, options);
@@ -2293,6 +2318,7 @@ namespace KIKAKU {
     addColor(name: string, initial_value?: [number, number, number], options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onActivate?: Function;
       onDeactivate?: Function;
@@ -2302,6 +2328,7 @@ namespace KIKAKU {
     addColors(name: string, initial_values?: ([number, number, number])[], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
       onActivate?: Function | Function[];
       onDeactivate?: Function | Function[];
@@ -2311,6 +2338,7 @@ namespace KIKAKU {
     addPopup(name: string, initial_value?: string[], options?: Function | {
       title?: boolean | string;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onActivate?: Function;
       onDeactivate?: Function;
@@ -2320,6 +2348,7 @@ namespace KIKAKU {
     addPopups(name: string, initial_values?: string[][], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
       onActivate?: Function | Function[];
       onDeactivate?: Function | Function[];
@@ -2330,6 +2359,7 @@ namespace KIKAKU {
       title?: boolean | string;
       height?: number;
       helpTip?: string;
+      autoSave?: boolean;
       callback?: Function;
       onDoubleClick?: Function;
       onActivate?: Function;
@@ -2341,6 +2371,7 @@ namespace KIKAKU {
       title?: boolean | string;
       height?: number;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function | Function[];
       onDoubleClick?: Function | Function[];
       onActivate?: Function | Function[];
@@ -2351,6 +2382,7 @@ namespace KIKAKU {
     addScript(name: string, value?: Function | {
       title?: string;
       helpTip?: string | string[];
+      autoSave?: boolean;
       callback?: Function;
       undo?: boolean;
     }) {
@@ -2468,7 +2500,14 @@ namespace KIKAKU {
       }
       let auto_save = this._options.autoSave;
       if (auto_save) {
-        this._setting_manager.save(UIBuilder.PARAMETERS_KEY, this._parameters);
+        let parameters: { [name: string]: ParameterBase; } = {};
+        for (let name in this._parameters) {
+          const parameter = this._parameters[name];
+          if (parameter.doAutoSave()) {
+            parameters[name] = parameter;
+          }
+        }
+        this._setting_manager.save(UIBuilder.PARAMETERS_KEY, parameters);
       }
     }
     close() {

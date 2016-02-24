@@ -910,6 +910,7 @@ declare namespace KIKAKU {
         height?: number;
         filter?: string;
         stack?: boolean;
+        autoSave?: boolean;
         callback?: Function | Function[];
         onDoubleClick?: Function | Function[];
         onChanging?: Function | Function[];
@@ -1020,11 +1021,13 @@ declare namespace KIKAKU {
         addHeading(name: string, title?: string, options?: {
             title?: string;
             helpTip?: string;
+            autoSave?: boolean;
         }): this;
         addSeparator(name: string): this;
         addSpace(name: string, height?: number): this;
         addPanel(name: string, title?: string, options?: {
             stack?: boolean;
+            autoSave?: boolean;
         }): this;
         addPanelEnd(name: string): this;
         addGroup(name: string): this;
@@ -1032,6 +1035,7 @@ declare namespace KIKAKU {
         addText(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onChanging?: Function;
             onEnterKey?: Function;
@@ -1041,6 +1045,7 @@ declare namespace KIKAKU {
         addTexts(name: string, initial_values?: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
             onChanging?: Function | Function[];
             onEnterKey?: Function | Function[];
@@ -1051,6 +1056,7 @@ declare namespace KIKAKU {
             title?: boolean | string;
             height?: number;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onChanging?: Function;
             onEnterKey?: Function;
@@ -1061,6 +1067,7 @@ declare namespace KIKAKU {
             title?: boolean | string;
             height?: number;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
             onChanging?: Function | Function[];
             onEnterKey?: Function | Function[];
@@ -1070,11 +1077,13 @@ declare namespace KIKAKU {
         addStatictext(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
         }): this;
         addStatictexts(name: string, initial_values?: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
         }): this;
         addNumber(name: string, initial_value?: number | {
@@ -1084,6 +1093,7 @@ declare namespace KIKAKU {
         }, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onEnterKey?: Function;
             onActivate?: Function;
@@ -1096,6 +1106,7 @@ declare namespace KIKAKU {
         })[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
             onEnterKey?: Function | Function[];
             onActivate?: Function | Function[];
@@ -1108,6 +1119,7 @@ declare namespace KIKAKU {
         }, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onEnterKey?: Function;
             onActivate?: Function;
@@ -1116,6 +1128,7 @@ declare namespace KIKAKU {
         addPoint(name: string, initial_value?: [number, number], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onEnterKey?: Function;
             onActivate?: Function;
@@ -1124,6 +1137,7 @@ declare namespace KIKAKU {
         addPoint3d(name: string, initial_value?: [number, number, number], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onEnterKey?: Function;
             onActivate?: Function;
@@ -1132,6 +1146,7 @@ declare namespace KIKAKU {
         addFile(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onEnterKey?: Function;
             onActivate?: Function;
@@ -1140,6 +1155,7 @@ declare namespace KIKAKU {
         addFolder(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onEnterKey?: Function;
             onActivate?: Function;
@@ -1151,6 +1167,7 @@ declare namespace KIKAKU {
         }, options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
@@ -1161,6 +1178,7 @@ declare namespace KIKAKU {
         })[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
@@ -1168,11 +1186,13 @@ declare namespace KIKAKU {
         addRadiobutton(name: string, initial_values: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
         }): this;
         addColor(name: string, initial_value?: [number, number, number], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
@@ -1180,6 +1200,7 @@ declare namespace KIKAKU {
         addColors(name: string, initial_values?: ([number, number, number])[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
@@ -1187,6 +1208,7 @@ declare namespace KIKAKU {
         addPopup(name: string, initial_value?: string[], options?: Function | {
             title?: boolean | string;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
@@ -1194,6 +1216,7 @@ declare namespace KIKAKU {
         addPopups(name: string, initial_values?: string[][], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
@@ -1202,6 +1225,7 @@ declare namespace KIKAKU {
             title?: boolean | string;
             height?: number;
             helpTip?: string;
+            autoSave?: boolean;
             callback?: Function;
             onDoubleClick?: Function;
             onActivate?: Function;
@@ -1211,6 +1235,7 @@ declare namespace KIKAKU {
             title?: boolean | string;
             height?: number;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function | Function[];
             onDoubleClick?: Function | Function[];
             onActivate?: Function | Function[];
@@ -1219,6 +1244,7 @@ declare namespace KIKAKU {
         addScript(name: string, value?: Function | {
             title?: string;
             helpTip?: string | string[];
+            autoSave?: boolean;
             callback?: Function;
             undo?: boolean;
         }): this;
