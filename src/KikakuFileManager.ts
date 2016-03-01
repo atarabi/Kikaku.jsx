@@ -3,8 +3,6 @@ namespace KIKAKU {
 	const Utils = KIKAKU.Utils;
 
 	export class FileManager {
-		static VERSION = '0.0.0';
-		static AUTHOR = 'Kareobana';
 		static TYPE = {
 			CUSTOM: 'custom',
 			APP_DATA: 'appData',

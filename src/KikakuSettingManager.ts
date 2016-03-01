@@ -3,8 +3,6 @@ namespace KIKAKU {
 	const JSON = KIKAKU.JSON;
 	
 	export class SettingManager {
-		static VERSION = '0.0.0';
-		static AUTHOR = 'Kareobana';
 		private _section: string;
 		constructor(section: string) {
 			this._section = section;

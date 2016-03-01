@@ -816,8 +816,6 @@ declare namespace KIKAKU {
 }
 declare namespace KIKAKU {
     class EventDispatcher {
-        static VERSION: string;
-        static AUTHOR: string;
         private _listners;
         addEventListener(type: string, fn: Function, ctx?: any): void;
         removeEventListener(type: string, fn: Function | string, ctx?: any): void;
@@ -826,8 +824,6 @@ declare namespace KIKAKU {
 }
 declare namespace KIKAKU {
     class FileManager {
-        static VERSION: string;
-        static AUTHOR: string;
         static TYPE: {
             CUSTOM: string;
             APP_DATA: string;
@@ -868,7 +864,6 @@ declare namespace KIKAKU {
     }
 }
 declare namespace KIKAKU.Request {
-    var VERSION: string;
     var ContentType: {
         JSON: string;
         FORM: string;
@@ -893,8 +888,6 @@ declare namespace KIKAKU.Request {
 }
 declare namespace KIKAKU {
     class SettingManager {
-        static VERSION: string;
-        static AUTHOR: string;
         private _section;
         constructor(section: string);
         have(key: string): boolean;
@@ -949,8 +942,6 @@ declare namespace KIKAKU {
     }
     class UIBuilder {
         static LIBRARY_NAME: string;
-        static VERSION: string;
-        static AUTHOR: string;
         static ALIAS: string;
         static PARAMETER_TYPE: {
             HEADING: string;
@@ -1003,6 +994,7 @@ declare namespace KIKAKU {
         private _name;
         private _options;
         private _parameters;
+        private _events;
         private _help;
         private _apis;
         private _layer;

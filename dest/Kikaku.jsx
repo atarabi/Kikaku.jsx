@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.6.2';
+    KIKAKU.VERSION = '0.6.3';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -3891,8 +3891,6 @@ var KIKAKU;
                 listener.fn.apply(listener.ctx, args);
             }
         };
-        EventDispatcher.VERSION = '0.0.0';
-        EventDispatcher.AUTHOR = 'Kareobana';
         return EventDispatcher;
     }());
     KIKAKU.EventDispatcher = EventDispatcher;
@@ -4003,8 +4001,6 @@ var KIKAKU;
             }
             return true;
         };
-        FileManager.VERSION = '0.0.0';
-        FileManager.AUTHOR = 'Kareobana';
         FileManager.TYPE = {
             CUSTOM: 'custom',
             APP_DATA: 'appData',
@@ -4021,7 +4017,6 @@ var KIKAKU;
 (function (KIKAKU) {
     var Request;
     (function (Request) {
-        Request.VERSION = '0.0.0';
         var URL_REGEX = /^(https?):\/\/((?:[a-z0-9.-]|%[0-9A-F]{2}){3,})(?::(\d+))?((?:\/(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})*)*)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i;
         function parseURL(url) {
             var m = URL_REGEX.exec(url);
@@ -4219,8 +4214,6 @@ var KIKAKU;
             }
             app.preferences.deletePref('Settings_' + this._section, key);
         };
-        SettingManager.VERSION = '0.0.0';
-        SettingManager.AUTHOR = 'Kareobana';
         return SettingManager;
     }());
     KIKAKU.SettingManager = SettingManager;
@@ -6206,6 +6199,7 @@ var KIKAKU;
     var UIBuilder = (function () {
         function UIBuilder(global, name, options) {
             this._parameters = {};
+            this._events = {};
             this._layer = 0;
             this._built = function () { return false; };
             this._global = global;
@@ -6449,6 +6443,7 @@ var KIKAKU;
             return this;
         };
         UIBuilder.prototype.on = function (type, fn) {
+            this._events[type] = true;
             this._event_dispatcher.addEventListener(type, fn, this);
             return this;
         };
@@ -6717,12 +6712,13 @@ var KIKAKU;
             };
             var _loop_1 = function(event_key) {
                 var event_type = UIBuilder.EVENT_TYPE[event_key];
-                if (event_type !== UIBuilder.EVENT_TYPE.INIT && event_type !== UIBuilder.EVENT_TYPE.CLOSE) {
+                if (event_type !== UIBuilder.EVENT_TYPE.INIT && event_type !== UIBuilder.EVENT_TYPE.CLOSE && this_1._events[event_type]) {
                     w.addEventListener(event_type, function (ev) {
                         _this.trigger(event_type, ev);
                     });
                 }
             };
+            var this_1 = this;
             for (var event_key in UIBuilder.EVENT_TYPE) {
                 _loop_1(event_key);
             }
@@ -6741,8 +6737,6 @@ var KIKAKU;
             }
         };
         UIBuilder.LIBRARY_NAME = 'KikakuUIBuilder';
-        UIBuilder.VERSION = '2.3.2';
-        UIBuilder.AUTHOR = 'Kareobana';
         UIBuilder.ALIAS = 'Atarabi';
         UIBuilder.PARAMETER_TYPE = {
             HEADING: 'heading',

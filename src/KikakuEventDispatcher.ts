@@ -1,8 +1,6 @@
 namespace KIKAKU {
 	
 	export class EventDispatcher {
-		static VERSION = '0.0.0';
-		static AUTHOR = 'Kareobana';
 		private _listners: {[type: string]: {fn: Function; ctx: any;}[]} = {};
 		addEventListener(type: string, fn: Function, ctx?: any) {
 			if (!this._listners[type]) {

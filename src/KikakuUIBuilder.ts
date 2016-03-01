@@ -1909,8 +1909,6 @@ namespace KIKAKU {
 
   export class UIBuilder {
     static LIBRARY_NAME = 'KikakuUIBuilder';
-    static VERSION = '2.3.2';
-    static AUTHOR = 'Kareobana';
     static ALIAS = 'Atarabi';
     static PARAMETER_TYPE = {
       HEADING: 'heading',
@@ -1963,6 +1961,7 @@ namespace KIKAKU {
     private _name: string;
     private _options: UIBuilderOptions;
     private _parameters: { [name: string]: ParameterBase; } = {};
+    private _events: { [name: string]: boolean; } = {};
     private _help: HelpParameter;
     private _apis;
     private _layer = 0;
@@ -2398,6 +2397,7 @@ namespace KIKAKU {
     }
 
     on(type: string, fn: Function) {
+      this._events[type] = true;
       this._event_dispatcher.addEventListener(type, fn, this);
       return this;
     }
@@ -2678,7 +2678,7 @@ namespace KIKAKU {
 
       for (let event_key in UIBuilder.EVENT_TYPE) {
         const event_type: string = UIBuilder.EVENT_TYPE[event_key];
-        if (event_type !== UIBuilder.EVENT_TYPE.INIT && event_type !== UIBuilder.EVENT_TYPE.CLOSE) {
+        if (event_type !== UIBuilder.EVENT_TYPE.INIT && event_type !== UIBuilder.EVENT_TYPE.CLOSE && this._events[event_type]) {
           w.addEventListener(event_type, (ev) => {
             this.trigger(event_type, ev);
           });
