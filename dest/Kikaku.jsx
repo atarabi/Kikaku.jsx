@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.6.3';
+    KIKAKU.VERSION = '0.6.4';
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
 })(KIKAKU || (KIKAKU = {}));
@@ -107,14 +107,6 @@ var KIKAKU;
             } throw new SyntaxError("JSON.parse"); };
         }
     })();
-})(KIKAKU || (KIKAKU = {}));
-var KIKAKU;
-(function (KIKAKU) {
-    var Utils;
-    (function (Utils) {
-        Utils.VERSION = '1.3.0';
-        Utils.AUTHOR = 'Kareobana';
-    })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
 (function (KIKAKU) {
@@ -1697,7 +1689,6 @@ var KIKAKU;
         })(Comment = Utils.Comment || (Utils.Comment = {}));
     })(Utils = KIKAKU.Utils || (KIKAKU.Utils = {}));
 })(KIKAKU || (KIKAKU = {}));
-/// <reference path="utils/config.ts" />
 /// <reference path="utils/utility.ts" />
 /// <reference path="utils/filesystem.ts" />
 /// <reference path="utils/item.ts" />

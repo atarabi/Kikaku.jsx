@@ -1,26 +1,26 @@
 namespace KIKAKU.Utils {
 
-  export function isLayer(layer: Layer) {
+  export function isLayer(layer: Layer): layer is Layer {
     return isAVLayer(layer) || isCameraLayer(layer) || isLightLayer(layer);
   }
 
-  export function isTextLayer(layer: Layer) {
+  export function isTextLayer(layer: Layer): layer is TextLayer {
     return layer instanceof TextLayer;
   }
 
-  export function isShapeLayer(layer: Layer) {
+  export function isShapeLayer(layer: Layer): layer is ShapeLayer {
     return layer instanceof ShapeLayer;
   }
 
-  export function isAVLayer(layer: Layer, strict: boolean = false) {
+  export function isAVLayer(layer: Layer, strict: boolean = false): layer is AVLayer {
     return (layer instanceof AVLayer && (layer.hasVideo || !strict)) || isTextLayer(layer) || isShapeLayer(layer);
   }
 
-  export function isCameraLayer(layer: Layer) {
+  export function isCameraLayer(layer: Layer): layer is CameraLayer {
     return layer instanceof CameraLayer;
   }
 
-  export function isLightLayer(layer: Layer) {
+  export function isLightLayer(layer: Layer): layer is LightLayer {
     return layer instanceof LightLayer;
   }
 
@@ -28,19 +28,19 @@ namespace KIKAKU.Utils {
     return layer.nullLayer;
   }
 
-  export function isSolidLayer(layer: Layer) {
+  export function isSolidLayer(layer: Layer): layer is AVLayer {
     return isAVLayer(layer) && isFootageItem((<AVLayer>layer).source) && (<FootageItem>(<AVLayer>layer).source).mainSource instanceof SolidSource;
   }
 
-  export function isFileLayer(layer: Layer) {
+  export function isFileLayer(layer: Layer): layer is AVLayer {
     return isAVLayer(layer) && isFootageItem((<AVLayer>layer).source) && (<FootageItem>(<AVLayer>layer).source).mainSource instanceof FileSource;
   }
 
-  export function isStillLayer(layer: Layer) {
+  export function isStillLayer(layer: Layer): layer is AVLayer {
     return isAVLayer(layer) && isFootageItem((<AVLayer>layer).source) && (<FootageItem>(<AVLayer>layer).source).mainSource.isStill;
   }
 
-  export function isCompLayer(layer: Layer) {
+  export function isCompLayer(layer: Layer): layer is AVLayer {
     return isAVLayer(layer) && isCompItem((<AVLayer>layer).source);
   }
 

@@ -1,22 +1,22 @@
 namespace KIKAKU.Utils {
 
-	export function isFootageItem(item: Item) {
+	export function isFootageItem(item: Item): item is FootageItem {
 		return item instanceof FootageItem;
 	}
 
-	export function isCompItem(item: Item) {
+	export function isCompItem(item: Item): item is CompItem {
 		return item instanceof CompItem;
 	}
 
-	export function isAVItem(item: Item) {
+	export function isAVItem(item: Item): item is AVItem {
 		return isCompItem(item) || isFootageItem(item);
 	}
 
-	export function isSolidItem(item: Item) {
+	export function isSolidItem(item: Item): item is FootageItem {
 		return isFootageItem(item) && (<FootageItem>item).mainSource instanceof SolidSource;
 	}
 
-	export function isFolderItem(item: Item) {
+	export function isFolderItem(item: Item): item is FolderItem {
 		return item instanceof FolderItem;
 	}
 

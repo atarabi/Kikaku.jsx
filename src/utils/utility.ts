@@ -4,32 +4,32 @@ namespace KIKAKU.Utils {
     return Object.prototype.toString.call(arg) === '[object Object]';
   }
 
-  export function isArray(arg) {
+  export function isArray<T>(arg): arg is T[] {
     return Object.prototype.toString.call(arg) === '[object Array]';
   }
 
-  export function isFunction(arg) {
+  export function isFunction(arg): arg is Function {
     return Object.prototype.toString.call(arg) === '[object Function]';
   }
 
-  export function isString(arg) {
+  export function isString(arg): arg is string {
     return Object.prototype.toString.call(arg) === '[object String]';
   }
 
-  export function isNumber(arg) {
+  export function isNumber(arg): arg is number {
     return Object.prototype.toString.call(arg) === '[object Number]';
   }
 
-  export function isBoolean(arg) {
+  export function isBoolean(arg): arg is boolean {
     return Object.prototype.toString.call(arg) === '[object Boolean]';
   }
 
-  export function isUndefined(arg) {
+  export function isUndefined(arg): arg is void {
     return typeof arg === 'undefined';
   }
 
-  export function keys(obj: Object) {
-    const arr = [];
+  export function keys(obj: Object): string[] {
+    const arr: string[] = [];
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
         arr.push(key);

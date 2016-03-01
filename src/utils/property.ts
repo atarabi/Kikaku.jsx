@@ -2,11 +2,11 @@
 
 namespace KIKAKU.Utils {
 
-	export function isProperty(property: PropertyBase) {
+	export function isProperty(property: PropertyBase): property is Property {
 		return property instanceof Property;
 	}
 
-	export function isPropertyGroup(property: PropertyBase) {
+	export function isPropertyGroup(property: PropertyBase): property is PropertyGroup {
 		return property instanceof PropertyGroup || property instanceof MaskPropertyGroup;
 	}
 

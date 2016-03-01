@@ -15,18 +15,14 @@ declare namespace KIKAKU {
     var JSON: JSON;
 }
 declare namespace KIKAKU.Utils {
-    var VERSION: string;
-    var AUTHOR: string;
-}
-declare namespace KIKAKU.Utils {
     function isObject(arg: any): boolean;
-    function isArray(arg: any): boolean;
-    function isFunction(arg: any): boolean;
-    function isString(arg: any): boolean;
-    function isNumber(arg: any): boolean;
-    function isBoolean(arg: any): boolean;
-    function isUndefined(arg: any): boolean;
-    function keys(obj: Object): any[];
+    function isArray<T>(arg: any): arg is T[];
+    function isFunction(arg: any): arg is Function;
+    function isString(arg: any): arg is string;
+    function isNumber(arg: any): arg is number;
+    function isBoolean(arg: any): arg is boolean;
+    function isUndefined(arg: any): arg is void;
+    function keys(obj: Object): string[];
     function values(obj: Object): any[];
     function forEach(obj: any, fn: ((value, index?: number) => any) | ((value, key?: string) => any), ctx?: any): void;
     function inherits(child: any, parent: any): void;
@@ -50,11 +46,11 @@ declare namespace KIKAKU.Utils {
     function removeFolder(path: string | Folder): void;
 }
 declare namespace KIKAKU.Utils {
-    function isFootageItem(item: Item): boolean;
-    function isCompItem(item: Item): boolean;
-    function isAVItem(item: Item): boolean;
-    function isSolidItem(item: Item): boolean;
-    function isFolderItem(item: Item): boolean;
+    function isFootageItem(item: Item): item is FootageItem;
+    function isCompItem(item: Item): item is CompItem;
+    function isAVItem(item: Item): item is AVItem;
+    function isSolidItem(item: Item): item is FootageItem;
+    function isFolderItem(item: Item): item is FolderItem;
     function forEachItem(fn: (item: Item, index?: number) => any, ctx?: any): void;
     function forEachItemInFolderItem(folder: FolderItem, fn: (item: Item, index?: number) => any, ctx?: any): void;
     const ITEM_FILTER: {
@@ -101,17 +97,17 @@ declare namespace KIKAKU.Utils {
     function getAVItemByName(name: string): AVItem;
 }
 declare namespace KIKAKU.Utils {
-    function isLayer(layer: Layer): boolean;
-    function isTextLayer(layer: Layer): boolean;
-    function isShapeLayer(layer: Layer): boolean;
-    function isAVLayer(layer: Layer, strict?: boolean): boolean;
-    function isCameraLayer(layer: Layer): boolean;
-    function isLightLayer(layer: Layer): boolean;
+    function isLayer(layer: Layer): layer is Layer;
+    function isTextLayer(layer: Layer): layer is TextLayer;
+    function isShapeLayer(layer: Layer): layer is ShapeLayer;
+    function isAVLayer(layer: Layer, strict?: boolean): layer is AVLayer;
+    function isCameraLayer(layer: Layer): layer is CameraLayer;
+    function isLightLayer(layer: Layer): layer is LightLayer;
     function isNullLayer(layer: Layer): boolean;
-    function isSolidLayer(layer: Layer): boolean;
-    function isFileLayer(layer: Layer): boolean;
-    function isStillLayer(layer: Layer): boolean;
-    function isCompLayer(layer: Layer): boolean;
+    function isSolidLayer(layer: Layer): layer is AVLayer;
+    function isFileLayer(layer: Layer): layer is AVLayer;
+    function isStillLayer(layer: Layer): layer is AVLayer;
+    function isCompLayer(layer: Layer): layer is AVLayer;
     function forEachLayer(comp: CompItem, fn: (layer: Layer, index?: number) => any, ctx?: any): void;
     function forEachPropertyGroup(property_group: PropertyGroup | Layer, fn: (property: PropertyBase, index?: number) => any, ctx?: any): void;
     function forEachEffect(layer: Layer, fn: (effect: PropertyGroup, index?: number) => any, ctx?: any): void;
@@ -183,8 +179,8 @@ declare namespace KIKAKU.Utils._Impl {
     function createOperatorFilter(fn: any, op: any, rhs: any): (obj: any) => boolean;
 }
 declare namespace KIKAKU.Utils {
-    function isProperty(property: PropertyBase): boolean;
-    function isPropertyGroup(property: PropertyBase): boolean;
+    function isProperty(property: PropertyBase): property is Property;
+    function isPropertyGroup(property: PropertyBase): property is PropertyGroup;
     function isHiddenProperty(property: PropertyBase): boolean;
     function getPropertyDimensions(property: Property): number;
     const PROPERTY_FILTER: {
