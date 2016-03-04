@@ -394,6 +394,12 @@ namespace KIKAKU {
     openInViewer() {
       return this._layer.openInViewer();
     }
+    sourcePointToComp(point: [number, number]) {
+      return this._layer.sourcePointToComp(point);
+    }
+    compPointToSource(point: [number, number]) {
+      return this._layer.compPointToSource(point);
+    }
   }
 
   export class KShapeLayer extends KAVLayer<ShapeLayer> {

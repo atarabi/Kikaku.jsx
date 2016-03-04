@@ -1,7 +1,11 @@
 declare namespace KIKAKU {
+    var MAJOR_VERSION: number;
+    var MINOR_VERSION: number;
+    var PATCH_VERSION: number;
     var VERSION: string;
     var AUTHOR: string;
     var LICENSE: string;
+    function checkVersion(version: string): boolean;
 }
 declare namespace KIKAKU {
     interface JSON {
@@ -683,6 +687,8 @@ declare namespace KIKAKU {
             height: number;
         };
         openInViewer(): Viewer;
+        sourcePointToComp(point: [number, number]): [number, number];
+        compPointToSource(point: [number, number]): [number, number];
     }
     class KShapeLayer extends KAVLayer<ShapeLayer> {
         isValid(): boolean;
