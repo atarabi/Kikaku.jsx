@@ -5,9 +5,31 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var KIKAKU;
 (function (KIKAKU) {
-    KIKAKU.VERSION = '0.6.4';
+    KIKAKU.MAJOR_VERSION = 0;
+    KIKAKU.MINOR_VERSION = 6;
+    KIKAKU.PATCH_VERSION = 5;
+    KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
+    function checkVersion(version) {
+        var versions = version.split('.');
+        var _a = [~~versions[0], ~~versions[1], ~~versions[2]], major = _a[0], minor = _a[1], patch = _a[2];
+        if (major > KIKAKU.MAJOR_VERSION) {
+            return true;
+        }
+        else if (major == KIKAKU.MAJOR_VERSION) {
+            if (minor > KIKAKU.MINOR_VERSION) {
+                return true;
+            }
+            else if (minor == KIKAKU.MINOR_VERSION) {
+                if (patch >= KIKAKU.PATCH_VERSION) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    KIKAKU.checkVersion = checkVersion;
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
 (function (KIKAKU) {
@@ -3400,6 +3422,12 @@ var KIKAKU;
         };
         KAVLayer.prototype.openInViewer = function () {
             return this._layer.openInViewer();
+        };
+        KAVLayer.prototype.sourcePointToComp = function (point) {
+            return this._layer.sourcePointToComp(point);
+        };
+        KAVLayer.prototype.compPointToSource = function (point) {
+            return this._layer.compPointToSource(point);
         };
         return KAVLayer;
     }(KLayer));
