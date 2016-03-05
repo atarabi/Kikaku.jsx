@@ -1199,7 +1199,10 @@ declare namespace KIKAKU {
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
         }): this;
-        addPopup(name: string, initial_value?: string[], options?: Function | {
+        addPopup(name: string, initial_value?: (string[] | {
+            value: string;
+            items: string[];
+        }), options?: Function | {
             title?: boolean | string;
             helpTip?: string;
             autoSave?: boolean;
@@ -1207,7 +1210,10 @@ declare namespace KIKAKU {
             onActivate?: Function;
             onDeactivate?: Function;
         }): this;
-        addPopups(name: string, initial_values?: string[][], options?: Function | {
+        addPopups(name: string, initial_values?: (string[] | {
+            value: string;
+            items: string[];
+        })[], options?: Function | {
             title?: boolean | string;
             helpTip?: string | string[];
             autoSave?: boolean;
@@ -1215,7 +1221,10 @@ declare namespace KIKAKU {
             onActivate?: Function | Function[];
             onDeactivate?: Function | Function[];
         }): this;
-        addListbox(name: string, initial_value?: string[], options?: Function | {
+        addListbox(name: string, initial_value?: (string[] | {
+            value: string;
+            items: string[];
+        }), options?: Function | {
             title?: boolean | string;
             height?: number;
             helpTip?: string;
@@ -1225,7 +1234,10 @@ declare namespace KIKAKU {
             onActivate?: Function;
             onDeactivate?: Function;
         }): this;
-        addListboxes(name: string, initial_values?: string[][], options?: Function | {
+        addListboxes(name: string, initial_values?: (string[] | {
+            value: string;
+            items: string[];
+        })[], options?: Function | {
             title?: boolean | string;
             height?: number;
             helpTip?: string | string[];

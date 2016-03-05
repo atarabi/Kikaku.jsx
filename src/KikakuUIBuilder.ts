@@ -2334,7 +2334,7 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.COLORS, name, initial_values, options);
     }
-    addPopup(name: string, initial_value?: string[], options?: Function | {
+    addPopup(name: string, initial_value?: (string[] | {value: string; items: string[]}), options?: Function | {
       title?: boolean | string;
       helpTip?: string;
       autoSave?: boolean;
@@ -2344,7 +2344,7 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.POPUP, name, initial_value, options);
     }
-    addPopups(name: string, initial_values?: string[][], options?: Function | {
+    addPopups(name: string, initial_values?: (string[] | {value: string; items: string[]})[], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
       autoSave?: boolean;
@@ -2354,7 +2354,7 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.POPUPS, name, initial_values, options);
     }
-    addListbox(name: string, initial_value?: string[], options?: Function | {
+    addListbox(name: string, initial_value?: (string[] | {value: string; items: string[]}), options?: Function | {
       title?: boolean | string;
       height?: number;
       helpTip?: string;
@@ -2366,7 +2366,7 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.LISTBOX, name, initial_value, options);
     }
-    addListboxes(name: string, initial_values?: string[][], options?: Function | {
+    addListboxes(name: string, initial_values?: (string[] | {value: string; items: string[]})[], options?: Function | {
       title?: boolean | string;
       height?: number;
       helpTip?: string | string[];

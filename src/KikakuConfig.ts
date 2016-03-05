@@ -2,7 +2,7 @@ namespace KIKAKU {
 
   export var MAJOR_VERSION = 0;
   export var MINOR_VERSION = 6;
-  export var PATCH_VERSION = 5;
+  export var PATCH_VERSION = 6;
   export var VERSION = `${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}`;
   export var AUTHOR = 'Kareobana';
   export var LICENSE = 'MIT';
