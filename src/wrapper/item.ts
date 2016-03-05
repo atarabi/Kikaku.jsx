@@ -2,6 +2,12 @@ namespace KIKAKU {
 
   export class KItemCollection {
     constructor(protected _items: ItemCollection) { }
+    length() {
+      return this._items.length;
+    }
+    at(index: number) {
+      return this._items[index];
+    }
     addComp(name: string, width: number, height: number, pixelAspect: number, duration: number, frameRate: number) {
       return new KCompItem(this._items.addComp(name, width, height, pixelAspect, duration, frameRate));
     }

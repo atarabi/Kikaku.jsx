@@ -2,6 +2,12 @@ namespace KIKAKU {
 
   export class KLayerCollection {
     constructor(protected _layers: LayerCollection) { }
+    length() {
+      return this._layers.length;
+    }
+    at(index: number) {
+      return this._layers[index];
+    }
     add<T extends AVItem>(item: AVItem | KAVItem<T>, duration?: number) {
       const av_item = item instanceof KAVItem ? item.get() : item;
       if (duration !== void 0) {
