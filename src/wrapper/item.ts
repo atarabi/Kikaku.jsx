@@ -5,6 +5,14 @@ namespace KIKAKU {
     length() {
       return this._items.length;
     }
+    //utility
+    forEach(fn: (item: Item, index: number) => void) {
+      const items = this._items;
+      for (let i = 1, l = items.length; i <= l; i++) {
+        fn(items[i], i);
+      }
+    }
+    //methods
     at(index: number) {
       return this._items[index];
     }

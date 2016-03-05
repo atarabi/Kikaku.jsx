@@ -8,6 +8,14 @@ namespace KIKAKU {
     at(index: number) {
       return this._layers[index];
     }
+    //utility
+    forEach(fn: (layer: Layer, index: number) => void) {
+      const layers = this._layers;
+      for (let i = 1, l = layers.length; i <= l; i++) {
+        fn(layers[i], i);
+      }
+    }
+    //methods
     add<T extends AVItem>(item: AVItem | KAVItem<T>, duration?: number) {
       const av_item = item instanceof KAVItem ? item.get() : item;
       if (duration !== void 0) {

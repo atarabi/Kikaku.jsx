@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 6;
-    KIKAKU.PATCH_VERSION = 7;
+    KIKAKU.PATCH_VERSION = 8;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -2629,6 +2629,14 @@ var KIKAKU;
         KItemCollection.prototype.length = function () {
             return this._items.length;
         };
+        //utility
+        KItemCollection.prototype.forEach = function (fn) {
+            var items = this._items;
+            for (var i = 1, l = items.length; i <= l; i++) {
+                fn(items[i], i);
+            }
+        };
+        //methods
         KItemCollection.prototype.at = function (index) {
             return this._items[index];
         };
@@ -3002,6 +3010,14 @@ var KIKAKU;
         KLayerCollection.prototype.at = function (index) {
             return this._layers[index];
         };
+        //utility
+        KLayerCollection.prototype.forEach = function (fn) {
+            var layers = this._layers;
+            for (var i = 1, l = layers.length; i <= l; i++) {
+                fn(layers[i], i);
+            }
+        };
+        //methods
         KLayerCollection.prototype.add = function (item, duration) {
             var av_item = item instanceof KIKAKU.KAVItem ? item.get() : item;
             if (duration !== void 0) {

@@ -484,6 +484,7 @@ declare namespace KIKAKU {
         protected _items: ItemCollection;
         constructor(_items: ItemCollection);
         length(): number;
+        forEach(fn: (item: Item, index: number) => void): void;
         at(index: number): Item;
         addComp(name: string, width: number, height: number, pixelAspect: number, duration: number, frameRate: number): KCompItem;
         addFolder(name: string): KFolderItem;
@@ -579,6 +580,7 @@ declare namespace KIKAKU {
         constructor(_layers: LayerCollection);
         length(): number;
         at(index: number): Layer;
+        forEach(fn: (layer: Layer, index: number) => void): void;
         add<T extends AVItem>(item: AVItem | KAVItem<T>, duration?: number): KAVLayer<AVLayer>;
         addNull(duration?: number): KAVLayer<AVLayer>;
         addSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number, duration?: number): KAVLayer<AVLayer>;
