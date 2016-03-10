@@ -1781,14 +1781,16 @@ namespace KIKAKU {
   }
 
   //file manager
+  export type FileType = 'txt' | 'json';
+  
   class UIFileManager {
     static FILE_TYPE = {
       TEXT: 'txt',
       JSON: 'json'
     };
     private _file_manager: FileManager;
-    private _file_type: string;
-    constructor(root: string, file_type: string) {
+    private _file_type: FileType;
+    constructor(root: string, file_type: FileType) {
       this._file_manager = new FileManager(root);
       this._file_type = file_type;
     }
@@ -1894,7 +1896,7 @@ namespace KIKAKU {
     width?: number;
     help?: boolean;
     autoSave?: boolean;
-    fileType?: string;
+    fileType?: FileType;
     api?: boolean | {
       get?: boolean;
       set?: boolean;
@@ -1969,7 +1971,7 @@ namespace KIKAKU {
     private _setting_manager: UISettingManger;
     private _file_manager: UIFileManager;
     private _built = () => { return false; }
-    constructor(global: Global | Panel | Window | string, name: string, options?: UIBuilderOptions) {
+    constructor(global: Global | Panel | Window | 'dialog' | 'palette', name: string, options?: UIBuilderOptions) {
       this._global = global;
       this._name = name;
       this._options = Utils.assign({
@@ -2388,7 +2390,7 @@ namespace KIKAKU {
       return this.add(UIBuilder.PARAMETER_TYPE.SCRIPT, name, value);
     }
     addHelp(name: string, value?: string | Function) {
-      return this.add(UIBuilder.PARAMETER_TYPE.HEADING, name, value);
+      return this.add(UIBuilder.PARAMETER_TYPE.HELP, name, value);
     }
 
     api(name: string, fn: Function) {

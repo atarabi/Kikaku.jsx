@@ -919,6 +919,7 @@ declare namespace KIKAKU {
         onActivate?: Function | Function[];
         onDeactivate?: Function | Function[];
     }
+    type FileType = 'txt' | 'json';
     interface UIAPI {
         (script_name: string, api_name: string, ...args: any[]): any;
         exists(script_name: string, api_name?: string): boolean;
@@ -936,7 +937,7 @@ declare namespace KIKAKU {
         width?: number;
         help?: boolean;
         autoSave?: boolean;
-        fileType?: string;
+        fileType?: FileType;
         api?: boolean | {
             get?: boolean;
             set?: boolean;
@@ -1010,7 +1011,7 @@ declare namespace KIKAKU {
         private _setting_manager;
         private _file_manager;
         private _built;
-        constructor(global: Global | Panel | Window | string, name: string, options?: UIBuilderOptions);
+        constructor(global: Global | Panel | Window | 'dialog' | 'palette', name: string, options?: UIBuilderOptions);
         getName(): string;
         getVersion(): string;
         getAuthor(): string;

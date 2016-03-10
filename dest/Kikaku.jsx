@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 6;
-    KIKAKU.PATCH_VERSION = 8;
+    KIKAKU.PATCH_VERSION = 9;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -6160,7 +6160,6 @@ var KIKAKU;
         };
         return UISettingManger;
     }());
-    //file manager
     var UIFileManager = (function () {
         function UIFileManager(root, file_type) {
             this._file_manager = new KIKAKU.FileManager(root);
@@ -6483,7 +6482,7 @@ var KIKAKU;
             return this.add(UIBuilder.PARAMETER_TYPE.SCRIPT, name, value);
         };
         UIBuilder.prototype.addHelp = function (name, value) {
-            return this.add(UIBuilder.PARAMETER_TYPE.HEADING, name, value);
+            return this.add(UIBuilder.PARAMETER_TYPE.HELP, name, value);
         };
         UIBuilder.prototype.api = function (name, fn) {
             UIBuilder.API.add(this.getName(), name, fn, this);
