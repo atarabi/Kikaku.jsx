@@ -9,6 +9,7 @@ namespace KIKAKU {
       const prop = this._prop;
       return prop && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup || prop instanceof Property) && isValid(prop);
     }
+    protected validate() { }
     //cast
     asPropertyGroup() {
       return new KPropertyGroup<PropertyGroup>(<any>this._prop);
@@ -21,70 +22,91 @@ namespace KIKAKU {
     }
     //attributes
     name(name?: string) {
+      this.validate();
       if (name !== void 0) this._prop.name = name;
       return this._prop.name;
     }
     matchName() {
+      this.validate();
       return this._prop.matchName;
     }
     propertyIndex() {
+      this.validate();
       return this._prop.propertyIndex;
     }
     propertyDepth() {
+      this.validate();
       return this._prop.propertyDepth;
     }
     propertyType() {
+      this.validate();
       return this._prop.propertyType;
     }
     parentProperty() {
+      this.validate();
       return new KPropertyGroup(this._prop.parentProperty);
     }
     isModified() {
+      this.validate();
       return this._prop.isModified;
     }
     canSetEnabled() {
+      this.validate();
       return this._prop.canSetEnabled;
     }
     enabled(enabled?: boolean) {
+      this.validate();
       if (enabled !== void 0) this._prop.enabled = enabled;
       return this._prop.enabled;
     }
     active() {
+      this.validate();
       return this._prop.active;
     }
     elided() {
+      this.validate();
       return this._prop.elided;
     }
     isEffect() {
+      this.validate();
       return this._prop.isEffect;
     }
     isMask() {
+      this.validate();
       return this._prop.isMask;
     }
     selected(selected?: boolean) {
+      this.validate();
       if (selected !== void 0) this._prop.selected = selected;
       return this._prop.selected;
     }
     //methods
     property(index_or_name: number | string) {
+      this.validate();
       return new KPropertyBase(this._prop.property(<any>index_or_name));
     }
     propertyAsProperty(index_or_name: number | string) {
+      this.validate();
       return new KPropertyBase(this._prop.property(<any>index_or_name)).asProperty();
     }
     propertyAsPropertyGroup(index_or_name: number | string) {
+      this.validate();
       return new KPropertyBase(this._prop.property(<any>index_or_name)).asPropertyGroup();
     }
     propertyGroup(countUp = 1) {
+      this.validate();
       return new KPropertyGroup(this._prop.propertyGroup(countUp));
     }
     remove() {
+      this.validate();
       this._prop.remove();
     }
     moveTo(newIndex: number) {
+      this.validate();
       this._prop.moveTo(newIndex);
     }
     duplicate() {
+      this.validate();
       return new KPropertyBase(this._prop.duplicate());
     }
   }
@@ -322,6 +344,31 @@ namespace KIKAKU {
     }
     getSeparationFollower(dim: number) {
       return new KProperty(this._prop.getSeparationFollower(dim));
+    }
+  }
+
+  export class KEffectParade extends KPropertyGroup<PropertyGroup> {
+    addProperty(name: string) {
+      const prop = this.addPropertyAsPropertyGroup(name);
+      return new KEffect(prop.get());
+    }
+    addPropertyAsPropertyGroup(name: string) {
+      return this.addProperty(name);
+    }
+  }
+
+  export class KEffect extends KPropertyGroup<PropertyGroup> {
+    private _effect_parade: KPropertyGroup<PropertyGroup>;
+    private _name: string;
+    constructor(prop: PropertyGroup) {
+      super(prop);
+      this._effect_parade = this.parentProperty();
+      this._name = prop.name;
+    }
+    protected validate() {
+      if (!this.isValid()) {
+        this._prop = this._effect_parade.propertyAsPropertyGroup(this._name).get();
+      }
     }
   }
 

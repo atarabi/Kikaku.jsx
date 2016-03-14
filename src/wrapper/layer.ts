@@ -274,7 +274,7 @@ namespace KIKAKU {
       return new KPropertyGroup(this._layer.mask);
     }
     effect() {
-      return new KPropertyGroup(this._layer.effect);
+      return new KEffectParade(this._layer.effect);
     }
     layerStyle() {
       return new KPropertyGroup(this._layer.layerStyle);
