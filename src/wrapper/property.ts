@@ -1372,4 +1372,40 @@ namespace KIKAKU {
     }
   }
 
+  /*
+  * Light Property
+  */
+  export class KLightOptions extends KPropertyGroup<PropertyGroup> {
+    intensity() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Intensity'), this);
+    }
+    color() {
+      return new KColorProperty(<Property>this._prop.property('ADBE Light Color'), this);
+    }
+    coneAngle() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Cone Angle'), this);
+    }
+    coneFeather() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Cone Feather 2'), this);
+    }
+    falloff() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Falloff Type'), this);
+    }
+    radius() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Falloff Start'), this);
+    }
+    falloffDistance() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Falloff Distance'), this);
+    }
+    castsShadows() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Casts Shadows'), this);
+    }
+    shadowDarkness() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Shadow Darkness'), this);
+    }
+    shadowDiffusion() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Shadow Diffusion'), this);
+    }
+  }
+
 }

@@ -461,7 +461,7 @@ namespace KIKAKU {
     }
     //properties
     lightOption() {
-      return new KPropertyGroup(this._layer.lightOption);
+      return new KLightOptions(this._layer.lightOption);
     }
   }
 
