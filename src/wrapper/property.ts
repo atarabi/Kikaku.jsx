@@ -1326,4 +1326,50 @@ namespace KIKAKU {
     }
   }
 
+
+  /*
+  * Camera Property
+  */
+  export class KCameraOptions extends KPropertyGroup<PropertyGroup> {
+    zoom() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Camera Zoom'), this);
+    }
+    depthOfField() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Camera Depth of Field'), this);
+    }
+    focusDistance() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Camera Focus Distance'), this);
+    }
+    aperture() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Camera Aperture'), this);
+    }
+    blurLevel() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Camera Blur Level'), this);
+    }
+    irisShape() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Iris Shape'), this);
+    }
+    irisRotation() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Iris Rotation'), this);
+    }
+    irisRoundness() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Iris Roundness'), this);
+    }
+    irisAspectRatio() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Iris Aspect Ratio'), this);
+    }
+    irisDiffractionFringe() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Iris Diffraction Fringe'), this);
+    }
+    highlightGain() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Iris Highlight Gain'), this);
+    }
+    highlightThreshold() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Iris Highlight Threshold'), this);
+    }
+    highlightSaturation() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Iris Hightlight Saturation'), this);
+    }
+  }
+
 }

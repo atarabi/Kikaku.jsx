@@ -450,7 +450,7 @@ namespace KIKAKU {
     }
     //properties
     cameraOption() {
-      return new KPropertyGroup(this._layer.cameraOption);
+      return new KCameraOptions(this._layer.cameraOption);
     }
   }
 
