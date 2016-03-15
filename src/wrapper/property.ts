@@ -1326,6 +1326,39 @@ namespace KIKAKU {
     }
   }
 
+  /*
+  * Material Property
+  */
+
+  export class KMaterialOptions extends KPropertyGroup<PropertyGroup> {
+    castsShadows() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Casts Shadows'), this);
+    }
+    lightTransmission() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Light Transmission'), this);
+    }
+    acceptsShadows() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Accepts Shadows'), this);
+    }
+    acceptsLights() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Accepts Lights'), this);
+    }
+    ambient() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Ambient Coefficient'), this);
+    }
+    diffuse() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Diffuse Coefficient'), this);
+    }
+    specularIntensity() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Specular Coefficient'), this);
+    }
+    specularShininess() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Shininess Coefficient'), this);
+    }
+    metal() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Metal Coefficient'), this);
+    }
+  }
 
   /*
   * Camera Property

@@ -285,7 +285,7 @@ namespace KIKAKU {
       return new KPropertyGroup(this._layer.geometryOption);
     }
     materialOption() {
-      return new KPropertyGroup(this._layer.materialOption);
+      return new KMaterialOptions(this._layer.materialOption);
     }
     audio() {
       return new KPropertyGroup(this._layer.audio);
