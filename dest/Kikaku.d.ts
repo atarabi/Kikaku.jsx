@@ -485,7 +485,7 @@ declare namespace KIKAKU {
         constructor(_items: ItemCollection);
         length(): number;
         forEach(fn: (item: Item, index: number) => void): void;
-        at(index: number): Item;
+        at(index: number): KItem<Item>;
         addComp(name: string, width: number, height: number, pixelAspect: number, duration: number, frameRate: number): KCompItem;
         addFolder(name: string): KFolderItem;
     }
@@ -579,7 +579,7 @@ declare namespace KIKAKU {
         protected _layers: LayerCollection;
         constructor(_layers: LayerCollection);
         length(): number;
-        at(index: number): Layer;
+        at(index: number): KLayer<Layer>;
         forEach(fn: (layer: Layer, index: number) => void): void;
         add<T extends AVItem>(item: AVItem | KAVItem<T>, duration?: number): KAVLayer<AVLayer>;
         addNull(duration?: number): KAVLayer<AVLayer>;
@@ -588,7 +588,7 @@ declare namespace KIKAKU {
         addBoxText(size: [number, number], sourceText?: string | TextDocument): KTextLayer;
         addCamera(name: string, centerPoint: [number, number]): KCameraLayer;
         addLight(name: string, centerPoint: [number, number]): KLightLayer;
-        addShape(): KShapeLayer;
+        addShape(name?: string): KShapeLayer;
         byName(name: string): KLayer<Layer>;
         precompose(layerIndices: number[], name: string, moveAllAttributes?: boolean): KCompItem;
     }
@@ -602,20 +602,20 @@ declare namespace KIKAKU {
         asText(): KTextLayer;
         asLight(): KLightLayer;
         asCamera(): KCameraLayer;
-        marker(): KProperty;
+        marker(): KMarkerProperty;
         transform(): KPropertyGroup<_TransformGroup>;
-        anchorPoint(): KProperty;
-        position(): KProperty;
-        xPosition(): KProperty;
-        yPosition(): KProperty;
-        zPosition(): KProperty;
-        scale(): KProperty;
-        orientation(): KProperty;
-        rotation(): KProperty;
-        xRotation(): KProperty;
-        yRotation(): KProperty;
-        zRotation(): KProperty;
-        opacity(): KProperty;
+        anchorPoint(): KThreeDSpatialProperty;
+        position(): KThreeDSpatialProperty;
+        xPosition(): KOneDProperty;
+        yPosition(): KOneDProperty;
+        zPosition(): KOneDProperty;
+        scale(): KThreeDProperty;
+        orientation(): KThreeDSpatialProperty;
+        rotation(): KOneDProperty;
+        xRotation(): KOneDProperty;
+        yRotation(): KOneDProperty;
+        zRotation(): KOneDProperty;
+        opacity(): KOneDProperty;
         index(): number;
         name(name?: string): string;
         parent<U extends Layer>(parent?: Layer | KLayer<U>): Layer;
@@ -648,12 +648,12 @@ declare namespace KIKAKU {
     }
     class KAVLayer<T extends AVLayer> extends KLayer<T> {
         isValid(): boolean;
-        timeRemap(): KProperty;
-        mask(): KPropertyGroup<PropertyGroup>;
-        effect(): KPropertyGroup<PropertyGroup>;
+        timeRemap(): KOneDProperty;
+        mask(): KMaskParade;
+        effect(): KEffectParade;
         layerStyle(): KPropertyGroup<_LayerStyles>;
         geometryOption(): KPropertyGroup<_GeometryOptionsGroup>;
-        materialOption(): KPropertyGroup<_MaterialOptionsGroup>;
+        materialOption(): KMaterialOptions;
         audio(): KPropertyGroup<_AudioGroup>;
         source(): KAVItem<AVItem>;
         isNameFromSource(): boolean;
@@ -698,31 +698,34 @@ declare namespace KIKAKU {
     }
     class KShapeLayer extends KAVLayer<ShapeLayer> {
         isValid(): boolean;
-        contents(): KPropertyGroup<PropertyGroup>;
+        contents(): KRootVectors;
     }
     class KTextLayer extends KAVLayer<TextLayer> {
         isValid(): boolean;
-        text(): KPropertyGroup<_TextProperties>;
-        sourceText(): KProperty;
+        text(): KTextProperties;
+        sourceText(): KTextDocumentProperty;
     }
     class KCameraLayer extends KLayer<CameraLayer> {
         isValid(): boolean;
-        cameraOption(): KPropertyGroup<_CameraOptionsGroup>;
+        cameraOption(): KCameraOptions;
     }
     class KLightLayer extends KLayer<LightLayer> {
         isValid(): boolean;
-        lightOption(): KPropertyGroup<_LightOptionsGroup>;
+        lightOption(): KLightOptions;
     }
 }
 declare namespace KIKAKU {
     class KPropertyBase<T extends PropertyBase> {
         protected _prop: T;
-        constructor(_prop: T);
+        protected _parent: KPropertyGroup<PropertyGroup>;
+        protected _name: string;
+        constructor(_prop: T, _parent?: KPropertyGroup<PropertyGroup>);
         get(): T;
         isValid(): boolean;
+        validate(): void;
         asPropertyGroup(): KPropertyGroup<PropertyGroup>;
         asMaskPropertyGroup(): KMaskPropertyGroup;
-        asProperty(): KProperty;
+        asProperty(): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
         name(name?: string): string;
         matchName(): string;
         propertyIndex(): number;
@@ -737,9 +740,6 @@ declare namespace KIKAKU {
         isEffect(): boolean;
         isMask(): boolean;
         selected(selected?: boolean): boolean;
-        property(index_or_name: number | string): KPropertyBase<PropertyBase>;
-        propertyAsProperty(index_or_name: number | string): KProperty;
-        propertyAsPropertyGroup(index_or_name: number | string): KPropertyGroup<PropertyGroup>;
         propertyGroup(countUp?: number): KPropertyGroup<PropertyGroup>;
         remove(): void;
         moveTo(newIndex: number): void;
@@ -748,13 +748,20 @@ declare namespace KIKAKU {
     class KPropertyGroup<T extends PropertyGroup> extends KPropertyBase<T> {
         isValid(): boolean;
         numProperties(): number;
+        property(index_or_name: number | string): any;
+        propertyAsProperty(index_or_name: number | string): any;
+        propertyAsPropertyGroup(index_or_name: number | string): any;
         canAddProperty(name: string): boolean;
         addProperty(name: string): KPropertyBase<PropertyBase>;
-        addPropertyAsProperty(name: string): KProperty;
+        addPropertyAsProperty(name: string): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
         addPropertyAsPropertyGroup(name: string): KPropertyGroup<PropertyGroup>;
     }
     class KMaskPropertyGroup extends KPropertyGroup<MaskPropertyGroup> {
         isValid(): boolean;
+        maskPath(): KShapeProperty;
+        maskFeather(): KTwoDProperty;
+        maskOpacity(): KOneDProperty;
+        maskExpansion(): KOneDProperty;
         maskMode(maskMode?: MaskMode): MaskMode;
         inverted(inverted?: boolean): boolean;
         rotoBezier(rotoBezier?: boolean): boolean;
@@ -763,10 +770,23 @@ declare namespace KIKAKU {
         color(color?: [number, number, number]): [number, number, number];
         maskFeatherFalloff(maskFeatherFalloff?: MaskFeatherFalloff): MaskFeatherFalloff;
     }
-    class KProperty extends KPropertyBase<Property> {
+    class KProperty<T extends PropertyValue> extends KPropertyBase<Property> {
         isValid(): boolean;
+        asNoValue(): KNoValueProperty;
+        asThreeDSpatial(): KThreeDSpatialProperty;
+        asThreeD(): KThreeDProperty;
+        asTwoDSpatial(): KTwoDSpatialProperty;
+        asTwoD(): KTwoDProperty;
+        asOneD(): KOneDProperty;
+        asColor(): KColorProperty;
+        asCustomValue(): KCustomValueProperty;
+        asMarker(): KMarkerProperty;
+        asLayerIndex(): KLayerIndexProperty;
+        asMaskIndex(): KMaskIndexProperty;
+        asShape(): KShapeProperty;
+        asTextDocument(): KTextDocumentProperty;
         propertyValueType(): PropertyValueType;
-        value(): void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument;
+        value(): T;
         hasMin(): boolean;
         hasMax(): boolean;
         minValue(): number;
@@ -787,14 +807,14 @@ declare namespace KIKAKU {
         isSeparationLeader(): boolean;
         separationDimension(): number;
         separationLeader(): Property;
-        valueAtTime(time: number, preExpression: boolean): void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument;
-        setValue(value: PropertyValue): void;
-        setValueAtTime(time: number, newValue: PropertyValue): void;
-        setValuesAtTimes(times: number[], newValues: PropertyValue[]): void;
-        setValueAtKey(keyIndex: number, newValue: PropertyValue): void;
+        valueAtTime(time: number, preExpression: boolean): T;
+        setValue(value: T): void;
+        setValueAtTime(time: number, newValue: T): void;
+        setValuesAtTimes(times: number[], newValues: T[]): void;
+        setValueAtKey(keyIndex: number, newValue: T): void;
         nearestKeyIndex(time: number): number;
         keyTime(keyIndex_or_markerComment: number | string): number;
-        keyValue(keyIndex_or_markerComment: number | string): void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument;
+        keyValue(keyIndex_or_markerComment: number | string): T;
         addKey(time: number): number;
         removeKey(keyIndex: number): void;
         isInterpolationTypeValid(type: KeyframeInterpolationType): boolean;
@@ -819,7 +839,370 @@ declare namespace KIKAKU {
         keyRoving(keyIndex: number): boolean;
         setSelectedAtKey(keyIndex: number, onOff: boolean): void;
         keySelected(keyIndex: number): boolean;
-        getSeparationFollower(dim: number): KProperty;
+        getSeparationFollower(dim: number): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
+    }
+    class KNoValueProperty extends KProperty<void> {
+        isValid(): boolean;
+    }
+    class KThreeDSpatialProperty extends KProperty<[number, number] | [number, number, number]> {
+        isValid(): boolean;
+    }
+    class KThreeDProperty extends KProperty<[number, number] | [number, number, number]> {
+        isValid(): boolean;
+    }
+    class KTwoDSpatialProperty extends KProperty<[number, number]> {
+        isValid(): boolean;
+    }
+    class KTwoDProperty extends KProperty<[number, number]> {
+        isValid(): boolean;
+    }
+    class KOneDProperty extends KProperty<number | boolean> {
+        isValid(): boolean;
+    }
+    class KColorProperty extends KProperty<[number, number, number] | [number, number, number, number]> {
+        isValid(): boolean;
+    }
+    class KCustomValueProperty extends KProperty<void> {
+        isValid(): boolean;
+    }
+    class KMarkerProperty extends KProperty<MarkerValue> {
+        isValid(): boolean;
+    }
+    class KLayerIndexProperty extends KProperty<number> {
+        isValid(): boolean;
+    }
+    class KMaskIndexProperty extends KProperty<number> {
+        isValid(): boolean;
+    }
+    class KShapeProperty extends KProperty<Shape> {
+        isValid(): boolean;
+    }
+    class KTextDocumentProperty extends KProperty<Shape> {
+        isValid(): boolean;
+    }
+    class KMaskParade extends KPropertyGroup<PropertyGroup> {
+        addMaskAtom(name?: string): KMaskPropertyGroup;
+    }
+    class KEffectParade extends KPropertyGroup<PropertyGroup> {
+        addProperty(name_or_matchname: string): KEffect;
+        addPropertyAsPropertyGroup(name: string): KEffect;
+    }
+    class KEffect extends KPropertyGroup<PropertyGroup> {
+        property(index_or_name: number | string): any;
+    }
+    class KTextProperties extends KPropertyGroup<PropertyGroup> {
+        sourceText(): KTextDocumentProperty;
+        pathOptions(): KTextPathOptions;
+        moreOptions(): KTextMoreOptions;
+        animators(): KTextAnimators;
+    }
+    class KTextPathOptions extends KPropertyGroup<_TextPathOptions> {
+        path(): KMaskIndexProperty;
+    }
+    class KTextMoreOptions extends KPropertyGroup<_TextMoreOptions> {
+        anchorPointGrouping(): KOneDProperty;
+        groupingAlignment(): KTwoDProperty;
+        fillAndStroke(): KOneDProperty;
+        interCharacterBlending(): KOneDProperty;
+    }
+    class KTextAnimators extends KPropertyGroup<PropertyGroup> {
+        addAnimator(name?: string): KTextAnimator;
+    }
+    class KTextAnimator extends KPropertyGroup<PropertyGroup> {
+        properties(): KTextAnimatorProperties;
+        selectors(): KTextSelectors;
+    }
+    class KTextAnimatorProperties extends KPropertyGroup<PropertyGroup> {
+        anchorPoint(): KThreeDSpatialProperty;
+        position(): KThreeDSpatialProperty;
+        scale(): KThreeDProperty;
+        skew(): KOneDProperty;
+        skewAxis(): KOneDProperty;
+        rotation(): KOneDProperty;
+        opacity(): KOneDProperty;
+        fillOpacity(): KOneDProperty;
+        fillColor(): KColorProperty;
+        fillHue(): KOneDProperty;
+        fillSaturation(): KOneDProperty;
+        fillBrightness(): KOneDProperty;
+        strokeOpacity(): KOneDProperty;
+        strokeColor(): KColorProperty;
+        strokeHue(): KOneDProperty;
+        strokeSaturation(): KOneDProperty;
+        strokeBrightness(): KOneDProperty;
+        strokeWidth(): KOneDProperty;
+        lineAnchor(): KOneDProperty;
+        trackingType(): KOneDProperty;
+        trackingAmount(): KOneDProperty;
+        characterAlignment(): KOneDProperty;
+        characterRange(): KOneDProperty;
+        characterValue(): KOneDProperty;
+        characterOffset(): KOneDProperty;
+        lineSpacing(): KTwoDProperty;
+        blur(): KTwoDProperty;
+        addAnchorPoint(): KThreeDSpatialProperty;
+        addPosition(): KThreeDSpatialProperty;
+        addScale(): KThreeDSpatialProperty;
+        addSkew(): KThreeDSpatialProperty;
+        addSkewAxis(): KThreeDSpatialProperty;
+        addRotation(): KThreeDSpatialProperty;
+        addOpacity(): KThreeDSpatialProperty;
+        addFillOpacity(): KOneDProperty;
+        addFillColor(): KColorProperty;
+        addFillHue(): KOneDProperty;
+        addFillSaturation(): KOneDProperty;
+        addFillBrightness(): KOneDProperty;
+        addStrokeOpacity(): KOneDProperty;
+        addStrokeColor(): KColorProperty;
+        addStrokeHue(): KOneDProperty;
+        addStrokeSaturation(): KOneDProperty;
+        addStrokeBrightness(): KOneDProperty;
+        addStrokeWidth(): KOneDProperty;
+        addLineAnchor(): KOneDProperty;
+        addTrackingType(): KOneDProperty;
+        addTrackingAmount(): KOneDProperty;
+        addCharacterAlignment(): KOneDProperty;
+        addCharacterRange(): KOneDProperty;
+        addCharacterValue(): KOneDProperty;
+        addCharacterOffset(): KOneDProperty;
+        addLineSpacing(): KTwoDProperty;
+        addBlur(): KTwoDProperty;
+    }
+    class KTextSelectors extends KPropertyGroup<PropertyGroup> {
+        addRangeSelector(name?: string): KTextRangeSelector;
+        addWigglySelector(name?: string): KWigglySelector;
+        addExpressionSelector(name?: string): KTextExpressionSelector;
+    }
+    class KTextRangeSelector extends KPropertyGroup<PropertyGroup> {
+        start(): KOneDProperty;
+        end(): KOneDProperty;
+        offset(): KOneDProperty;
+        advanced(): KTextRangeAdvanced;
+    }
+    class KTextRangeAdvanced extends KPropertyGroup<PropertyGroup> {
+        units(): KOneDProperty;
+        basedOn(): KOneDProperty;
+        mode(): KOneDProperty;
+        amount(): KOneDProperty;
+        shape(): KOneDProperty;
+        smoothness(): KOneDProperty;
+        easeHigh(): KOneDProperty;
+        easeLow(): KOneDProperty;
+        randomizeOrder(): KOneDProperty;
+    }
+    class KWigglySelector extends KPropertyGroup<PropertyGroup> {
+        mode(): KOneDProperty;
+        maxAmount(): KOneDProperty;
+        minAmount(): KOneDProperty;
+        basedOn(): KOneDProperty;
+        wigglesPerSecond(): KOneDProperty;
+        correlation(): KOneDProperty;
+        temporalPhase(): KOneDProperty;
+        spatialPhase(): KOneDProperty;
+        lockDimensions(): KOneDProperty;
+        randomSeed(): KOneDProperty;
+    }
+    class KTextExpressionSelector extends KPropertyGroup<PropertyGroup> {
+        basedOn(): KOneDProperty;
+        amount(): KThreeDProperty;
+    }
+    class KVectorsGroup extends KPropertyGroup<PropertyGroup> {
+        addGroup(name?: string): KVectorGroup;
+        addRectangle(name?: string): KVectorRect;
+        addEllipse(name?: string): KVectorEllipse;
+        addPolystar(name?: string): KVectorPolystar;
+        addPath(name?: string): KVectorPath;
+        addFill(name?: string): KVectorFill;
+        addStroke(name?: string): KVectorStroke;
+        addGradientFill(name?: string): KVectorGradientFill;
+        addGradientStroke(name?: string): KVectorGradientStroke;
+        addMergePaths(name?: string): KVectorMergePaths;
+        addOffsetPaths(name?: string): KVectorOffsetPaths;
+        addPuckerAndBloat(name?: string): KVectorPuckerAndBloat;
+        addRepeater(name?: string): KVectorRepeater;
+        addRoundCorners(name?: string): KVectorRoundCorners;
+        addTrimPaths(name?: string): KVectorTrimPaths;
+        addTwist(name?: string): KVectorTwist;
+        addWigglePaths(name?: string): KVectorWigglePaths;
+        addWiggleTransform(name?: string): KVectorWiggler;
+        addZigzag(name?: string): KVectorZigzag;
+    }
+    class KRootVectors extends KVectorsGroup {
+    }
+    class KVectorGroup extends KPropertyGroup<PropertyGroup> {
+        vectors(): KVectorsGroup;
+        transform(): KVectorTransform;
+    }
+    class KVectorTransform extends KPropertyGroup<PropertyGroup> {
+        anchorPoint(): KTwoDSpatialProperty;
+        position(): KTwoDSpatialProperty;
+        scale(): KTwoDProperty;
+        skew(): KOneDProperty;
+        skewAxis(): KOneDProperty;
+        rotation(): KOneDProperty;
+        opacity(): KOneDProperty;
+    }
+    class KVectorRect extends KPropertyGroup<PropertyGroup> {
+        size(): KTwoDProperty;
+        position(): KTwoDSpatialProperty;
+        roundness(): KOneDProperty;
+    }
+    class KVectorEllipse extends KPropertyGroup<PropertyGroup> {
+        size(): KTwoDProperty;
+        position(): KTwoDSpatialProperty;
+    }
+    class KVectorPolystar extends KPropertyGroup<PropertyGroup> {
+        type(): KOneDProperty;
+        points(): KOneDProperty;
+        position(): KTwoDSpatialProperty;
+        rotation(): KOneDProperty;
+        innerRadius(): KOneDProperty;
+        outerRadius(): KOneDProperty;
+        innerRoundness(): KOneDProperty;
+        outerRoundness(): KOneDProperty;
+    }
+    class KVectorPath extends KPropertyGroup<PropertyGroup> {
+        path(): KShapeProperty;
+    }
+    class KVectorFill extends KPropertyGroup<PropertyGroup> {
+        composite(): KOneDProperty;
+        fillRule(): KOneDProperty;
+        color(): KColorProperty;
+        opacity(): KOneDProperty;
+    }
+    class KVectorStroke extends KPropertyGroup<PropertyGroup> {
+        composite(): KOneDProperty;
+        color(): KColorProperty;
+        opacity(): KOneDProperty;
+        strokeWidth(): KOneDProperty;
+        lineCap(): KOneDProperty;
+        lineJoin(): KOneDProperty;
+        miterLimit(): KOneDProperty;
+    }
+    class KVectorGradientFill extends KPropertyGroup<PropertyGroup> {
+        composite(): KOneDProperty;
+        fillRule(): KOneDProperty;
+        type(): KOneDProperty;
+        startPoint(): KTwoDSpatialProperty;
+        endPoint(): KTwoDSpatialProperty;
+        colors(): KCustomValueProperty;
+        opacity(): KOneDProperty;
+    }
+    class KVectorGradientStroke extends KPropertyGroup<PropertyGroup> {
+        composite(): KOneDProperty;
+        type(): KOneDProperty;
+        startPoint(): KTwoDSpatialProperty;
+        endPoint(): KTwoDSpatialProperty;
+        colors(): KCustomValueProperty;
+        opacity(): KOneDProperty;
+        strokeWidth(): KOneDProperty;
+        lineCap(): KOneDProperty;
+        lineJoin(): KOneDProperty;
+        miterLimit(): KOneDProperty;
+    }
+    class KVectorMergePaths extends KPropertyGroup<PropertyGroup> {
+        mode(): KOneDProperty;
+    }
+    class KVectorOffsetPaths extends KPropertyGroup<PropertyGroup> {
+        amount(): KOneDProperty;
+        lineJoin(): KOneDProperty;
+        miterLimit(): KOneDProperty;
+    }
+    class KVectorPuckerAndBloat extends KPropertyGroup<PropertyGroup> {
+        amount(): KOneDProperty;
+    }
+    class KVectorRepeater extends KPropertyGroup<PropertyGroup> {
+        copies(): KOneDProperty;
+        offset(): KOneDProperty;
+        transform(): KVectorRepeaterTransform;
+    }
+    class KVectorRepeaterTransform extends KPropertyGroup<PropertyGroup> {
+        anchorPoint(): KTwoDSpatialProperty;
+        position(): KTwoDSpatialProperty;
+        scale(): KTwoDProperty;
+        rotation(): KOneDProperty;
+        startOpacity(): KOneDProperty;
+        endOpacity(): KOneDProperty;
+    }
+    class KVectorRoundCorners extends KPropertyGroup<PropertyGroup> {
+        radius(): KOneDProperty;
+    }
+    class KVectorTrimPaths extends KPropertyGroup<PropertyGroup> {
+        start(): KOneDProperty;
+        end(): KOneDProperty;
+        offset(): KOneDProperty;
+        trimMultipleShapes(): KOneDProperty;
+    }
+    class KVectorTwist extends KPropertyGroup<PropertyGroup> {
+        angle(): KOneDProperty;
+        center(): KTwoDSpatialProperty;
+    }
+    class KVectorWigglePaths extends KPropertyGroup<PropertyGroup> {
+        size(): KOneDProperty;
+        detail(): KOneDProperty;
+        points(): KOneDProperty;
+        wigglesPerSecond(): KOneDProperty;
+        correlation(): KOneDProperty;
+        temporalPhase(): KOneDProperty;
+        spatialPhase(): KOneDProperty;
+        randomSeed(): KOneDProperty;
+    }
+    class KVectorWiggler extends KPropertyGroup<PropertyGroup> {
+        wigglesPerSecond(): KOneDProperty;
+        correlation(): KOneDProperty;
+        temporalPhase(): KOneDProperty;
+        spatialPhase(): KOneDProperty;
+        randomSeed(): KOneDProperty;
+        transform(): KVectorWigglerTransform;
+    }
+    class KVectorWigglerTransform extends KPropertyGroup<PropertyGroup> {
+        anchorPoint(): KTwoDSpatialProperty;
+        position(): KTwoDSpatialProperty;
+        scale(): KTwoDProperty;
+        rotation(): KOneDProperty;
+    }
+    class KVectorZigzag extends KPropertyGroup<PropertyGroup> {
+        size(): KOneDProperty;
+        ridgesPerSegment(): KOneDProperty;
+        points(): KOneDProperty;
+    }
+    class KMaterialOptions extends KPropertyGroup<PropertyGroup> {
+        castsShadows(): KOneDProperty;
+        lightTransmission(): KOneDProperty;
+        acceptsShadows(): KOneDProperty;
+        acceptsLights(): KOneDProperty;
+        ambient(): KOneDProperty;
+        diffuse(): KOneDProperty;
+        specularIntensity(): KOneDProperty;
+        specularShininess(): KOneDProperty;
+        metal(): KOneDProperty;
+    }
+    class KCameraOptions extends KPropertyGroup<PropertyGroup> {
+        zoom(): KOneDProperty;
+        depthOfField(): KOneDProperty;
+        focusDistance(): KOneDProperty;
+        aperture(): KOneDProperty;
+        blurLevel(): KOneDProperty;
+        irisShape(): KOneDProperty;
+        irisRotation(): KOneDProperty;
+        irisRoundness(): KOneDProperty;
+        irisAspectRatio(): KOneDProperty;
+        irisDiffractionFringe(): KOneDProperty;
+        highlightGain(): KOneDProperty;
+        highlightThreshold(): KOneDProperty;
+        highlightSaturation(): KOneDProperty;
+    }
+    class KLightOptions extends KPropertyGroup<PropertyGroup> {
+        intensity(): KOneDProperty;
+        color(): KColorProperty;
+        coneAngle(): KOneDProperty;
+        coneFeather(): KOneDProperty;
+        falloff(): KOneDProperty;
+        radius(): KOneDProperty;
+        falloffDistance(): KOneDProperty;
+        castsShadows(): KOneDProperty;
+        shadowDarkness(): KOneDProperty;
+        shadowDiffusion(): KOneDProperty;
     }
 }
 declare namespace KIKAKU {

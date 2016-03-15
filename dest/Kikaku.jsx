@@ -6,8 +6,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
-    KIKAKU.MINOR_VERSION = 6;
-    KIKAKU.PATCH_VERSION = 9;
+    KIKAKU.MINOR_VERSION = 7;
+    KIKAKU.PATCH_VERSION = 0;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -2487,7 +2487,7 @@ var KIKAKU;
         };
         KFootageSource.prototype.isValid = function () {
             var source = this._source;
-            return source && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource) && isValid(source);
+            return isValid(source) && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource);
         };
         //cast
         KFootageSource.prototype.asSolid = function () {
@@ -2573,7 +2573,7 @@ var KIKAKU;
         }
         KSolidSource.prototype.isValid = function () {
             var source = this._source;
-            return source && source instanceof SolidSource && isValid(source);
+            return isValid(source) && source instanceof SolidSource;
         };
         //attributes
         KSolidSource.prototype.color = function (color) {
@@ -2591,7 +2591,7 @@ var KIKAKU;
         }
         KPlaceholderSource.prototype.isValid = function () {
             var source = this._source;
-            return source && source instanceof PlaceholderSource && isValid(source);
+            return isValid(source) && source instanceof PlaceholderSource;
         };
         return KPlaceholderSource;
     }(KFootageSource));
@@ -2603,7 +2603,7 @@ var KIKAKU;
         }
         KFileSource.prototype.isValid = function () {
             var source = this._source;
-            return source && source instanceof FileSource && isValid(source);
+            return isValid(source) && source instanceof FileSource;
         };
         //attributes
         KFileSource.prototype.file = function () {
@@ -2638,7 +2638,7 @@ var KIKAKU;
         };
         //methods
         KItemCollection.prototype.at = function (index) {
-            return this._items[index];
+            return new KItem(this._items[index]);
         };
         KItemCollection.prototype.addComp = function (name, width, height, pixelAspect, duration, frameRate) {
             return new KCompItem(this._items.addComp(name, width, height, pixelAspect, duration, frameRate));
@@ -3008,7 +3008,7 @@ var KIKAKU;
             return this._layers.length;
         };
         KLayerCollection.prototype.at = function (index) {
-            return this._layers[index];
+            return new KLayer(this._layers[index]);
         };
         //utility
         KLayerCollection.prototype.forEach = function (fn) {
@@ -3055,8 +3055,11 @@ var KIKAKU;
         KLayerCollection.prototype.addLight = function (name, centerPoint) {
             return new KLightLayer(this._layers.addLight(name, centerPoint));
         };
-        KLayerCollection.prototype.addShape = function () {
-            return new KShapeLayer(this._layers.addShape());
+        KLayerCollection.prototype.addShape = function (name) {
+            var shape_layer = this._layers.addShape();
+            if (name !== void 0)
+                shape_layer.name = name;
+            return new KShapeLayer(shape_layer);
         };
         KLayerCollection.prototype.byName = function (name) {
             return new KLayer(this._layers.byName(name));
@@ -3077,7 +3080,7 @@ var KIKAKU;
         };
         KLayer.prototype.isValid = function () {
             var layer = this._layer;
-            return layer && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
+            return isValid(layer) && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
         };
         //cast
         KLayer.prototype.asAV = function () {
@@ -3097,46 +3100,46 @@ var KIKAKU;
         };
         //properties
         KLayer.prototype.marker = function () {
-            return new KIKAKU.KProperty(this._layer.marker);
+            return new KIKAKU.KMarkerProperty(this._layer.marker);
         };
         KLayer.prototype.transform = function () {
             return new KIKAKU.KPropertyGroup(this._layer.transform);
         };
         KLayer.prototype.anchorPoint = function () {
-            return new KIKAKU.KProperty(this._layer.transform.anchorPoint);
+            return new KIKAKU.KThreeDSpatialProperty(this._layer.transform.anchorPoint);
         };
         KLayer.prototype.position = function () {
-            return new KIKAKU.KProperty(this._layer.transform.position);
+            return new KIKAKU.KThreeDSpatialProperty(this._layer.transform.position);
         };
         KLayer.prototype.xPosition = function () {
-            return new KIKAKU.KProperty(this._layer.transform.xPosition);
+            return new KIKAKU.KOneDProperty(this._layer.transform.xPosition);
         };
         KLayer.prototype.yPosition = function () {
-            return new KIKAKU.KProperty(this._layer.transform.yPosition);
+            return new KIKAKU.KOneDProperty(this._layer.transform.yPosition);
         };
         KLayer.prototype.zPosition = function () {
-            return new KIKAKU.KProperty(this._layer.transform.zPosition);
+            return new KIKAKU.KOneDProperty(this._layer.transform.zPosition);
         };
         KLayer.prototype.scale = function () {
-            return new KIKAKU.KProperty(this._layer.transform.scale);
+            return new KIKAKU.KThreeDProperty(this._layer.transform.scale);
         };
         KLayer.prototype.orientation = function () {
-            return new KIKAKU.KProperty(this._layer.transform.orientation);
+            return new KIKAKU.KThreeDSpatialProperty(this._layer.transform.orientation);
         };
         KLayer.prototype.rotation = function () {
-            return new KIKAKU.KProperty(this._layer.transform.rotation);
+            return new KIKAKU.KOneDProperty(this._layer.transform.rotation);
         };
         KLayer.prototype.xRotation = function () {
-            return new KIKAKU.KProperty(this._layer.transform.xRotation);
+            return new KIKAKU.KOneDProperty(this._layer.transform.xRotation);
         };
         KLayer.prototype.yRotation = function () {
-            return new KIKAKU.KProperty(this._layer.transform.yRotation);
+            return new KIKAKU.KOneDProperty(this._layer.transform.yRotation);
         };
         KLayer.prototype.zRotation = function () {
-            return new KIKAKU.KProperty(this._layer.transform.zRotation);
+            return new KIKAKU.KOneDProperty(this._layer.transform.zRotation);
         };
         KLayer.prototype.opacity = function () {
-            return new KIKAKU.KProperty(this._layer.transform.opacity);
+            return new KIKAKU.KOneDProperty(this._layer.transform.opacity);
         };
         //attributes
         KLayer.prototype.index = function () {
@@ -3289,17 +3292,17 @@ var KIKAKU;
         }
         KAVLayer.prototype.isValid = function () {
             var layer = this._layer;
-            return layer && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
+            return isValid(layer) && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
         };
         //properties
         KAVLayer.prototype.timeRemap = function () {
-            return new KIKAKU.KProperty(this._layer.timeRemap);
+            return new KIKAKU.KOneDProperty(this._layer.timeRemap);
         };
         KAVLayer.prototype.mask = function () {
-            return new KIKAKU.KPropertyGroup(this._layer.mask);
+            return new KIKAKU.KMaskParade(this._layer.mask);
         };
         KAVLayer.prototype.effect = function () {
-            return new KIKAKU.KPropertyGroup(this._layer.effect);
+            return new KIKAKU.KEffectParade(this._layer.effect);
         };
         KAVLayer.prototype.layerStyle = function () {
             return new KIKAKU.KPropertyGroup(this._layer.layerStyle);
@@ -3308,7 +3311,7 @@ var KIKAKU;
             return new KIKAKU.KPropertyGroup(this._layer.geometryOption);
         };
         KAVLayer.prototype.materialOption = function () {
-            return new KIKAKU.KPropertyGroup(this._layer.materialOption);
+            return new KIKAKU.KMaterialOptions(this._layer.materialOption);
         };
         KAVLayer.prototype.audio = function () {
             return new KIKAKU.KPropertyGroup(this._layer.audio);
@@ -3467,11 +3470,11 @@ var KIKAKU;
         }
         KShapeLayer.prototype.isValid = function () {
             var layer = this._layer;
-            return layer && layer instanceof ShapeLayer && isValid(layer);
+            return isValid(layer) && layer instanceof ShapeLayer;
         };
         //properties
         KShapeLayer.prototype.contents = function () {
-            return new KIKAKU.KPropertyBase(this._layer.property('ADBE Root Vectors Group')).asPropertyGroup();
+            return new KIKAKU.KRootVectors(this._layer.property('ADBE Root Vectors Group'));
         };
         return KShapeLayer;
     }(KAVLayer));
@@ -3483,14 +3486,14 @@ var KIKAKU;
         }
         KTextLayer.prototype.isValid = function () {
             var layer = this._layer;
-            return layer && layer instanceof TextLayer && isValid(layer);
+            return isValid(layer) && layer instanceof TextLayer;
         };
         //properties
         KTextLayer.prototype.text = function () {
-            return new KIKAKU.KPropertyGroup(this._layer.text);
+            return new KIKAKU.KTextProperties(this._layer.text);
         };
         KTextLayer.prototype.sourceText = function () {
-            return new KIKAKU.KProperty(this._layer.text.sourceText);
+            return new KIKAKU.KTextDocumentProperty(this._layer.text.sourceText);
         };
         return KTextLayer;
     }(KAVLayer));
@@ -3502,11 +3505,11 @@ var KIKAKU;
         }
         KCameraLayer.prototype.isValid = function () {
             var layer = this._layer;
-            return layer && layer instanceof CameraLayer && isValid(layer);
+            return isValid(layer) && layer instanceof CameraLayer;
         };
         //properties
         KCameraLayer.prototype.cameraOption = function () {
-            return new KIKAKU.KPropertyGroup(this._layer.cameraOption);
+            return new KIKAKU.KCameraOptions(this._layer.cameraOption);
         };
         return KCameraLayer;
     }(KLayer));
@@ -3518,11 +3521,11 @@ var KIKAKU;
         }
         KLightLayer.prototype.isValid = function () {
             var layer = this._layer;
-            return layer && layer instanceof LightLayer && isValid(layer);
+            return isValid(layer) && layer instanceof LightLayer;
         };
         //properties
         KLightLayer.prototype.lightOption = function () {
-            return new KIKAKU.KPropertyGroup(this._layer.lightOption);
+            return new KIKAKU.KLightOptions(this._layer.lightOption);
         };
         return KLightLayer;
     }(KLayer));
@@ -3531,96 +3534,121 @@ var KIKAKU;
 var KIKAKU;
 (function (KIKAKU) {
     var KPropertyBase = (function () {
-        function KPropertyBase(_prop) {
+        function KPropertyBase(_prop, _parent) {
+            if (_parent === void 0) { _parent = null; }
             this._prop = _prop;
+            this._parent = _parent;
+            this._name = this._prop.name;
         }
         KPropertyBase.prototype.get = function () {
             return this._prop;
         };
         KPropertyBase.prototype.isValid = function () {
             var prop = this._prop;
-            return prop && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup || prop instanceof Property) && isValid(prop);
+            return isValid(prop) && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup || prop instanceof Property);
+        };
+        KPropertyBase.prototype.validate = function () {
+            if (!this.isValid()) {
+                if (this._parent) {
+                    this._parent.validate();
+                    if (this._parent.isValid()) {
+                        this._prop = this._parent.get().property(this._name);
+                    }
+                }
+            }
         };
         //cast
         KPropertyBase.prototype.asPropertyGroup = function () {
-            return new KPropertyGroup(this._prop);
+            return new KPropertyGroup(this._prop, this._parent);
         };
         KPropertyBase.prototype.asMaskPropertyGroup = function () {
-            return new KMaskPropertyGroup(this._prop);
+            return new KMaskPropertyGroup(this._prop, this._parent);
         };
         KPropertyBase.prototype.asProperty = function () {
-            return new KProperty(this._prop);
+            return new KProperty(this._prop, this._parent);
         };
         //attributes
         KPropertyBase.prototype.name = function (name) {
+            this.validate();
             if (name !== void 0)
-                this._prop.name = name;
+                this._name = this._prop.name = name;
             return this._prop.name;
         };
         KPropertyBase.prototype.matchName = function () {
+            this.validate();
             return this._prop.matchName;
         };
         KPropertyBase.prototype.propertyIndex = function () {
+            this.validate();
             return this._prop.propertyIndex;
         };
         KPropertyBase.prototype.propertyDepth = function () {
+            this.validate();
             return this._prop.propertyDepth;
         };
         KPropertyBase.prototype.propertyType = function () {
+            this.validate();
             return this._prop.propertyType;
         };
         KPropertyBase.prototype.parentProperty = function () {
+            this.validate();
+            if (this._parent) {
+                return this._parent;
+            }
             return new KPropertyGroup(this._prop.parentProperty);
         };
         KPropertyBase.prototype.isModified = function () {
+            this.validate();
             return this._prop.isModified;
         };
         KPropertyBase.prototype.canSetEnabled = function () {
+            this.validate();
             return this._prop.canSetEnabled;
         };
         KPropertyBase.prototype.enabled = function (enabled) {
+            this.validate();
             if (enabled !== void 0)
                 this._prop.enabled = enabled;
             return this._prop.enabled;
         };
         KPropertyBase.prototype.active = function () {
+            this.validate();
             return this._prop.active;
         };
         KPropertyBase.prototype.elided = function () {
+            this.validate();
             return this._prop.elided;
         };
         KPropertyBase.prototype.isEffect = function () {
+            this.validate();
             return this._prop.isEffect;
         };
         KPropertyBase.prototype.isMask = function () {
+            this.validate();
             return this._prop.isMask;
         };
         KPropertyBase.prototype.selected = function (selected) {
+            this.validate();
             if (selected !== void 0)
                 this._prop.selected = selected;
             return this._prop.selected;
         };
         //methods
-        KPropertyBase.prototype.property = function (index_or_name) {
-            return new KPropertyBase(this._prop.property(index_or_name));
-        };
-        KPropertyBase.prototype.propertyAsProperty = function (index_or_name) {
-            return new KPropertyBase(this._prop.property(index_or_name)).asProperty();
-        };
-        KPropertyBase.prototype.propertyAsPropertyGroup = function (index_or_name) {
-            return new KPropertyBase(this._prop.property(index_or_name)).asPropertyGroup();
-        };
         KPropertyBase.prototype.propertyGroup = function (countUp) {
             if (countUp === void 0) { countUp = 1; }
+            this.validate();
             return new KPropertyGroup(this._prop.propertyGroup(countUp));
         };
         KPropertyBase.prototype.remove = function () {
+            this.validate();
             this._prop.remove();
         };
         KPropertyBase.prototype.moveTo = function (newIndex) {
+            this.validate();
             this._prop.moveTo(newIndex);
         };
         KPropertyBase.prototype.duplicate = function () {
+            this.validate();
             return new KPropertyBase(this._prop.duplicate());
         };
         return KPropertyBase;
@@ -3633,22 +3661,40 @@ var KIKAKU;
         }
         KPropertyGroup.prototype.isValid = function () {
             var prop = this._prop;
-            return prop && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup) && isValid(prop);
+            return isValid(prop) && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup);
         };
         //attributes
         KPropertyGroup.prototype.numProperties = function () {
+            this.validate();
             return this._prop.numProperties;
         };
+        //methods
+        KPropertyGroup.prototype.property = function (index_or_name) {
+            this.validate();
+            return new KPropertyBase(this._prop.property(index_or_name), this);
+        };
+        KPropertyGroup.prototype.propertyAsProperty = function (index_or_name) {
+            this.validate();
+            return new KProperty(this._prop.property(index_or_name), this);
+        };
+        KPropertyGroup.prototype.propertyAsPropertyGroup = function (index_or_name) {
+            this.validate();
+            return new KPropertyGroup(this._prop.property(index_or_name), this);
+        };
         KPropertyGroup.prototype.canAddProperty = function (name) {
+            this.validate();
             return this._prop.canAddProperty(name);
         };
         KPropertyGroup.prototype.addProperty = function (name) {
+            this.validate();
             return new KPropertyBase(this._prop.addProperty(name));
         };
         KPropertyGroup.prototype.addPropertyAsProperty = function (name) {
+            this.validate();
             return new KPropertyBase(this._prop.addProperty(name)).asProperty();
         };
         KPropertyGroup.prototype.addPropertyAsPropertyGroup = function (name) {
+            this.validate();
             return new KPropertyBase(this._prop.addProperty(name)).asPropertyGroup();
         };
         return KPropertyGroup;
@@ -3661,40 +3707,64 @@ var KIKAKU;
         }
         KMaskPropertyGroup.prototype.isValid = function () {
             var prop = this._prop;
-            return prop && prop instanceof MaskPropertyGroup && isValid(prop);
+            return isValid(prop) && prop instanceof MaskPropertyGroup;
+        };
+        //properties
+        KMaskPropertyGroup.prototype.maskPath = function () {
+            this.validate();
+            return new KShapeProperty(this._prop.property('ADBE Mask Shape'), this);
+        };
+        KMaskPropertyGroup.prototype.maskFeather = function () {
+            this.validate();
+            return new KTwoDProperty(this._prop.property('ADBE Mask Feather'), this);
+        };
+        KMaskPropertyGroup.prototype.maskOpacity = function () {
+            this.validate();
+            return new KOneDProperty(this._prop.property('ADBE Mask Opacity'), this);
+        };
+        KMaskPropertyGroup.prototype.maskExpansion = function () {
+            this.validate();
+            return new KOneDProperty(this._prop.property('ADBE Mask Offset'), this);
         };
         //attributes
         KMaskPropertyGroup.prototype.maskMode = function (maskMode) {
+            this.validate();
             if (maskMode !== void 0)
                 this._prop.maskMode = maskMode;
             return this._prop.maskMode;
         };
         KMaskPropertyGroup.prototype.inverted = function (inverted) {
+            this.validate();
             if (inverted !== void 0)
                 this._prop.inverted = inverted;
             return this._prop.inverted;
         };
         KMaskPropertyGroup.prototype.rotoBezier = function (rotoBezier) {
+            this.validate();
             if (rotoBezier !== void 0)
                 this._prop.rotoBezier = rotoBezier;
             return this._prop.rotoBezier;
         };
         KMaskPropertyGroup.prototype.maskMotionBlur = function (maskMotionBlur) {
+            this.validate();
             if (maskMotionBlur !== void 0)
                 this._prop.maskMotionBlur = maskMotionBlur;
             return this._prop.maskMotionBlur;
         };
         KMaskPropertyGroup.prototype.locked = function (locked) {
+            this.validate();
             if (locked !== void 0)
                 this._prop.locked = locked;
             return this._prop.locked;
         };
         KMaskPropertyGroup.prototype.color = function (color) {
+            this.validate();
             if (color !== void 0)
                 this._prop.color = color;
             return this._prop.color;
         };
         KMaskPropertyGroup.prototype.maskFeatherFalloff = function (maskFeatherFalloff) {
+            this.validate();
             if (maskFeatherFalloff !== void 0)
                 this._prop.maskFeatherFalloff = maskFeatherFalloff;
             return this._prop.maskFeatherFalloff;
@@ -3709,7 +3779,47 @@ var KIKAKU;
         }
         KProperty.prototype.isValid = function () {
             var prop = this._prop;
-            return prop && prop instanceof Property && isValid(prop);
+            return isValid(prop) && prop instanceof Property;
+        };
+        //cast
+        KProperty.prototype.asNoValue = function () {
+            return new KNoValueProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asThreeDSpatial = function () {
+            return new KThreeDSpatialProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asThreeD = function () {
+            return new KThreeDProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asTwoDSpatial = function () {
+            return new KTwoDSpatialProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asTwoD = function () {
+            return new KTwoDProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asOneD = function () {
+            return new KOneDProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asColor = function () {
+            return new KColorProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asCustomValue = function () {
+            return new KCustomValueProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asMarker = function () {
+            return new KMarkerProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asLayerIndex = function () {
+            return new KLayerIndexProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asMaskIndex = function () {
+            return new KMaskIndexProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asShape = function () {
+            return new KShapeProperty(this._prop, this._parent);
+        };
+        KProperty.prototype.asTextDocument = function () {
+            return new KTextDocumentProperty(this._prop, this._parent);
         };
         //attributes
         KProperty.prototype.propertyValueType = function () {
@@ -3887,6 +3997,1308 @@ var KIKAKU;
         return KProperty;
     }(KPropertyBase));
     KIKAKU.KProperty = KProperty;
+    var KNoValueProperty = (function (_super) {
+        __extends(KNoValueProperty, _super);
+        function KNoValueProperty() {
+            _super.apply(this, arguments);
+        }
+        KNoValueProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.NO_VALUE;
+        };
+        return KNoValueProperty;
+    }(KProperty));
+    KIKAKU.KNoValueProperty = KNoValueProperty;
+    var KThreeDSpatialProperty = (function (_super) {
+        __extends(KThreeDSpatialProperty, _super);
+        function KThreeDSpatialProperty() {
+            _super.apply(this, arguments);
+        }
+        KThreeDSpatialProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.ThreeD_SPATIAL;
+        };
+        return KThreeDSpatialProperty;
+    }(KProperty));
+    KIKAKU.KThreeDSpatialProperty = KThreeDSpatialProperty;
+    var KThreeDProperty = (function (_super) {
+        __extends(KThreeDProperty, _super);
+        function KThreeDProperty() {
+            _super.apply(this, arguments);
+        }
+        KThreeDProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.ThreeD;
+        };
+        return KThreeDProperty;
+    }(KProperty));
+    KIKAKU.KThreeDProperty = KThreeDProperty;
+    var KTwoDSpatialProperty = (function (_super) {
+        __extends(KTwoDSpatialProperty, _super);
+        function KTwoDSpatialProperty() {
+            _super.apply(this, arguments);
+        }
+        KTwoDSpatialProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.TwoD_SPATIAL;
+        };
+        return KTwoDSpatialProperty;
+    }(KProperty));
+    KIKAKU.KTwoDSpatialProperty = KTwoDSpatialProperty;
+    var KTwoDProperty = (function (_super) {
+        __extends(KTwoDProperty, _super);
+        function KTwoDProperty() {
+            _super.apply(this, arguments);
+        }
+        KTwoDProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.TwoD;
+        };
+        return KTwoDProperty;
+    }(KProperty));
+    KIKAKU.KTwoDProperty = KTwoDProperty;
+    var KOneDProperty = (function (_super) {
+        __extends(KOneDProperty, _super);
+        function KOneDProperty() {
+            _super.apply(this, arguments);
+        }
+        KOneDProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.OneD;
+        };
+        return KOneDProperty;
+    }(KProperty));
+    KIKAKU.KOneDProperty = KOneDProperty;
+    var KColorProperty = (function (_super) {
+        __extends(KColorProperty, _super);
+        function KColorProperty() {
+            _super.apply(this, arguments);
+        }
+        KColorProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.OneD;
+        };
+        return KColorProperty;
+    }(KProperty));
+    KIKAKU.KColorProperty = KColorProperty;
+    var KCustomValueProperty = (function (_super) {
+        __extends(KCustomValueProperty, _super);
+        function KCustomValueProperty() {
+            _super.apply(this, arguments);
+        }
+        KCustomValueProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.CUSTOM_VALUE;
+        };
+        return KCustomValueProperty;
+    }(KProperty));
+    KIKAKU.KCustomValueProperty = KCustomValueProperty;
+    var KMarkerProperty = (function (_super) {
+        __extends(KMarkerProperty, _super);
+        function KMarkerProperty() {
+            _super.apply(this, arguments);
+        }
+        KMarkerProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.MARKER;
+        };
+        return KMarkerProperty;
+    }(KProperty));
+    KIKAKU.KMarkerProperty = KMarkerProperty;
+    var KLayerIndexProperty = (function (_super) {
+        __extends(KLayerIndexProperty, _super);
+        function KLayerIndexProperty() {
+            _super.apply(this, arguments);
+        }
+        KLayerIndexProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.LAYER_INDEX;
+        };
+        return KLayerIndexProperty;
+    }(KProperty));
+    KIKAKU.KLayerIndexProperty = KLayerIndexProperty;
+    var KMaskIndexProperty = (function (_super) {
+        __extends(KMaskIndexProperty, _super);
+        function KMaskIndexProperty() {
+            _super.apply(this, arguments);
+        }
+        KMaskIndexProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.MASK_INDEX;
+        };
+        return KMaskIndexProperty;
+    }(KProperty));
+    KIKAKU.KMaskIndexProperty = KMaskIndexProperty;
+    var KShapeProperty = (function (_super) {
+        __extends(KShapeProperty, _super);
+        function KShapeProperty() {
+            _super.apply(this, arguments);
+        }
+        KShapeProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.SHAPE;
+        };
+        return KShapeProperty;
+    }(KProperty));
+    KIKAKU.KShapeProperty = KShapeProperty;
+    var KTextDocumentProperty = (function (_super) {
+        __extends(KTextDocumentProperty, _super);
+        function KTextDocumentProperty() {
+            _super.apply(this, arguments);
+        }
+        KTextDocumentProperty.prototype.isValid = function () {
+            return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.TEXT_DOCUMENT;
+        };
+        return KTextDocumentProperty;
+    }(KProperty));
+    KIKAKU.KTextDocumentProperty = KTextDocumentProperty;
+    /*
+    * Mask Property
+    */
+    var KMaskParade = (function (_super) {
+        __extends(KMaskParade, _super);
+        function KMaskParade() {
+            _super.apply(this, arguments);
+        }
+        //methods
+        KMaskParade.prototype.addMaskAtom = function (name) {
+            var mask_atom = this._prop.addProperty('ADBE Mask Atom');
+            if (name !== void 0)
+                mask_atom.name = name;
+            return new KMaskPropertyGroup(mask_atom, this);
+        };
+        return KMaskParade;
+    }(KPropertyGroup));
+    KIKAKU.KMaskParade = KMaskParade;
+    /*
+    * Effect Property
+    */
+    var KEffectParade = (function (_super) {
+        __extends(KEffectParade, _super);
+        function KEffectParade() {
+            _super.apply(this, arguments);
+        }
+        //override
+        KEffectParade.prototype.addProperty = function (name_or_matchname) {
+            var prop = this._prop.addProperty(name_or_matchname);
+            return new KEffect(prop, this);
+        };
+        KEffectParade.prototype.addPropertyAsPropertyGroup = function (name) {
+            return this.addProperty(name);
+        };
+        return KEffectParade;
+    }(KPropertyGroup));
+    KIKAKU.KEffectParade = KEffectParade;
+    var KEffect = (function (_super) {
+        __extends(KEffect, _super);
+        function KEffect() {
+            _super.apply(this, arguments);
+        }
+        //override
+        KEffect.prototype.property = function (index_or_name) {
+            this.validate();
+            return new KProperty(this._prop.property(index_or_name), this);
+        };
+        return KEffect;
+    }(KPropertyGroup));
+    KIKAKU.KEffect = KEffect;
+    /*
+    * Text Property
+    */
+    var KTextProperties = (function (_super) {
+        __extends(KTextProperties, _super);
+        function KTextProperties() {
+            _super.apply(this, arguments);
+        }
+        KTextProperties.prototype.sourceText = function () {
+            return new KTextDocumentProperty(this._prop.property('ADBE Text Document'), this);
+        };
+        KTextProperties.prototype.pathOptions = function () {
+            return new KTextPathOptions(this._prop.property('ADBE Text Path Options'), this);
+        };
+        KTextProperties.prototype.moreOptions = function () {
+            return new KTextMoreOptions(this._prop.property('ADBE Text More Options'), this);
+        };
+        KTextProperties.prototype.animators = function () {
+            return new KTextAnimators(this._prop.property('ADBE Text Animators'), this);
+        };
+        return KTextProperties;
+    }(KPropertyGroup));
+    KIKAKU.KTextProperties = KTextProperties;
+    var KTextPathOptions = (function (_super) {
+        __extends(KTextPathOptions, _super);
+        function KTextPathOptions() {
+            _super.apply(this, arguments);
+        }
+        KTextPathOptions.prototype.path = function () {
+            return new KMaskIndexProperty(this._prop.property('ADBE Text Path'), this);
+        };
+        return KTextPathOptions;
+    }(KPropertyGroup));
+    KIKAKU.KTextPathOptions = KTextPathOptions;
+    var KTextMoreOptions = (function (_super) {
+        __extends(KTextMoreOptions, _super);
+        function KTextMoreOptions() {
+            _super.apply(this, arguments);
+        }
+        KTextMoreOptions.prototype.anchorPointGrouping = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Anchor Point Option'), this);
+        };
+        KTextMoreOptions.prototype.groupingAlignment = function () {
+            return new KTwoDProperty(this._prop.property('ADBE Text Anchor Point Align'), this);
+        };
+        KTextMoreOptions.prototype.fillAndStroke = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Render Order'), this);
+        };
+        KTextMoreOptions.prototype.interCharacterBlending = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Character Blend Mode'), this);
+        };
+        return KTextMoreOptions;
+    }(KPropertyGroup));
+    KIKAKU.KTextMoreOptions = KTextMoreOptions;
+    var KTextAnimators = (function (_super) {
+        __extends(KTextAnimators, _super);
+        function KTextAnimators() {
+            _super.apply(this, arguments);
+        }
+        KTextAnimators.prototype.addAnimator = function (name) {
+            var animator = this._prop.addProperty('ADBE Text Animator');
+            if (name !== void 0)
+                animator.name = name;
+            return new KTextAnimator(animator, this);
+        };
+        return KTextAnimators;
+    }(KPropertyGroup));
+    KIKAKU.KTextAnimators = KTextAnimators;
+    var KTextAnimator = (function (_super) {
+        __extends(KTextAnimator, _super);
+        function KTextAnimator() {
+            _super.apply(this, arguments);
+        }
+        KTextAnimator.prototype.properties = function () {
+            return new KTextAnimatorProperties(this._prop.property('ADBE Text Animator Properties'), this);
+        };
+        KTextAnimator.prototype.selectors = function () {
+            return new KTextSelectors(this._prop.property('ADBE Text Selectors'), this);
+        };
+        return KTextAnimator;
+    }(KPropertyGroup));
+    KIKAKU.KTextAnimator = KTextAnimator;
+    var KTextAnimatorProperties = (function (_super) {
+        __extends(KTextAnimatorProperties, _super);
+        function KTextAnimatorProperties() {
+            _super.apply(this, arguments);
+        }
+        KTextAnimatorProperties.prototype.anchorPoint = function () {
+            return new KThreeDSpatialProperty(this._prop.property('ADBE Text Anchor Point 3D'), this);
+        };
+        KTextAnimatorProperties.prototype.position = function () {
+            return new KThreeDSpatialProperty(this._prop.property('ADBE Text Position 3D'), this);
+        };
+        KTextAnimatorProperties.prototype.scale = function () {
+            return new KThreeDProperty(this._prop.property('ADBE Text Scale 3D'), this);
+        };
+        KTextAnimatorProperties.prototype.skew = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Skew'), this);
+        };
+        KTextAnimatorProperties.prototype.skewAxis = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Skew Axis'), this);
+        };
+        KTextAnimatorProperties.prototype.rotation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Rotation'), this);
+        };
+        KTextAnimatorProperties.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Opacity'), this);
+        };
+        KTextAnimatorProperties.prototype.fillOpacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Fill Opacity'), this);
+        };
+        KTextAnimatorProperties.prototype.fillColor = function () {
+            return new KColorProperty(this._prop.property('ADBE Text Fill Color'), this);
+        };
+        KTextAnimatorProperties.prototype.fillHue = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Fill Hue'), this);
+        };
+        KTextAnimatorProperties.prototype.fillSaturation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Fill Saturation'), this);
+        };
+        KTextAnimatorProperties.prototype.fillBrightness = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Fill Brightness'), this);
+        };
+        KTextAnimatorProperties.prototype.strokeOpacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Stroke Opacity'), this);
+        };
+        KTextAnimatorProperties.prototype.strokeColor = function () {
+            return new KColorProperty(this._prop.property('ADBE Text Stroke Color'), this);
+        };
+        KTextAnimatorProperties.prototype.strokeHue = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Stroke Hue'), this);
+        };
+        KTextAnimatorProperties.prototype.strokeSaturation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Stroke Saturation'), this);
+        };
+        KTextAnimatorProperties.prototype.strokeBrightness = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Stroke Brightness'), this);
+        };
+        KTextAnimatorProperties.prototype.strokeWidth = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Stroke Width'), this);
+        };
+        KTextAnimatorProperties.prototype.lineAnchor = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Line Anchor'), this);
+        };
+        KTextAnimatorProperties.prototype.trackingType = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Track Type'), this);
+        };
+        KTextAnimatorProperties.prototype.trackingAmount = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Tracking Amount'), this);
+        };
+        KTextAnimatorProperties.prototype.characterAlignment = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Character Change Type'), this);
+        };
+        KTextAnimatorProperties.prototype.characterRange = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Character Range'), this);
+        };
+        KTextAnimatorProperties.prototype.characterValue = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Character Replace'), this);
+        };
+        KTextAnimatorProperties.prototype.characterOffset = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Character Offset'), this);
+        };
+        KTextAnimatorProperties.prototype.lineSpacing = function () {
+            return new KTwoDProperty(this._prop.property('ADBE Text Line Spacing'), this);
+        };
+        KTextAnimatorProperties.prototype.blur = function () {
+            return new KTwoDProperty(this._prop.property('ADBE Text Blur'), this);
+        };
+        KTextAnimatorProperties.prototype.addAnchorPoint = function () {
+            return new KThreeDSpatialProperty(this._prop.addProperty('ADBE Text Anchor Point 3D'), this);
+        };
+        KTextAnimatorProperties.prototype.addPosition = function () {
+            return new KThreeDSpatialProperty(this._prop.addProperty('ADBE Text Position 3D'), this);
+        };
+        KTextAnimatorProperties.prototype.addScale = function () {
+            return new KThreeDSpatialProperty(this._prop.addProperty('ADBE Text Scale 3D'), this);
+        };
+        KTextAnimatorProperties.prototype.addSkew = function () {
+            return new KThreeDSpatialProperty(this._prop.addProperty('ADBE Text Skew'), this);
+        };
+        KTextAnimatorProperties.prototype.addSkewAxis = function () {
+            return new KThreeDSpatialProperty(this._prop.addProperty('ADBE Text Skew Axis'), this);
+        };
+        KTextAnimatorProperties.prototype.addRotation = function () {
+            return new KThreeDSpatialProperty(this._prop.addProperty('ADBE Text Rotation'), this);
+        };
+        KTextAnimatorProperties.prototype.addOpacity = function () {
+            return new KThreeDSpatialProperty(this._prop.addProperty('ADBE Text Opacity'), this);
+        };
+        KTextAnimatorProperties.prototype.addFillOpacity = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Fill Opacity'), this);
+        };
+        KTextAnimatorProperties.prototype.addFillColor = function () {
+            return new KColorProperty(this._prop.addProperty('ADBE Text Fill Color'), this);
+        };
+        KTextAnimatorProperties.prototype.addFillHue = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Fill Hue'), this);
+        };
+        KTextAnimatorProperties.prototype.addFillSaturation = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Fill Saturation'), this);
+        };
+        KTextAnimatorProperties.prototype.addFillBrightness = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Fill Brightness'), this);
+        };
+        KTextAnimatorProperties.prototype.addStrokeOpacity = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Stroke Opacity'), this);
+        };
+        KTextAnimatorProperties.prototype.addStrokeColor = function () {
+            return new KColorProperty(this._prop.addProperty('ADBE Text Stroke Color'), this);
+        };
+        KTextAnimatorProperties.prototype.addStrokeHue = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Stroke Hue'), this);
+        };
+        KTextAnimatorProperties.prototype.addStrokeSaturation = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Stroke Saturation'), this);
+        };
+        KTextAnimatorProperties.prototype.addStrokeBrightness = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Stroke Brightness'), this);
+        };
+        KTextAnimatorProperties.prototype.addStrokeWidth = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Stroke Width'), this);
+        };
+        KTextAnimatorProperties.prototype.addLineAnchor = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Line Anchor'), this);
+        };
+        KTextAnimatorProperties.prototype.addTrackingType = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Track Type'), this);
+        };
+        KTextAnimatorProperties.prototype.addTrackingAmount = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Tracking Amount'), this);
+        };
+        KTextAnimatorProperties.prototype.addCharacterAlignment = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Character Change Type'), this);
+        };
+        KTextAnimatorProperties.prototype.addCharacterRange = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Character Range'), this);
+        };
+        KTextAnimatorProperties.prototype.addCharacterValue = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Character Replace'), this);
+        };
+        KTextAnimatorProperties.prototype.addCharacterOffset = function () {
+            return new KOneDProperty(this._prop.addProperty('ADBE Text Character Offset'), this);
+        };
+        KTextAnimatorProperties.prototype.addLineSpacing = function () {
+            return new KTwoDProperty(this._prop.addProperty('ADBE Text Line Spacing'), this);
+        };
+        KTextAnimatorProperties.prototype.addBlur = function () {
+            return new KTwoDProperty(this._prop.addProperty('ADBE Text Blur'), this);
+        };
+        return KTextAnimatorProperties;
+    }(KPropertyGroup));
+    KIKAKU.KTextAnimatorProperties = KTextAnimatorProperties;
+    var KTextSelectors = (function (_super) {
+        __extends(KTextSelectors, _super);
+        function KTextSelectors() {
+            _super.apply(this, arguments);
+        }
+        KTextSelectors.prototype.addRangeSelector = function (name) {
+            var selector = this._prop.addProperty('ADBE Text Selector');
+            if (name !== void 0)
+                selector.name = name;
+            return new KTextRangeSelector(selector, this);
+        };
+        KTextSelectors.prototype.addWigglySelector = function (name) {
+            var selector = this._prop.addProperty('ADBE Text Wiggly Selector');
+            if (name !== void 0)
+                selector.name = name;
+            return new KWigglySelector(selector, this);
+        };
+        KTextSelectors.prototype.addExpressionSelector = function (name) {
+            var selector = this._prop.addProperty('ADBE Text Expressible Selector');
+            if (name !== void 0)
+                selector.name = name;
+            return new KTextExpressionSelector(selector, this);
+        };
+        return KTextSelectors;
+    }(KPropertyGroup));
+    KIKAKU.KTextSelectors = KTextSelectors;
+    var KTextRangeSelector = (function (_super) {
+        __extends(KTextRangeSelector, _super);
+        function KTextRangeSelector() {
+            _super.apply(this, arguments);
+        }
+        KTextRangeSelector.prototype.start = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Percent Start'), this);
+        };
+        KTextRangeSelector.prototype.end = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Percent End'), this);
+        };
+        KTextRangeSelector.prototype.offset = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Percent Offset'), this);
+        };
+        KTextRangeSelector.prototype.advanced = function () {
+            return new KTextRangeAdvanced(this._prop.property('ADBE Text Range Advanced'), this);
+        };
+        return KTextRangeSelector;
+    }(KPropertyGroup));
+    KIKAKU.KTextRangeSelector = KTextRangeSelector;
+    var KTextRangeAdvanced = (function (_super) {
+        __extends(KTextRangeAdvanced, _super);
+        function KTextRangeAdvanced() {
+            _super.apply(this, arguments);
+        }
+        KTextRangeAdvanced.prototype.units = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Range Units'), this);
+        };
+        KTextRangeAdvanced.prototype.basedOn = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Range Type2'), this);
+        };
+        KTextRangeAdvanced.prototype.mode = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Selector Mode'), this);
+        };
+        KTextRangeAdvanced.prototype.amount = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Selector Max Amount'), this);
+        };
+        KTextRangeAdvanced.prototype.shape = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Range Shape'), this);
+        };
+        KTextRangeAdvanced.prototype.smoothness = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Selector Smoothness'), this);
+        };
+        KTextRangeAdvanced.prototype.easeHigh = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Levels Max Ease'), this);
+        };
+        KTextRangeAdvanced.prototype.easeLow = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Levels Min Ease'), this);
+        };
+        KTextRangeAdvanced.prototype.randomizeOrder = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Randomize Order'), this);
+        };
+        return KTextRangeAdvanced;
+    }(KPropertyGroup));
+    KIKAKU.KTextRangeAdvanced = KTextRangeAdvanced;
+    var KWigglySelector = (function (_super) {
+        __extends(KWigglySelector, _super);
+        function KWigglySelector() {
+            _super.apply(this, arguments);
+        }
+        KWigglySelector.prototype.mode = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Selector Mode'), this);
+        };
+        KWigglySelector.prototype.maxAmount = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Wiggly Max Amount'), this);
+        };
+        KWigglySelector.prototype.minAmount = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Wiggly Min Amount'), this);
+        };
+        KWigglySelector.prototype.basedOn = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Wiggly Min Amount'), this);
+        };
+        KWigglySelector.prototype.wigglesPerSecond = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Temporal Freq'), this);
+        };
+        KWigglySelector.prototype.correlation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Character Correlation'), this);
+        };
+        KWigglySelector.prototype.temporalPhase = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Temporal Phase'), this);
+        };
+        KWigglySelector.prototype.spatialPhase = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Spatial Phase'), this);
+        };
+        KWigglySelector.prototype.lockDimensions = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Wiggly Lock Dim'), this);
+        };
+        KWigglySelector.prototype.randomSeed = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Wiggly Random Seed'), this);
+        };
+        return KWigglySelector;
+    }(KPropertyGroup));
+    KIKAKU.KWigglySelector = KWigglySelector;
+    var KTextExpressionSelector = (function (_super) {
+        __extends(KTextExpressionSelector, _super);
+        function KTextExpressionSelector() {
+            _super.apply(this, arguments);
+        }
+        KTextExpressionSelector.prototype.basedOn = function () {
+            return new KOneDProperty(this._prop.property('ADBE Text Range Type2'), this);
+        };
+        KTextExpressionSelector.prototype.amount = function () {
+            return new KThreeDProperty(this._prop.property('ADBE Text Expressible Amount'), this);
+        };
+        return KTextExpressionSelector;
+    }(KPropertyGroup));
+    KIKAKU.KTextExpressionSelector = KTextExpressionSelector;
+    /*
+    * Shape Property
+    */
+    var KVectorsGroup = (function (_super) {
+        __extends(KVectorsGroup, _super);
+        function KVectorsGroup() {
+            _super.apply(this, arguments);
+        }
+        //group
+        KVectorsGroup.prototype.addGroup = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Group');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorGroup(group, this);
+        };
+        //shape
+        KVectorsGroup.prototype.addRectangle = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Shape - Rect');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorRect(group, this);
+        };
+        KVectorsGroup.prototype.addEllipse = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Shape - Ellipse');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorEllipse(group, this);
+        };
+        KVectorsGroup.prototype.addPolystar = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Shape - Star');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorPolystar(group, this);
+        };
+        KVectorsGroup.prototype.addPath = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Shape - Group');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorPath(group, this);
+        };
+        //graphic
+        KVectorsGroup.prototype.addFill = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Graphic - Fill');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorFill(group, this);
+        };
+        KVectorsGroup.prototype.addStroke = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Graphic - Stroke');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorStroke(group, this);
+        };
+        KVectorsGroup.prototype.addGradientFill = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Graphic - G-Fill');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorGradientFill(group, this);
+        };
+        KVectorsGroup.prototype.addGradientStroke = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Graphic - G-Stroke');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorGradientStroke(group, this);
+        };
+        //filter
+        KVectorsGroup.prototype.addMergePaths = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - Merge');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorMergePaths(group, this);
+        };
+        KVectorsGroup.prototype.addOffsetPaths = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - Offset');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorOffsetPaths(group, this);
+        };
+        KVectorsGroup.prototype.addPuckerAndBloat = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - PB');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorPuckerAndBloat(group, this);
+        };
+        KVectorsGroup.prototype.addRepeater = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - Repeater');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorRepeater(group, this);
+        };
+        KVectorsGroup.prototype.addRoundCorners = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - RC');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorRoundCorners(group, this);
+        };
+        KVectorsGroup.prototype.addTrimPaths = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - Trim');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorTrimPaths(group, this);
+        };
+        KVectorsGroup.prototype.addTwist = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - Twist');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorTwist(group, this);
+        };
+        KVectorsGroup.prototype.addWigglePaths = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - Roughen');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorWigglePaths(group, this);
+        };
+        KVectorsGroup.prototype.addWiggleTransform = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - Wiggler');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorWiggler(group, this);
+        };
+        KVectorsGroup.prototype.addZigzag = function (name) {
+            var group = this._prop.addProperty('ADBE Vector Filter - Zigzag');
+            if (name !== void 0)
+                group.name = name;
+            return new KVectorZigzag(group, this);
+        };
+        return KVectorsGroup;
+    }(KPropertyGroup));
+    KIKAKU.KVectorsGroup = KVectorsGroup;
+    var KRootVectors = (function (_super) {
+        __extends(KRootVectors, _super);
+        function KRootVectors() {
+            _super.apply(this, arguments);
+        }
+        return KRootVectors;
+    }(KVectorsGroup));
+    KIKAKU.KRootVectors = KRootVectors;
+    var KVectorGroup = (function (_super) {
+        __extends(KVectorGroup, _super);
+        function KVectorGroup() {
+            _super.apply(this, arguments);
+        }
+        KVectorGroup.prototype.vectors = function () {
+            return new KVectorsGroup(this._prop.property('ADBE Vectors Group'), this);
+        };
+        KVectorGroup.prototype.transform = function () {
+            return new KVectorTransform(this._prop.property('ADBE Vector Transform Group'), this);
+        };
+        return KVectorGroup;
+    }(KPropertyGroup));
+    KIKAKU.KVectorGroup = KVectorGroup;
+    var KVectorTransform = (function (_super) {
+        __extends(KVectorTransform, _super);
+        function KVectorTransform() {
+            _super.apply(this, arguments);
+        }
+        KVectorTransform.prototype.anchorPoint = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Anchor'), this);
+        };
+        KVectorTransform.prototype.position = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Position'), this);
+        };
+        KVectorTransform.prototype.scale = function () {
+            return new KTwoDProperty(this._prop.property('ADBE Vector Scale'), this);
+        };
+        KVectorTransform.prototype.skew = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Skew'), this);
+        };
+        KVectorTransform.prototype.skewAxis = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Skew Axis'), this);
+        };
+        KVectorTransform.prototype.rotation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Rotation'), this);
+        };
+        KVectorTransform.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Group Opacity'), this);
+        };
+        return KVectorTransform;
+    }(KPropertyGroup));
+    KIKAKU.KVectorTransform = KVectorTransform;
+    //shape
+    var KVectorRect = (function (_super) {
+        __extends(KVectorRect, _super);
+        function KVectorRect() {
+            _super.apply(this, arguments);
+        }
+        KVectorRect.prototype.size = function () {
+            return new KTwoDProperty(this._prop.property('ADBE Vector Rect Size'), this);
+        };
+        KVectorRect.prototype.position = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Rect Position'), this);
+        };
+        KVectorRect.prototype.roundness = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Rect Roundness'), this);
+        };
+        return KVectorRect;
+    }(KPropertyGroup));
+    KIKAKU.KVectorRect = KVectorRect;
+    var KVectorEllipse = (function (_super) {
+        __extends(KVectorEllipse, _super);
+        function KVectorEllipse() {
+            _super.apply(this, arguments);
+        }
+        KVectorEllipse.prototype.size = function () {
+            return new KTwoDProperty(this._prop.property('ADBE Vector Ellipse Size'), this);
+        };
+        KVectorEllipse.prototype.position = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Ellipse Position'), this);
+        };
+        return KVectorEllipse;
+    }(KPropertyGroup));
+    KIKAKU.KVectorEllipse = KVectorEllipse;
+    var KVectorPolystar = (function (_super) {
+        __extends(KVectorPolystar, _super);
+        function KVectorPolystar() {
+            _super.apply(this, arguments);
+        }
+        KVectorPolystar.prototype.type = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Star Type'), this);
+        };
+        KVectorPolystar.prototype.points = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Star Points'), this);
+        };
+        KVectorPolystar.prototype.position = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Star Position'), this);
+        };
+        KVectorPolystar.prototype.rotation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Star Rotation'), this);
+        };
+        KVectorPolystar.prototype.innerRadius = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Star Inner Radius'), this);
+        };
+        KVectorPolystar.prototype.outerRadius = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Star Outer Radius'), this);
+        };
+        KVectorPolystar.prototype.innerRoundness = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Star Inner Roundess'), this);
+        };
+        KVectorPolystar.prototype.outerRoundness = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Star Outer Roundess'), this);
+        };
+        return KVectorPolystar;
+    }(KPropertyGroup));
+    KIKAKU.KVectorPolystar = KVectorPolystar;
+    var KVectorPath = (function (_super) {
+        __extends(KVectorPath, _super);
+        function KVectorPath() {
+            _super.apply(this, arguments);
+        }
+        KVectorPath.prototype.path = function () {
+            return new KShapeProperty(this._prop.property('ADBE Vector Shape'), this);
+        };
+        return KVectorPath;
+    }(KPropertyGroup));
+    KIKAKU.KVectorPath = KVectorPath;
+    //graphic
+    var KVectorFill = (function (_super) {
+        __extends(KVectorFill, _super);
+        function KVectorFill() {
+            _super.apply(this, arguments);
+        }
+        KVectorFill.prototype.composite = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Composite Order'), this);
+        };
+        KVectorFill.prototype.fillRule = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Fill Rule'), this);
+        };
+        KVectorFill.prototype.color = function () {
+            return new KColorProperty(this._prop.property('ADBE Vector Fill Color'), this);
+        };
+        KVectorFill.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Fill Opacity'), this);
+        };
+        return KVectorFill;
+    }(KPropertyGroup));
+    KIKAKU.KVectorFill = KVectorFill;
+    var KVectorStroke = (function (_super) {
+        __extends(KVectorStroke, _super);
+        function KVectorStroke() {
+            _super.apply(this, arguments);
+        }
+        KVectorStroke.prototype.composite = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Composite Order'), this);
+        };
+        KVectorStroke.prototype.color = function () {
+            return new KColorProperty(this._prop.property('ADBE Vector Stroke Color'), this);
+        };
+        KVectorStroke.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Opacity'), this);
+        };
+        KVectorStroke.prototype.strokeWidth = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Width'), this);
+        };
+        KVectorStroke.prototype.lineCap = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Line Cap'), this);
+        };
+        KVectorStroke.prototype.lineJoin = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Line Join'), this);
+        };
+        KVectorStroke.prototype.miterLimit = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Miter Limit'), this);
+        };
+        return KVectorStroke;
+    }(KPropertyGroup));
+    KIKAKU.KVectorStroke = KVectorStroke;
+    var KVectorGradientFill = (function (_super) {
+        __extends(KVectorGradientFill, _super);
+        function KVectorGradientFill() {
+            _super.apply(this, arguments);
+        }
+        KVectorGradientFill.prototype.composite = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Composite Order'), this);
+        };
+        KVectorGradientFill.prototype.fillRule = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Fill Rule'), this);
+        };
+        KVectorGradientFill.prototype.type = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Grad Type'), this);
+        };
+        KVectorGradientFill.prototype.startPoint = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Grad Start Pt'), this);
+        };
+        KVectorGradientFill.prototype.endPoint = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Grad End Pt'), this);
+        };
+        KVectorGradientFill.prototype.colors = function () {
+            return new KCustomValueProperty(this._prop.property('ADBE Vector Grad Colors'), this);
+        };
+        KVectorGradientFill.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Fill Opacity'), this);
+        };
+        return KVectorGradientFill;
+    }(KPropertyGroup));
+    KIKAKU.KVectorGradientFill = KVectorGradientFill;
+    var KVectorGradientStroke = (function (_super) {
+        __extends(KVectorGradientStroke, _super);
+        function KVectorGradientStroke() {
+            _super.apply(this, arguments);
+        }
+        KVectorGradientStroke.prototype.composite = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Composite Order'), this);
+        };
+        KVectorGradientStroke.prototype.type = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Grad Type'), this);
+        };
+        KVectorGradientStroke.prototype.startPoint = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Grad Start Pt'), this);
+        };
+        KVectorGradientStroke.prototype.endPoint = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Grad End Pt'), this);
+        };
+        KVectorGradientStroke.prototype.colors = function () {
+            return new KCustomValueProperty(this._prop.property('ADBE Vector Grad Colors'), this);
+        };
+        KVectorGradientStroke.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Opacity'), this);
+        };
+        KVectorGradientStroke.prototype.strokeWidth = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Width'), this);
+        };
+        KVectorGradientStroke.prototype.lineCap = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Line Cap'), this);
+        };
+        KVectorGradientStroke.prototype.lineJoin = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Line Join'), this);
+        };
+        KVectorGradientStroke.prototype.miterLimit = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Stroke Miter Limit'), this);
+        };
+        return KVectorGradientStroke;
+    }(KPropertyGroup));
+    KIKAKU.KVectorGradientStroke = KVectorGradientStroke;
+    //filter
+    var KVectorMergePaths = (function (_super) {
+        __extends(KVectorMergePaths, _super);
+        function KVectorMergePaths() {
+            _super.apply(this, arguments);
+        }
+        KVectorMergePaths.prototype.mode = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Merge Type'), this);
+        };
+        return KVectorMergePaths;
+    }(KPropertyGroup));
+    KIKAKU.KVectorMergePaths = KVectorMergePaths;
+    var KVectorOffsetPaths = (function (_super) {
+        __extends(KVectorOffsetPaths, _super);
+        function KVectorOffsetPaths() {
+            _super.apply(this, arguments);
+        }
+        KVectorOffsetPaths.prototype.amount = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Offset Amount'), this);
+        };
+        KVectorOffsetPaths.prototype.lineJoin = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Offset Line Join'), this);
+        };
+        KVectorOffsetPaths.prototype.miterLimit = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Offset Miter Limit'), this);
+        };
+        return KVectorOffsetPaths;
+    }(KPropertyGroup));
+    KIKAKU.KVectorOffsetPaths = KVectorOffsetPaths;
+    var KVectorPuckerAndBloat = (function (_super) {
+        __extends(KVectorPuckerAndBloat, _super);
+        function KVectorPuckerAndBloat() {
+            _super.apply(this, arguments);
+        }
+        KVectorPuckerAndBloat.prototype.amount = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector PuckerBloat Amount'), this);
+        };
+        return KVectorPuckerAndBloat;
+    }(KPropertyGroup));
+    KIKAKU.KVectorPuckerAndBloat = KVectorPuckerAndBloat;
+    var KVectorRepeater = (function (_super) {
+        __extends(KVectorRepeater, _super);
+        function KVectorRepeater() {
+            _super.apply(this, arguments);
+        }
+        KVectorRepeater.prototype.copies = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Repeater Copies'), this);
+        };
+        KVectorRepeater.prototype.offset = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Repeater Offset'), this);
+        };
+        KVectorRepeater.prototype.transform = function () {
+            return new KVectorRepeaterTransform(this._prop.property('ADBE Vector Repeater Transform'), this);
+        };
+        return KVectorRepeater;
+    }(KPropertyGroup));
+    KIKAKU.KVectorRepeater = KVectorRepeater;
+    var KVectorRepeaterTransform = (function (_super) {
+        __extends(KVectorRepeaterTransform, _super);
+        function KVectorRepeaterTransform() {
+            _super.apply(this, arguments);
+        }
+        KVectorRepeaterTransform.prototype.anchorPoint = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Repeater Anchor'), this);
+        };
+        KVectorRepeaterTransform.prototype.position = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Repeater Position'), this);
+        };
+        KVectorRepeaterTransform.prototype.scale = function () {
+            return new KTwoDProperty(this._prop.property('ADBE Vector Repeater Scale'), this);
+        };
+        KVectorRepeaterTransform.prototype.rotation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Repeater Rotation'), this);
+        };
+        KVectorRepeaterTransform.prototype.startOpacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Repeater Opacity 1'), this);
+        };
+        KVectorRepeaterTransform.prototype.endOpacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Repeater Opacity 2'), this);
+        };
+        return KVectorRepeaterTransform;
+    }(KPropertyGroup));
+    KIKAKU.KVectorRepeaterTransform = KVectorRepeaterTransform;
+    var KVectorRoundCorners = (function (_super) {
+        __extends(KVectorRoundCorners, _super);
+        function KVectorRoundCorners() {
+            _super.apply(this, arguments);
+        }
+        KVectorRoundCorners.prototype.radius = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector RoundCorner Radius'), this);
+        };
+        return KVectorRoundCorners;
+    }(KPropertyGroup));
+    KIKAKU.KVectorRoundCorners = KVectorRoundCorners;
+    var KVectorTrimPaths = (function (_super) {
+        __extends(KVectorTrimPaths, _super);
+        function KVectorTrimPaths() {
+            _super.apply(this, arguments);
+        }
+        KVectorTrimPaths.prototype.start = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Trim Start'), this);
+        };
+        KVectorTrimPaths.prototype.end = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Trim End'), this);
+        };
+        KVectorTrimPaths.prototype.offset = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Trim Offset'), this);
+        };
+        KVectorTrimPaths.prototype.trimMultipleShapes = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Trim Type'), this);
+        };
+        return KVectorTrimPaths;
+    }(KPropertyGroup));
+    KIKAKU.KVectorTrimPaths = KVectorTrimPaths;
+    var KVectorTwist = (function (_super) {
+        __extends(KVectorTwist, _super);
+        function KVectorTwist() {
+            _super.apply(this, arguments);
+        }
+        KVectorTwist.prototype.angle = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Twist Angle'), this);
+        };
+        KVectorTwist.prototype.center = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Twist Center'), this);
+        };
+        return KVectorTwist;
+    }(KPropertyGroup));
+    KIKAKU.KVectorTwist = KVectorTwist;
+    var KVectorWigglePaths = (function (_super) {
+        __extends(KVectorWigglePaths, _super);
+        function KVectorWigglePaths() {
+            _super.apply(this, arguments);
+        }
+        KVectorWigglePaths.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Roughen Size'), this);
+        };
+        KVectorWigglePaths.prototype.detail = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Roughen Detail'), this);
+        };
+        KVectorWigglePaths.prototype.points = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Roughen Points'), this);
+        };
+        KVectorWigglePaths.prototype.wigglesPerSecond = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Temporal Freq'), this);
+        };
+        KVectorWigglePaths.prototype.correlation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Correlation'), this);
+        };
+        KVectorWigglePaths.prototype.temporalPhase = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Temporal Phase'), this);
+        };
+        KVectorWigglePaths.prototype.spatialPhase = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Spatial Phase'), this);
+        };
+        KVectorWigglePaths.prototype.randomSeed = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Random Seed'), this);
+        };
+        return KVectorWigglePaths;
+    }(KPropertyGroup));
+    KIKAKU.KVectorWigglePaths = KVectorWigglePaths;
+    var KVectorWiggler = (function (_super) {
+        __extends(KVectorWiggler, _super);
+        function KVectorWiggler() {
+            _super.apply(this, arguments);
+        }
+        KVectorWiggler.prototype.wigglesPerSecond = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Xform Temporal Freq'), this);
+        };
+        KVectorWiggler.prototype.correlation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Correlation'), this);
+        };
+        KVectorWiggler.prototype.temporalPhase = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Temporal Phase'), this);
+        };
+        KVectorWiggler.prototype.spatialPhase = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Spatial Phase'), this);
+        };
+        KVectorWiggler.prototype.randomSeed = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Random Seed'), this);
+        };
+        KVectorWiggler.prototype.transform = function () {
+            return new KVectorWigglerTransform(this._prop.property('ADBE Vector Wiggler Transform'), this);
+        };
+        return KVectorWiggler;
+    }(KPropertyGroup));
+    KIKAKU.KVectorWiggler = KVectorWiggler;
+    var KVectorWigglerTransform = (function (_super) {
+        __extends(KVectorWigglerTransform, _super);
+        function KVectorWigglerTransform() {
+            _super.apply(this, arguments);
+        }
+        KVectorWigglerTransform.prototype.anchorPoint = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Wiggler Anchor'), this);
+        };
+        KVectorWigglerTransform.prototype.position = function () {
+            return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Wiggler Position'), this);
+        };
+        KVectorWigglerTransform.prototype.scale = function () {
+            return new KTwoDProperty(this._prop.property('ADBE Vector Wiggler Scale'), this);
+        };
+        KVectorWigglerTransform.prototype.rotation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Wiggler Rotation'), this);
+        };
+        return KVectorWigglerTransform;
+    }(KPropertyGroup));
+    KIKAKU.KVectorWigglerTransform = KVectorWigglerTransform;
+    var KVectorZigzag = (function (_super) {
+        __extends(KVectorZigzag, _super);
+        function KVectorZigzag() {
+            _super.apply(this, arguments);
+        }
+        KVectorZigzag.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Zigzag Size'), this);
+        };
+        KVectorZigzag.prototype.ridgesPerSegment = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Zigzag Detail'), this);
+        };
+        KVectorZigzag.prototype.points = function () {
+            return new KOneDProperty(this._prop.property('ADBE Vector Zigzag Points'), this);
+        };
+        return KVectorZigzag;
+    }(KPropertyGroup));
+    KIKAKU.KVectorZigzag = KVectorZigzag;
+    /*
+    * Material Property
+    */
+    var KMaterialOptions = (function (_super) {
+        __extends(KMaterialOptions, _super);
+        function KMaterialOptions() {
+            _super.apply(this, arguments);
+        }
+        KMaterialOptions.prototype.castsShadows = function () {
+            return new KOneDProperty(this._prop.property('ADBE Casts Shadows'), this);
+        };
+        KMaterialOptions.prototype.lightTransmission = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Transmission'), this);
+        };
+        KMaterialOptions.prototype.acceptsShadows = function () {
+            return new KOneDProperty(this._prop.property('ADBE Accepts Shadows'), this);
+        };
+        KMaterialOptions.prototype.acceptsLights = function () {
+            return new KOneDProperty(this._prop.property('ADBE Accepts Lights'), this);
+        };
+        KMaterialOptions.prototype.ambient = function () {
+            return new KOneDProperty(this._prop.property('ADBE Ambient Coefficient'), this);
+        };
+        KMaterialOptions.prototype.diffuse = function () {
+            return new KOneDProperty(this._prop.property('ADBE Diffuse Coefficient'), this);
+        };
+        KMaterialOptions.prototype.specularIntensity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Specular Coefficient'), this);
+        };
+        KMaterialOptions.prototype.specularShininess = function () {
+            return new KOneDProperty(this._prop.property('ADBE Shininess Coefficient'), this);
+        };
+        KMaterialOptions.prototype.metal = function () {
+            return new KOneDProperty(this._prop.property('ADBE Metal Coefficient'), this);
+        };
+        return KMaterialOptions;
+    }(KPropertyGroup));
+    KIKAKU.KMaterialOptions = KMaterialOptions;
+    /*
+    * Camera Property
+    */
+    var KCameraOptions = (function (_super) {
+        __extends(KCameraOptions, _super);
+        function KCameraOptions() {
+            _super.apply(this, arguments);
+        }
+        KCameraOptions.prototype.zoom = function () {
+            return new KOneDProperty(this._prop.property('ADBE Camera Zoom'), this);
+        };
+        KCameraOptions.prototype.depthOfField = function () {
+            return new KOneDProperty(this._prop.property('ADBE Camera Depth of Field'), this);
+        };
+        KCameraOptions.prototype.focusDistance = function () {
+            return new KOneDProperty(this._prop.property('ADBE Camera Focus Distance'), this);
+        };
+        KCameraOptions.prototype.aperture = function () {
+            return new KOneDProperty(this._prop.property('ADBE Camera Aperture'), this);
+        };
+        KCameraOptions.prototype.blurLevel = function () {
+            return new KOneDProperty(this._prop.property('ADBE Camera Blur Level'), this);
+        };
+        KCameraOptions.prototype.irisShape = function () {
+            return new KOneDProperty(this._prop.property('ADBE Iris Shape'), this);
+        };
+        KCameraOptions.prototype.irisRotation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Iris Rotation'), this);
+        };
+        KCameraOptions.prototype.irisRoundness = function () {
+            return new KOneDProperty(this._prop.property('ADBE Iris Roundness'), this);
+        };
+        KCameraOptions.prototype.irisAspectRatio = function () {
+            return new KOneDProperty(this._prop.property('ADBE Iris Aspect Ratio'), this);
+        };
+        KCameraOptions.prototype.irisDiffractionFringe = function () {
+            return new KOneDProperty(this._prop.property('ADBE Iris Diffraction Fringe'), this);
+        };
+        KCameraOptions.prototype.highlightGain = function () {
+            return new KOneDProperty(this._prop.property('ADBE Iris Highlight Gain'), this);
+        };
+        KCameraOptions.prototype.highlightThreshold = function () {
+            return new KOneDProperty(this._prop.property('ADBE Iris Highlight Threshold'), this);
+        };
+        KCameraOptions.prototype.highlightSaturation = function () {
+            return new KOneDProperty(this._prop.property('ADBE Iris Hightlight Saturation'), this);
+        };
+        return KCameraOptions;
+    }(KPropertyGroup));
+    KIKAKU.KCameraOptions = KCameraOptions;
+    /*
+    * Light Property
+    */
+    var KLightOptions = (function (_super) {
+        __extends(KLightOptions, _super);
+        function KLightOptions() {
+            _super.apply(this, arguments);
+        }
+        KLightOptions.prototype.intensity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Intensity'), this);
+        };
+        KLightOptions.prototype.color = function () {
+            return new KColorProperty(this._prop.property('ADBE Light Color'), this);
+        };
+        KLightOptions.prototype.coneAngle = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Cone Angle'), this);
+        };
+        KLightOptions.prototype.coneFeather = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Cone Feather 2'), this);
+        };
+        KLightOptions.prototype.falloff = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Falloff Type'), this);
+        };
+        KLightOptions.prototype.radius = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Falloff Start'), this);
+        };
+        KLightOptions.prototype.falloffDistance = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Falloff Distance'), this);
+        };
+        KLightOptions.prototype.castsShadows = function () {
+            return new KOneDProperty(this._prop.property('ADBE Casts Shadows'), this);
+        };
+        KLightOptions.prototype.shadowDarkness = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Shadow Darkness'), this);
+        };
+        KLightOptions.prototype.shadowDiffusion = function () {
+            return new KOneDProperty(this._prop.property('ADBE Light Shadow Diffusion'), this);
+        };
+        return KLightOptions;
+    }(KPropertyGroup));
+    KIKAKU.KLightOptions = KLightOptions;
 })(KIKAKU || (KIKAKU = {}));
 /// <reference path="wrapper/array.ts" />
 /// <reference path="wrapper/file.ts" />
