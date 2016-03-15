@@ -7,7 +7,7 @@ namespace KIKAKU {
     }
     isValid() {
       let source = this._source;
-      return source && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource) && isValid(source);
+      return isValid(source) && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource);
     }
     //cast
     asSolid() {
@@ -78,7 +78,7 @@ namespace KIKAKU {
   export class KSolidSource extends KFootageSource<SolidSource> {
     isValid() {
       let source = this._source;
-      return source && source instanceof SolidSource && isValid(source);
+      return isValid(source) && source instanceof SolidSource;
     }
     //attributes
     color(color?: [number, number, number]) {
@@ -90,14 +90,14 @@ namespace KIKAKU {
   export class KPlaceholderSource extends KFootageSource<PlaceholderSource> {
     isValid() {
       let source = this._source;
-      return source && source instanceof PlaceholderSource && isValid(source);
+      return isValid(source) && source instanceof PlaceholderSource;
     }
   }
 
   export class KFileSource extends KFootageSource<FileSource> {
     isValid() {
       let source = this._source;
-      return source && source instanceof FileSource && isValid(source);
+      return isValid(source) && source instanceof FileSource;
     }
     //attributes
     file() {

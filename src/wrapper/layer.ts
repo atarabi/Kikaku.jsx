@@ -6,7 +6,7 @@ namespace KIKAKU {
       return this._layers.length;
     }
     at(index: number) {
-      return this._layers[index];
+      return new KLayer(this._layers[index]);
     }
     //utility
     forEach(fn: (layer: Layer, index: number) => void) {
@@ -71,7 +71,7 @@ namespace KIKAKU {
     }
     isValid() {
       let layer = this._layer;
-      return layer && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
+      return isValid(layer) && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
     }
     //cast
     asAV() {
@@ -91,46 +91,46 @@ namespace KIKAKU {
     }
     //properties
     marker() {
-      return new KProperty(this._layer.marker);
+      return new KMarkerProperty(this._layer.marker);
     }
     transform() {
       return new KPropertyGroup(this._layer.transform);
     }
     anchorPoint() {
-      return new KProperty(this._layer.transform.anchorPoint);
+      return new KThreeDSpatialProperty(this._layer.transform.anchorPoint);
     }
     position() {
-      return new KProperty(this._layer.transform.position);
+      return new KThreeDSpatialProperty(this._layer.transform.position);
     }
     xPosition() {
-      return new KProperty(this._layer.transform.xPosition);
+      return new KOneDProperty(this._layer.transform.xPosition);
     }
     yPosition() {
-      return new KProperty(this._layer.transform.yPosition);
+      return new KOneDProperty(this._layer.transform.yPosition);
     }
     zPosition() {
-      return new KProperty(this._layer.transform.zPosition);
+      return new KOneDProperty(this._layer.transform.zPosition);
     }
     scale() {
-      return new KProperty(this._layer.transform.scale);
+      return new KThreeDProperty(this._layer.transform.scale);
     }
     orientation() {
-      return new KProperty(this._layer.transform.orientation);
+      return new KThreeDSpatialProperty(this._layer.transform.orientation);
     }
     rotation() {
-      return new KProperty(this._layer.transform.rotation);
+      return new KOneDProperty(this._layer.transform.rotation);
     }
     xRotation() {
-      return new KProperty(this._layer.transform.xRotation);
+      return new KOneDProperty(this._layer.transform.xRotation);
     }
     yRotation() {
-      return new KProperty(this._layer.transform.yRotation);
+      return new KOneDProperty(this._layer.transform.yRotation);
     }
     zRotation() {
-      return new KProperty(this._layer.transform.zRotation);
+      return new KOneDProperty(this._layer.transform.zRotation);
     }
     opacity() {
-      return new KProperty(this._layer.transform.opacity);
+      return new KOneDProperty(this._layer.transform.opacity);
     }
     //attributes
     index() {
@@ -264,14 +264,14 @@ namespace KIKAKU {
   export class KAVLayer<T extends AVLayer> extends KLayer<T> {
     isValid() {
       let layer = this._layer;
-      return layer && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer) && isValid(layer);
+      return isValid(layer) && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
     }
     //properties
     timeRemap() {
-      return new KProperty(this._layer.timeRemap);
+      return new KOneDProperty(this._layer.timeRemap);
     }
     mask() {
-      return new KPropertyGroup(this._layer.mask);
+      return new KMaskParade(this._layer.mask);
     }
     effect() {
       return new KEffectParade(this._layer.effect);
@@ -419,32 +419,32 @@ namespace KIKAKU {
   export class KShapeLayer extends KAVLayer<ShapeLayer> {
     isValid() {
       let layer = this._layer;
-      return layer && layer instanceof ShapeLayer && isValid(layer);
+      return isValid(layer) && layer instanceof ShapeLayer;
     }
     //properties
     contents() {
-      return new KPropertyBase(this._layer.property('ADBE Root Vectors Group')).asPropertyGroup();
+      return new KRootVectors(<PropertyGroup>this._layer.property('ADBE Root Vectors Group'));
     }
   }
 
   export class KTextLayer extends KAVLayer<TextLayer> {
     isValid() {
       let layer = this._layer;
-      return layer && layer instanceof TextLayer && isValid(layer);
+      return isValid(layer) && layer instanceof TextLayer;
     }
     //properties
     text() {
-      return new KPropertyGroup(this._layer.text);
+      return new KTextProperties(this._layer.text);
     }
     sourceText() {
-      return new KProperty(this._layer.text.sourceText);
+      return new KTextDocumentProperty(this._layer.text.sourceText);
     }
   }
 
   export class KCameraLayer extends KLayer<CameraLayer> {
     isValid() {
       let layer = this._layer;
-      return layer && layer instanceof CameraLayer && isValid(layer);
+      return isValid(layer) && layer instanceof CameraLayer;
     }
     //properties
     cameraOption() {
@@ -455,7 +455,7 @@ namespace KIKAKU {
   export class KLightLayer extends KLayer<LightLayer> {
     isValid() {
       let layer = this._layer;
-      return layer && layer instanceof LightLayer && isValid(layer);
+      return isValid(layer) && layer instanceof LightLayer;
     }
     //properties
     lightOption() {
