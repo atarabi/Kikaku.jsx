@@ -53,8 +53,10 @@ namespace KIKAKU {
     addLight(name: string, centerPoint: [number, number]) {
       return new KLightLayer(this._layers.addLight(name, centerPoint));
     }
-    addShape() {
-      return new KShapeLayer(this._layers.addShape());
+    addShape(name?: string) {
+      const shape_layer = this._layers.addShape();
+      if (name !== void 0) shape_layer.name = name;
+      return new KShapeLayer(shape_layer);
     }
     byName(name: string) {
       return new KLayer(this._layers.byName(name));
