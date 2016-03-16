@@ -538,9 +538,430 @@ namespace KIKAKU {
 
   export class KEffect extends KPropertyGroup<PropertyGroup> {
     //override
-    property(index_or_name: number | string) {
+    property(index_or_name: number | string): KProperty<PropertyValue> {
       this.validate();
       return new KProperty(<Property>this._prop.property(<any>index_or_name), this)
+    }
+  }
+
+  /*
+  * Layer Style Property
+  */
+  export class KLayerStyles extends KPropertyGroup<PropertyGroup> {
+    private _layer: AVLayer;
+    constructor(prop: PropertyGroup, parent: KPropertyGroup<PropertyGroup> = null) {
+      super(prop, parent);
+      let parent_property = prop;
+      while (parent_property.parentProperty) {
+        parent_property = parent_property.parentProperty;
+      }
+      this._layer = <AVLayer><any>parent_property;
+    }
+    //properties
+    blendingOptions() {
+      return new KLayerStylesBlendingOptions(<PropertyGroup>this._prop.property('ADBE Blend Options Group'), this);
+    }
+    dropShadow() {
+      return new KLayerStylesDropShadow(<PropertyGroup>this._prop.property('dropShadow/enabled'), this);
+    }
+    innerShadow() {
+      return new KLayerStylesInnerShadow(<PropertyGroup>this._prop.property('innerShadow/enabled'), this);
+    }
+    outerGlow() {
+      return new KLayerStylesOuterGlow(<PropertyGroup>this._prop.property('outerGlow/enabled'), this);
+    }
+    innerGlow() {
+      return new KLayerStylesInnerGlow(<PropertyGroup>this._prop.property('innerGlow//enabled'), this);
+    }
+    bevelAndEmboss() {
+      return new KLayerStylesBevelAndEmboss(<PropertyGroup>this._prop.property('bevelEmboss/enabled'), this);
+    }
+    satin() {
+      return new KLayerStylesSatin(<PropertyGroup>this._prop.property('chromeFX/enabled'), this);
+    }
+    colorOverlay() {
+      return new KLayerStylesColorOverlay(<PropertyGroup>this._prop.property('solidFill/enabled'), this);
+    }
+    gradientOverlay() {
+      return new KLayerStylesGradientOverlay(<PropertyGroup>this._prop.property('gradientFill/enabled'), this);
+    }
+    stroke() {
+      return new KLayerStylesStroke(<PropertyGroup>this._prop.property('frameFX/enabled'), this);
+    }
+    //methods
+    addDropShadow() {
+      this.doCommand(9000);
+      return this.dropShadow();
+    }
+    addInnerShadow() {
+      this.doCommand(9001);
+      return this.innerShadow();
+    }
+    addOuterGlow() {
+      this.doCommand(9002);
+      return this.outerGlow();
+    }
+    addInnerGlow() {
+      this.doCommand(9003);
+      return this.innerGlow();
+    }
+    addBevelAndEmboss() {
+      this.doCommand(9004);
+      return this.bevelAndEmboss();
+    }
+    addSatin() {
+      this.doCommand(9005);
+      return this.satin();
+    }
+    addColorOverlay() {
+      this.doCommand(9006);
+      return this.colorOverlay();
+    }
+    addGradientOverlay() {
+      this.doCommand(9007);
+      return this.gradientOverlay();
+    }
+    addStroke() {
+      this.doCommand(9008);
+      return this.stroke();
+    }
+    //utility methods
+    private doCommand(command_id: number) {
+      const active_item = app.project.activeItem;
+      const comp = this._layer.containingComp;
+      if (comp !== active_item) {
+        if (parseFloat(app.version) < AppVersion.CS6) {
+          throw 'This method requires CS6 or later."'
+        }
+        comp.openInViewer();
+      }
+      const selected_layers = new KArray(comp.selectedLayers.slice());
+      try {
+        selected_layers.forEach(layer => {
+          layer.selected = false;
+        });
+        this._layer.selected = true;
+        app.executeCommand(command_id);
+      } catch (e) {
+        //pass
+      } finally {
+        this._layer.selected = false;
+        selected_layers.forEach(layer => {
+          layer.selected = true;
+        });
+      }
+    }
+  }
+
+  export class KLayerStylesBlendingOptions extends KPropertyGroup<PropertyGroup> {
+    globalLightAngle() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Global Angle2'), this);
+    }
+    globalLightAltitude() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Global Altitude2'), this);
+    }
+    advancedBlending() {
+      return new KLayerStylesAdvancedBlending(<PropertyGroup>this._prop.property('ADBE Adv Blend Group'), this);
+    }
+  }
+
+  export class KLayerStylesAdvancedBlending extends KPropertyGroup<PropertyGroup> {
+    fillOpacity() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Layer Fill Opacity2'), this);
+    }
+    red() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE R Channel Blend'), this);
+    }
+    green() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE G Channel Blend'), this);
+    }
+    blue() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE B Channel Blend'), this);
+    }
+    blendInteriorStylesAsGroup() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Blend Interior'), this);
+    }
+    useBlendRangesFromSource() {
+      return new KOneDProperty(<Property>this._prop.property('ADBE Blend Ranges'), this);
+    }
+  }
+
+  export class KLayerStylesDropShadow extends KPropertyGroup<PropertyGroup> {
+    blendMode() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/mode2'), this);
+    }
+    color() {
+      return new KColorProperty(<Property>this._prop.property('dropShadow/color'), this);
+    }
+    opacity() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/opacity'), this);
+    }
+    useGlobalLight() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/useGlobalAngle'), this);
+    }
+    angle() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/localLightingAngle'), this);
+    }
+    distance() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/distance'), this);
+    }
+    spread() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/chokeMatte'), this);
+    }
+    size() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/blur'), this);
+    }
+    noise() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/noise'), this);
+    }
+    layerKnocksOutDropShadow() {
+      return new KOneDProperty(<Property>this._prop.property('dropShadow/layerConceals'), this);
+    }
+  }
+
+  export class KLayerStylesInnerShadow extends KPropertyGroup<PropertyGroup> {
+    blendMode() {
+      return new KOneDProperty(<Property>this._prop.property('innerShadow/mode2'), this);
+    }
+    color() {
+      return new KColorProperty(<Property>this._prop.property('innerShadow/color'), this);
+    }
+    opacity() {
+      return new KOneDProperty(<Property>this._prop.property('innerShadow/opacity'), this);
+    }
+    useGlobalLight() {
+      return new KOneDProperty(<Property>this._prop.property('innerShadow/useGlobalAngle'), this);
+    }
+    angle() {
+      return new KOneDProperty(<Property>this._prop.property('innerShadow/localLightingAngle'), this);
+    }
+    distance() {
+      return new KOneDProperty(<Property>this._prop.property('innerShadow/distance'), this);
+    }
+    choke() {
+      return new KOneDProperty(<Property>this._prop.property('innerShadow/chokeMatte'), this);
+    }
+    size() {
+      return new KOneDProperty(<Property>this._prop.property('innerShadow/blur'), this);
+    }
+    noise() {
+      return new KOneDProperty(<Property>this._prop.property('innerShadow/noise'), this);
+    }
+  }
+
+  export class KLayerStylesOuterGlow extends KPropertyGroup<PropertyGroup> {
+    blendMode() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/mode2'), this);
+    }
+    opacity() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/opacity'), this);
+    }
+    noise() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/noise'), this);
+    }
+    colorType() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/AEColorChoice'), this);
+    }
+    color() {
+      return new KColorProperty(<Property>this._prop.property('outerGlow/color'), this);
+    }
+    colors() {
+      return new KCustomValueProperty(<Property>this._prop.property('outerGlow/gradient'), this);
+    }
+    gradientSmoothness() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/gradientSmoothness'), this);
+    }
+    technique() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/glowTechnique'), this);
+    }
+    spread() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/chokeMatte'), this);
+    }
+    size() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/blur'), this);
+    }
+    range() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/inputRange'), this);
+    }
+    jitter() {
+      return new KOneDProperty(<Property>this._prop.property('outerGlow/shadingNoise'), this);
+    }
+  }
+
+  export class KLayerStylesInnerGlow extends KPropertyGroup<PropertyGroup> {
+    blendMode() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/mode2'), this);
+    }
+    opacity() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/opacity'), this);
+    }
+    noise() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/noise'), this);
+    }
+    colorType() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/AEColorChoice'), this);
+    }
+    color() {
+      return new KColorProperty(<Property>this._prop.property('innerGlow/color'), this);
+    }
+    colors() {
+      return new KCustomValueProperty(<Property>this._prop.property('innerGlow/gradient'), this);
+    }
+    gradientSmoothness() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/gradientSmoothness'), this);
+    }
+    technique() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/glowTechnique'), this);
+    }
+    source() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/innerGlowSource'), this);
+    }
+    choke() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/chokeMatte'), this);
+    }
+    size() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/blur'), this);
+    }
+    range() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/inputRange'), this);
+    }
+    jitter() {
+      return new KOneDProperty(<Property>this._prop.property('innerGlow/shadingNoise'), this);
+    }
+  }
+
+  export class KLayerStylesBevelAndEmboss extends KPropertyGroup<PropertyGroup> {
+    style() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/bevelStyle'), this);
+    }
+    technique() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/bevelTechnique'), this);
+    }
+    depth() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/strengthRatio'), this);
+    }
+    direction() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/bevelDirection'), this);
+    }
+    size() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/blur'), this);
+    }
+    soften() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/softness'), this);
+    }
+    useGlobalLight() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/useGlobalAngle'), this);
+    }
+    angle() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/localLightingAngle'), this);
+    }
+    altitude() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/localLightingAltitude'), this);
+    }
+    highlightMode() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/highlightMode'), this);
+    }
+    highlightColor() {
+      return new KColorProperty(<Property>this._prop.property('bevelEmboss/highlightColor'), this);
+    }
+    highlightOpacity() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/highlightOpacity'), this);
+    }
+    shadowMode() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/shadowMode'), this);
+    }
+    shadowColor() {
+      return new KColorProperty(<Property>this._prop.property('bevelEmboss/shadowColor'), this);
+    }
+    shadowOpacity() {
+      return new KOneDProperty(<Property>this._prop.property('bevelEmboss/shadowOpacity'), this);
+    }
+  }
+  
+  export class KLayerStylesSatin extends KPropertyGroup<PropertyGroup> {
+    blendMode() {
+      return new KOneDProperty(<Property>this._prop.property('chromeFX/mode2'), this);
+    }
+    color() {
+      return new KColorProperty(<Property>this._prop.property('chromeFX/color'), this);
+    }
+    opacity() {
+      return new KOneDProperty(<Property>this._prop.property('chromeFX/opacity'), this);
+    }
+    angle() {
+      return new KOneDProperty(<Property>this._prop.property('chromeFX/localLightingAngle'), this);
+    }
+    distance() {
+      return new KOneDProperty(<Property>this._prop.property('chromeFX/distance'), this);
+    }
+    size() {
+      return new KOneDProperty(<Property>this._prop.property('chromeFX/blur'), this);
+    }
+    invert() {
+      return new KOneDProperty(<Property>this._prop.property('chromeFX/invert'), this);
+    }
+  }
+  
+  export class KLayerStylesColorOverlay extends KPropertyGroup<PropertyGroup> {
+    blendMode() {
+      return new KOneDProperty(<Property>this._prop.property('solidFill/mode2'), this);
+    }
+    color() {
+      return new KColorProperty(<Property>this._prop.property('solidFill/color'), this);
+    }
+    opacity() {
+      return new KOneDProperty(<Property>this._prop.property('solidFill/opacity'), this);
+    }
+  }
+
+  export class KLayerStylesGradientOverlay extends KPropertyGroup<PropertyGroup> {
+    blendMode() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/mode2'), this);
+    }
+    opacity() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/opacity'), this);
+    }
+    colors() {
+      return new KCustomValueProperty(<Property>this._prop.property('gradientFill/gradient'), this);
+    }
+    gradientSmoothness() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/gradientSmoothness'), this);
+    }
+    angle() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/angle'), this);
+    }
+    style() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/type'), this);
+    }
+    reverse() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/reverse'), this);
+    }
+    alignWithLayer() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/align'), this);
+    }
+    scale() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/scale'), this);
+    }
+    offset() {
+      return new KOneDProperty(<Property>this._prop.property('gradientFill/offset'), this);
+    }
+  }
+  
+  export class KLayerStylesStroke extends KPropertyGroup<PropertyGroup> {
+    blendMode() {
+      return new KOneDProperty(<Property>this._prop.property('frameFX/mode2'), this);
+    }
+    color() {
+      return new KColorProperty(<Property>this._prop.property('frameFX/color'), this);
+    }
+    size() {
+      return new KOneDProperty(<Property>this._prop.property('frameFX/size'), this);
+    }
+    opacity() {
+      return new KOneDProperty(<Property>this._prop.property('frameFX/opacity'), this);
+    }
+    position() {
+      return new KOneDProperty(<Property>this._prop.property('frameFX/style'), this);
     }
   }
 
@@ -1329,7 +1750,6 @@ namespace KIKAKU {
   /*
   * Material Property
   */
-
   export class KMaterialOptions extends KPropertyGroup<PropertyGroup> {
     castsShadows() {
       return new KOneDProperty(<Property>this._prop.property('ADBE Casts Shadows'), this);

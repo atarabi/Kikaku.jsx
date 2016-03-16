@@ -279,7 +279,7 @@ namespace KIKAKU {
       return new KEffectParade(this._layer.effect);
     }
     layerStyle() {
-      return new KPropertyGroup(this._layer.layerStyle);
+      return new KLayerStyles(this._layer.layerStyle);
     }
     geometryOption() {
       return new KPropertyGroup(this._layer.geometryOption);
