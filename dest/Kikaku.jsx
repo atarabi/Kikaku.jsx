@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 7;
-    KIKAKU.PATCH_VERSION = 0;
+    KIKAKU.PATCH_VERSION = 1;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -3305,7 +3305,7 @@ var KIKAKU;
             return new KIKAKU.KEffectParade(this._layer.effect);
         };
         KAVLayer.prototype.layerStyle = function () {
-            return new KIKAKU.KPropertyGroup(this._layer.layerStyle);
+            return new KIKAKU.KLayerStyles(this._layer.layerStyle);
         };
         KAVLayer.prototype.geometryOption = function () {
             return new KIKAKU.KPropertyGroup(this._layer.geometryOption);
@@ -4190,6 +4190,485 @@ var KIKAKU;
         return KEffect;
     }(KPropertyGroup));
     KIKAKU.KEffect = KEffect;
+    /*
+    * Layer Style Property
+    */
+    var KLayerStyles = (function (_super) {
+        __extends(KLayerStyles, _super);
+        function KLayerStyles(prop, parent) {
+            if (parent === void 0) { parent = null; }
+            _super.call(this, prop, parent);
+            var parent_property = prop;
+            while (parent_property.parentProperty) {
+                parent_property = parent_property.parentProperty;
+            }
+            this._layer = parent_property;
+        }
+        //properties
+        KLayerStyles.prototype.blendingOptions = function () {
+            return new KLayerStylesBlendingOptions(this._prop.property('ADBE Blend Options Group'), this);
+        };
+        KLayerStyles.prototype.dropShadow = function () {
+            return new KLayerStylesDropShadow(this._prop.property('dropShadow/enabled'), this);
+        };
+        KLayerStyles.prototype.innerShadow = function () {
+            return new KLayerStylesInnerShadow(this._prop.property('innerShadow/enabled'), this);
+        };
+        KLayerStyles.prototype.outerGlow = function () {
+            return new KLayerStylesOuterGlow(this._prop.property('outerGlow/enabled'), this);
+        };
+        KLayerStyles.prototype.innerGlow = function () {
+            return new KLayerStylesInnerGlow(this._prop.property('innerGlow//enabled'), this);
+        };
+        KLayerStyles.prototype.bevelAndEmboss = function () {
+            return new KLayerStylesBevelAndEmboss(this._prop.property('bevelEmboss/enabled'), this);
+        };
+        KLayerStyles.prototype.satin = function () {
+            return new KLayerStylesSatin(this._prop.property('chromeFX/enabled'), this);
+        };
+        KLayerStyles.prototype.colorOverlay = function () {
+            return new KLayerStylesColorOverlay(this._prop.property('solidFill/enabled'), this);
+        };
+        KLayerStyles.prototype.gradientOverlay = function () {
+            return new KLayerStylesGradientOverlay(this._prop.property('gradientFill/enabled'), this);
+        };
+        KLayerStyles.prototype.stroke = function () {
+            return new KLayerStylesStroke(this._prop.property('frameFX/enabled'), this);
+        };
+        //methods
+        KLayerStyles.prototype.addDropShadow = function () {
+            this.doCommand(9000);
+            return this.dropShadow();
+        };
+        KLayerStyles.prototype.addInnerShadow = function () {
+            this.doCommand(9001);
+            return this.innerShadow();
+        };
+        KLayerStyles.prototype.addOuterGlow = function () {
+            this.doCommand(9002);
+            return this.outerGlow();
+        };
+        KLayerStyles.prototype.addInnerGlow = function () {
+            this.doCommand(9003);
+            return this.innerGlow();
+        };
+        KLayerStyles.prototype.addBevelAndEmboss = function () {
+            this.doCommand(9004);
+            return this.bevelAndEmboss();
+        };
+        KLayerStyles.prototype.addSatin = function () {
+            this.doCommand(9005);
+            return this.satin();
+        };
+        KLayerStyles.prototype.addColorOverlay = function () {
+            this.doCommand(9006);
+            return this.colorOverlay();
+        };
+        KLayerStyles.prototype.addGradientOverlay = function () {
+            this.doCommand(9007);
+            return this.gradientOverlay();
+        };
+        KLayerStyles.prototype.addStroke = function () {
+            this.doCommand(9008);
+            return this.stroke();
+        };
+        //utility methods
+        KLayerStyles.prototype.doCommand = function (command_id) {
+            var active_item = app.project.activeItem;
+            var comp = this._layer.containingComp;
+            if (comp !== active_item) {
+                if (parseFloat(app.version) < 11 /* CS6 */) {
+                    throw 'This method requires CS6 or later."';
+                }
+                comp.openInViewer();
+            }
+            var selected_layers = new KIKAKU.KArray(comp.selectedLayers.slice());
+            try {
+                selected_layers.forEach(function (layer) {
+                    layer.selected = false;
+                });
+                this._layer.selected = true;
+                app.executeCommand(command_id);
+            }
+            catch (e) {
+            }
+            finally {
+                this._layer.selected = false;
+                selected_layers.forEach(function (layer) {
+                    layer.selected = true;
+                });
+            }
+        };
+        return KLayerStyles;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStyles = KLayerStyles;
+    var KLayerStylesBlendingOptions = (function (_super) {
+        __extends(KLayerStylesBlendingOptions, _super);
+        function KLayerStylesBlendingOptions() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesBlendingOptions.prototype.globalLightAngle = function () {
+            return new KOneDProperty(this._prop.property('ADBE Global Angle2'), this);
+        };
+        KLayerStylesBlendingOptions.prototype.globalLightAltitude = function () {
+            return new KOneDProperty(this._prop.property('ADBE Global Altitude2'), this);
+        };
+        KLayerStylesBlendingOptions.prototype.advancedBlending = function () {
+            return new KLayerStylesAdvancedBlending(this._prop.property('ADBE Adv Blend Group'), this);
+        };
+        return KLayerStylesBlendingOptions;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesBlendingOptions = KLayerStylesBlendingOptions;
+    var KLayerStylesAdvancedBlending = (function (_super) {
+        __extends(KLayerStylesAdvancedBlending, _super);
+        function KLayerStylesAdvancedBlending() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesAdvancedBlending.prototype.fillOpacity = function () {
+            return new KOneDProperty(this._prop.property('ADBE Layer Fill Opacity2'), this);
+        };
+        KLayerStylesAdvancedBlending.prototype.red = function () {
+            return new KOneDProperty(this._prop.property('ADBE R Channel Blend'), this);
+        };
+        KLayerStylesAdvancedBlending.prototype.green = function () {
+            return new KOneDProperty(this._prop.property('ADBE G Channel Blend'), this);
+        };
+        KLayerStylesAdvancedBlending.prototype.blue = function () {
+            return new KOneDProperty(this._prop.property('ADBE B Channel Blend'), this);
+        };
+        KLayerStylesAdvancedBlending.prototype.blendInteriorStylesAsGroup = function () {
+            return new KOneDProperty(this._prop.property('ADBE Blend Interior'), this);
+        };
+        KLayerStylesAdvancedBlending.prototype.useBlendRangesFromSource = function () {
+            return new KOneDProperty(this._prop.property('ADBE Blend Ranges'), this);
+        };
+        return KLayerStylesAdvancedBlending;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesAdvancedBlending = KLayerStylesAdvancedBlending;
+    var KLayerStylesDropShadow = (function (_super) {
+        __extends(KLayerStylesDropShadow, _super);
+        function KLayerStylesDropShadow() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesDropShadow.prototype.blendMode = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/mode2'), this);
+        };
+        KLayerStylesDropShadow.prototype.color = function () {
+            return new KColorProperty(this._prop.property('dropShadow/color'), this);
+        };
+        KLayerStylesDropShadow.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/opacity'), this);
+        };
+        KLayerStylesDropShadow.prototype.useGlobalLight = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/useGlobalAngle'), this);
+        };
+        KLayerStylesDropShadow.prototype.angle = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/localLightingAngle'), this);
+        };
+        KLayerStylesDropShadow.prototype.distance = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/distance'), this);
+        };
+        KLayerStylesDropShadow.prototype.spread = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/chokeMatte'), this);
+        };
+        KLayerStylesDropShadow.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/blur'), this);
+        };
+        KLayerStylesDropShadow.prototype.noise = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/noise'), this);
+        };
+        KLayerStylesDropShadow.prototype.layerKnocksOutDropShadow = function () {
+            return new KOneDProperty(this._prop.property('dropShadow/layerConceals'), this);
+        };
+        return KLayerStylesDropShadow;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesDropShadow = KLayerStylesDropShadow;
+    var KLayerStylesInnerShadow = (function (_super) {
+        __extends(KLayerStylesInnerShadow, _super);
+        function KLayerStylesInnerShadow() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesInnerShadow.prototype.blendMode = function () {
+            return new KOneDProperty(this._prop.property('innerShadow/mode2'), this);
+        };
+        KLayerStylesInnerShadow.prototype.color = function () {
+            return new KColorProperty(this._prop.property('innerShadow/color'), this);
+        };
+        KLayerStylesInnerShadow.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('innerShadow/opacity'), this);
+        };
+        KLayerStylesInnerShadow.prototype.useGlobalLight = function () {
+            return new KOneDProperty(this._prop.property('innerShadow/useGlobalAngle'), this);
+        };
+        KLayerStylesInnerShadow.prototype.angle = function () {
+            return new KOneDProperty(this._prop.property('innerShadow/localLightingAngle'), this);
+        };
+        KLayerStylesInnerShadow.prototype.distance = function () {
+            return new KOneDProperty(this._prop.property('innerShadow/distance'), this);
+        };
+        KLayerStylesInnerShadow.prototype.choke = function () {
+            return new KOneDProperty(this._prop.property('innerShadow/chokeMatte'), this);
+        };
+        KLayerStylesInnerShadow.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('innerShadow/blur'), this);
+        };
+        KLayerStylesInnerShadow.prototype.noise = function () {
+            return new KOneDProperty(this._prop.property('innerShadow/noise'), this);
+        };
+        return KLayerStylesInnerShadow;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesInnerShadow = KLayerStylesInnerShadow;
+    var KLayerStylesOuterGlow = (function (_super) {
+        __extends(KLayerStylesOuterGlow, _super);
+        function KLayerStylesOuterGlow() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesOuterGlow.prototype.blendMode = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/mode2'), this);
+        };
+        KLayerStylesOuterGlow.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/opacity'), this);
+        };
+        KLayerStylesOuterGlow.prototype.noise = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/noise'), this);
+        };
+        KLayerStylesOuterGlow.prototype.colorType = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/AEColorChoice'), this);
+        };
+        KLayerStylesOuterGlow.prototype.color = function () {
+            return new KColorProperty(this._prop.property('outerGlow/color'), this);
+        };
+        KLayerStylesOuterGlow.prototype.colors = function () {
+            return new KCustomValueProperty(this._prop.property('outerGlow/gradient'), this);
+        };
+        KLayerStylesOuterGlow.prototype.gradientSmoothness = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/gradientSmoothness'), this);
+        };
+        KLayerStylesOuterGlow.prototype.technique = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/glowTechnique'), this);
+        };
+        KLayerStylesOuterGlow.prototype.spread = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/chokeMatte'), this);
+        };
+        KLayerStylesOuterGlow.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/blur'), this);
+        };
+        KLayerStylesOuterGlow.prototype.range = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/inputRange'), this);
+        };
+        KLayerStylesOuterGlow.prototype.jitter = function () {
+            return new KOneDProperty(this._prop.property('outerGlow/shadingNoise'), this);
+        };
+        return KLayerStylesOuterGlow;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesOuterGlow = KLayerStylesOuterGlow;
+    var KLayerStylesInnerGlow = (function (_super) {
+        __extends(KLayerStylesInnerGlow, _super);
+        function KLayerStylesInnerGlow() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesInnerGlow.prototype.blendMode = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/mode2'), this);
+        };
+        KLayerStylesInnerGlow.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/opacity'), this);
+        };
+        KLayerStylesInnerGlow.prototype.noise = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/noise'), this);
+        };
+        KLayerStylesInnerGlow.prototype.colorType = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/AEColorChoice'), this);
+        };
+        KLayerStylesInnerGlow.prototype.color = function () {
+            return new KColorProperty(this._prop.property('innerGlow/color'), this);
+        };
+        KLayerStylesInnerGlow.prototype.colors = function () {
+            return new KCustomValueProperty(this._prop.property('innerGlow/gradient'), this);
+        };
+        KLayerStylesInnerGlow.prototype.gradientSmoothness = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/gradientSmoothness'), this);
+        };
+        KLayerStylesInnerGlow.prototype.technique = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/glowTechnique'), this);
+        };
+        KLayerStylesInnerGlow.prototype.source = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/innerGlowSource'), this);
+        };
+        KLayerStylesInnerGlow.prototype.choke = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/chokeMatte'), this);
+        };
+        KLayerStylesInnerGlow.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/blur'), this);
+        };
+        KLayerStylesInnerGlow.prototype.range = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/inputRange'), this);
+        };
+        KLayerStylesInnerGlow.prototype.jitter = function () {
+            return new KOneDProperty(this._prop.property('innerGlow/shadingNoise'), this);
+        };
+        return KLayerStylesInnerGlow;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesInnerGlow = KLayerStylesInnerGlow;
+    var KLayerStylesBevelAndEmboss = (function (_super) {
+        __extends(KLayerStylesBevelAndEmboss, _super);
+        function KLayerStylesBevelAndEmboss() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesBevelAndEmboss.prototype.style = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/bevelStyle'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.technique = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/bevelTechnique'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.depth = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/strengthRatio'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.direction = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/bevelDirection'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/blur'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.soften = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/softness'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.useGlobalLight = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/useGlobalAngle'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.angle = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/localLightingAngle'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.altitude = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/localLightingAltitude'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.highlightMode = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/highlightMode'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.highlightColor = function () {
+            return new KColorProperty(this._prop.property('bevelEmboss/highlightColor'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.highlightOpacity = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/highlightOpacity'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.shadowMode = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/shadowMode'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.shadowColor = function () {
+            return new KColorProperty(this._prop.property('bevelEmboss/shadowColor'), this);
+        };
+        KLayerStylesBevelAndEmboss.prototype.shadowOpacity = function () {
+            return new KOneDProperty(this._prop.property('bevelEmboss/shadowOpacity'), this);
+        };
+        return KLayerStylesBevelAndEmboss;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesBevelAndEmboss = KLayerStylesBevelAndEmboss;
+    var KLayerStylesSatin = (function (_super) {
+        __extends(KLayerStylesSatin, _super);
+        function KLayerStylesSatin() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesSatin.prototype.blendMode = function () {
+            return new KOneDProperty(this._prop.property('chromeFX/mode2'), this);
+        };
+        KLayerStylesSatin.prototype.color = function () {
+            return new KColorProperty(this._prop.property('chromeFX/color'), this);
+        };
+        KLayerStylesSatin.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('chromeFX/opacity'), this);
+        };
+        KLayerStylesSatin.prototype.angle = function () {
+            return new KOneDProperty(this._prop.property('chromeFX/localLightingAngle'), this);
+        };
+        KLayerStylesSatin.prototype.distance = function () {
+            return new KOneDProperty(this._prop.property('chromeFX/distance'), this);
+        };
+        KLayerStylesSatin.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('chromeFX/blur'), this);
+        };
+        KLayerStylesSatin.prototype.invert = function () {
+            return new KOneDProperty(this._prop.property('chromeFX/invert'), this);
+        };
+        return KLayerStylesSatin;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesSatin = KLayerStylesSatin;
+    var KLayerStylesColorOverlay = (function (_super) {
+        __extends(KLayerStylesColorOverlay, _super);
+        function KLayerStylesColorOverlay() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesColorOverlay.prototype.blendMode = function () {
+            return new KOneDProperty(this._prop.property('solidFill/mode2'), this);
+        };
+        KLayerStylesColorOverlay.prototype.color = function () {
+            return new KColorProperty(this._prop.property('solidFill/color'), this);
+        };
+        KLayerStylesColorOverlay.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('solidFill/opacity'), this);
+        };
+        return KLayerStylesColorOverlay;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesColorOverlay = KLayerStylesColorOverlay;
+    var KLayerStylesGradientOverlay = (function (_super) {
+        __extends(KLayerStylesGradientOverlay, _super);
+        function KLayerStylesGradientOverlay() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesGradientOverlay.prototype.blendMode = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/mode2'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/opacity'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.colors = function () {
+            return new KCustomValueProperty(this._prop.property('gradientFill/gradient'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.gradientSmoothness = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/gradientSmoothness'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.angle = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/angle'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.style = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/type'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.reverse = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/reverse'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.alignWithLayer = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/align'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.scale = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/scale'), this);
+        };
+        KLayerStylesGradientOverlay.prototype.offset = function () {
+            return new KOneDProperty(this._prop.property('gradientFill/offset'), this);
+        };
+        return KLayerStylesGradientOverlay;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesGradientOverlay = KLayerStylesGradientOverlay;
+    var KLayerStylesStroke = (function (_super) {
+        __extends(KLayerStylesStroke, _super);
+        function KLayerStylesStroke() {
+            _super.apply(this, arguments);
+        }
+        KLayerStylesStroke.prototype.blendMode = function () {
+            return new KOneDProperty(this._prop.property('frameFX/mode2'), this);
+        };
+        KLayerStylesStroke.prototype.color = function () {
+            return new KColorProperty(this._prop.property('frameFX/color'), this);
+        };
+        KLayerStylesStroke.prototype.size = function () {
+            return new KOneDProperty(this._prop.property('frameFX/size'), this);
+        };
+        KLayerStylesStroke.prototype.opacity = function () {
+            return new KOneDProperty(this._prop.property('frameFX/opacity'), this);
+        };
+        KLayerStylesStroke.prototype.position = function () {
+            return new KOneDProperty(this._prop.property('frameFX/style'), this);
+        };
+        return KLayerStylesStroke;
+    }(KPropertyGroup));
+    KIKAKU.KLayerStylesStroke = KLayerStylesStroke;
     /*
     * Text Property
     */

@@ -651,7 +651,7 @@ declare namespace KIKAKU {
         timeRemap(): KOneDProperty;
         mask(): KMaskParade;
         effect(): KEffectParade;
-        layerStyle(): KPropertyGroup<_LayerStyles>;
+        layerStyle(): KLayerStyles;
         geometryOption(): KPropertyGroup<_GeometryOptionsGroup>;
         materialOption(): KMaterialOptions;
         audio(): KPropertyGroup<_AudioGroup>;
@@ -888,7 +888,146 @@ declare namespace KIKAKU {
         addPropertyAsPropertyGroup(name: string): KEffect;
     }
     class KEffect extends KPropertyGroup<PropertyGroup> {
-        property(index_or_name: number | string): any;
+        property(index_or_name: number | string): KProperty<PropertyValue>;
+    }
+    class KLayerStyles extends KPropertyGroup<PropertyGroup> {
+        private _layer;
+        constructor(prop: PropertyGroup, parent?: KPropertyGroup<PropertyGroup>);
+        blendingOptions(): KLayerStylesBlendingOptions;
+        dropShadow(): KLayerStylesDropShadow;
+        innerShadow(): KLayerStylesInnerShadow;
+        outerGlow(): KLayerStylesOuterGlow;
+        innerGlow(): KLayerStylesInnerGlow;
+        bevelAndEmboss(): KLayerStylesBevelAndEmboss;
+        satin(): KLayerStylesSatin;
+        colorOverlay(): KLayerStylesColorOverlay;
+        gradientOverlay(): KLayerStylesGradientOverlay;
+        stroke(): KLayerStylesStroke;
+        addDropShadow(): KLayerStylesDropShadow;
+        addInnerShadow(): KLayerStylesInnerShadow;
+        addOuterGlow(): KLayerStylesOuterGlow;
+        addInnerGlow(): KLayerStylesInnerGlow;
+        addBevelAndEmboss(): KLayerStylesBevelAndEmboss;
+        addSatin(): KLayerStylesSatin;
+        addColorOverlay(): KLayerStylesColorOverlay;
+        addGradientOverlay(): KLayerStylesGradientOverlay;
+        addStroke(): KLayerStylesStroke;
+        private doCommand(command_id);
+    }
+    class KLayerStylesBlendingOptions extends KPropertyGroup<PropertyGroup> {
+        globalLightAngle(): KOneDProperty;
+        globalLightAltitude(): KOneDProperty;
+        advancedBlending(): KLayerStylesAdvancedBlending;
+    }
+    class KLayerStylesAdvancedBlending extends KPropertyGroup<PropertyGroup> {
+        fillOpacity(): KOneDProperty;
+        red(): KOneDProperty;
+        green(): KOneDProperty;
+        blue(): KOneDProperty;
+        blendInteriorStylesAsGroup(): KOneDProperty;
+        useBlendRangesFromSource(): KOneDProperty;
+    }
+    class KLayerStylesDropShadow extends KPropertyGroup<PropertyGroup> {
+        blendMode(): KOneDProperty;
+        color(): KColorProperty;
+        opacity(): KOneDProperty;
+        useGlobalLight(): KOneDProperty;
+        angle(): KOneDProperty;
+        distance(): KOneDProperty;
+        spread(): KOneDProperty;
+        size(): KOneDProperty;
+        noise(): KOneDProperty;
+        layerKnocksOutDropShadow(): KOneDProperty;
+    }
+    class KLayerStylesInnerShadow extends KPropertyGroup<PropertyGroup> {
+        blendMode(): KOneDProperty;
+        color(): KColorProperty;
+        opacity(): KOneDProperty;
+        useGlobalLight(): KOneDProperty;
+        angle(): KOneDProperty;
+        distance(): KOneDProperty;
+        choke(): KOneDProperty;
+        size(): KOneDProperty;
+        noise(): KOneDProperty;
+    }
+    class KLayerStylesOuterGlow extends KPropertyGroup<PropertyGroup> {
+        blendMode(): KOneDProperty;
+        opacity(): KOneDProperty;
+        noise(): KOneDProperty;
+        colorType(): KOneDProperty;
+        color(): KColorProperty;
+        colors(): KCustomValueProperty;
+        gradientSmoothness(): KOneDProperty;
+        technique(): KOneDProperty;
+        spread(): KOneDProperty;
+        size(): KOneDProperty;
+        range(): KOneDProperty;
+        jitter(): KOneDProperty;
+    }
+    class KLayerStylesInnerGlow extends KPropertyGroup<PropertyGroup> {
+        blendMode(): KOneDProperty;
+        opacity(): KOneDProperty;
+        noise(): KOneDProperty;
+        colorType(): KOneDProperty;
+        color(): KColorProperty;
+        colors(): KCustomValueProperty;
+        gradientSmoothness(): KOneDProperty;
+        technique(): KOneDProperty;
+        source(): KOneDProperty;
+        choke(): KOneDProperty;
+        size(): KOneDProperty;
+        range(): KOneDProperty;
+        jitter(): KOneDProperty;
+    }
+    class KLayerStylesBevelAndEmboss extends KPropertyGroup<PropertyGroup> {
+        style(): KOneDProperty;
+        technique(): KOneDProperty;
+        depth(): KOneDProperty;
+        direction(): KOneDProperty;
+        size(): KOneDProperty;
+        soften(): KOneDProperty;
+        useGlobalLight(): KOneDProperty;
+        angle(): KOneDProperty;
+        altitude(): KOneDProperty;
+        highlightMode(): KOneDProperty;
+        highlightColor(): KColorProperty;
+        highlightOpacity(): KOneDProperty;
+        shadowMode(): KOneDProperty;
+        shadowColor(): KColorProperty;
+        shadowOpacity(): KOneDProperty;
+    }
+    class KLayerStylesSatin extends KPropertyGroup<PropertyGroup> {
+        blendMode(): KOneDProperty;
+        color(): KColorProperty;
+        opacity(): KOneDProperty;
+        angle(): KOneDProperty;
+        distance(): KOneDProperty;
+        size(): KOneDProperty;
+        invert(): KOneDProperty;
+    }
+    class KLayerStylesColorOverlay extends KPropertyGroup<PropertyGroup> {
+        blendMode(): KOneDProperty;
+        color(): KColorProperty;
+        opacity(): KOneDProperty;
+    }
+    class KLayerStylesGradientOverlay extends KPropertyGroup<PropertyGroup> {
+        blendMode(): KOneDProperty;
+        opacity(): KOneDProperty;
+        colors(): KCustomValueProperty;
+        gradientSmoothness(): KOneDProperty;
+        angle(): KOneDProperty;
+        style(): KOneDProperty;
+        reverse(): KOneDProperty;
+        alignWithLayer(): KOneDProperty;
+        scale(): KOneDProperty;
+        offset(): KOneDProperty;
+    }
+    class KLayerStylesStroke extends KPropertyGroup<PropertyGroup> {
+        blendMode(): KOneDProperty;
+        color(): KColorProperty;
+        size(): KOneDProperty;
+        opacity(): KOneDProperty;
+        position(): KOneDProperty;
     }
     class KTextProperties extends KPropertyGroup<PropertyGroup> {
         sourceText(): KTextDocumentProperty;
