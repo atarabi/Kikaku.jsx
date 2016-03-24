@@ -3,6 +3,7 @@
 		"target": "es3",
 		"noLib": true,
     "declaration": true,
+    "experimentalDecorators": true,
     "outFile": "dest/Kikaku.jsx"
 	},
   "files": [

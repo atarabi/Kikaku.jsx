@@ -8,3 +8,4 @@
 /// <reference path="KikakuSettingManager.ts" />
 /// <reference path="KikakuUIBuilder.ts" />
 /// <reference path="KikakuUnit.ts" />
+/// <reference path="KikakuDecorator.ts" />
