@@ -94,6 +94,14 @@ namespace KIKAKU {
     item(index: number) {
       return new KItem(this._item.item(index));
     }
+    //custom methods
+    forEach(fn: (item: Item, index: number) => void) {
+      const item = this._item;
+      const item_num = item.numItems;
+      for (let i = 1; i <= item_num; ++i) {
+        fn(item.item(i), i);
+      }
+    }
   }
 
   export class KAVItem<T extends AVItem> extends KItem<T> {
@@ -275,6 +283,14 @@ namespace KIKAKU {
     }
     openInViewer() {
       return this._item.openInViewer();
+    }
+    //custom methods
+    forEach(fn: (layer: Layer, index: number) => void) {
+      const item = this._item;
+      const layer_num = item.numLayers;
+      for (let i = 1; i <= layer_num; ++i) {
+        fn(item.layer(i), i);
+      }
     }
   }
 
