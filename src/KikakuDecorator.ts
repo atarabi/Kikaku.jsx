@@ -12,15 +12,16 @@ namespace KIKAKU.Decorator {
   }
 
 
-  export function logger(doLog: boolean = true) {
+  export function debug(shouldDebug: boolean = true) {
     return function(proto: any, name: string) {
-      if (doLog) {
+      if (shouldDebug) {
         const fn: Function = proto[name];
         proto[name] = function(...args) {
-          $.writeln(`${name} starts`);
+          $.writeln(`${name} in: ${args.join()}`);
           $.hiresTimer;
           const {result, err} = wrap(fn, this, ...args);
-          $.writeln(`${name} ends: ${$.hiresTimer / 1000}ms`)
+          $.writeln(`${name} out: ${result}`);
+          $.writeln(`Elapsed Time: ${$.hiresTimer / 1000}ms`)
           if (err) {
             throw err;
           }
