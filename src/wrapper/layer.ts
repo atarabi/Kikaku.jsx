@@ -9,10 +9,10 @@ namespace KIKAKU {
       return new KLayer(this._layers[index]);
     }
     //utility
-    forEach(fn: (layer: Layer, index: number) => void) {
+    forEach(fn: (layer: KLayer<Layer>, index: number) => void) {
       const layers = this._layers;
       for (let i = 1, l = layers.length; i <= l; i++) {
-        fn(layers[i], i);
+        fn(new KLayer(layers[i]), i);
       }
     }
     //methods

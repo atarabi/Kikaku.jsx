@@ -6,10 +6,10 @@ namespace KIKAKU {
       return this._items.length;
     }
     //utility
-    forEach(fn: (item: Item, index: number) => void) {
+    forEach(fn: (item: KItem<Item>, index: number) => void) {
       const items = this._items;
       for (let i = 1, l = items.length; i <= l; i++) {
-        fn(items[i], i);
+        fn(new KItem(items[i]), i);
       }
     }
     //methods
@@ -95,11 +95,11 @@ namespace KIKAKU {
       return new KItem(this._item.item(index));
     }
     //custom methods
-    forEach(fn: (item: Item, index: number) => void) {
+    forEach(fn: (item: KItem<Item>, index: number) => void) {
       const item = this._item;
       const item_num = item.numItems;
       for (let i = 1; i <= item_num; ++i) {
-        fn(item.item(i), i);
+        fn(new KItem(item.item(i)), i);
       }
     }
   }
@@ -285,11 +285,11 @@ namespace KIKAKU {
       return this._item.openInViewer();
     }
     //custom methods
-    forEach(fn: (layer: Layer, index: number) => void) {
+    forEach(fn: (layer: KLayer<Layer>, index: number) => void) {
       const item = this._item;
       const layer_num = item.numLayers;
       for (let i = 1; i <= layer_num; ++i) {
-        fn(item.layer(i), i);
+        fn(new KLayer(item.layer(i)), i);
       }
     }
   }

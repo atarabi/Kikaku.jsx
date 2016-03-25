@@ -154,11 +154,11 @@ namespace KIKAKU {
       return new KPropertyBase(this._prop.addProperty(name)).asPropertyGroup();
     }
     //custom methods
-    forEach(fn: (prop: PropertyBase, index: number) => void) {
+    forEach(fn: (prop: KPropertyBase<PropertyBase>, index: number) => void) {
       const prop = this._prop;
       const property_num = prop.numProperties;
       for (let i = 1; i <= property_num; ++i) {
-        fn(prop.property(i), i);
+        fn(new KPropertyBase(prop.property(i)), i);
       }
     }
   }
