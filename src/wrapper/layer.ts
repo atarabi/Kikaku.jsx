@@ -261,6 +261,14 @@ namespace KIKAKU {
 
       }
     }
+    //custom methods
+    forEach(fn: (prop: KPropertyBase<PropertyBase>, index: number) => void) {
+      const layer = this._layer;
+      const property_num = layer.numProperties;
+      for (let i = 1; i <= property_num; ++i) {
+        fn(new KPropertyBase(layer.property(i)), i);
+      }
+    }
   }
 
   export class KAVLayer<T extends AVLayer> extends KLayer<T> {
