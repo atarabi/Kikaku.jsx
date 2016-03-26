@@ -3,6 +3,9 @@ namespace KIKAKU {
   export class KPropertyBase<T extends PropertyBase> {
     //static
     static isValid(prop) {
+      if (prop instanceof KPropertyBase) {
+        prop = prop.get();
+      }
       return isValid(prop) && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup || prop instanceof Property);
     }
     //prototype
@@ -14,8 +17,7 @@ namespace KIKAKU {
       return this._prop;
     }
     isValid() {
-      const prop = this._prop;
-      return KPropertyBase.isValid(prop);
+      return KPropertyBase.isValid(this);
     }
     validate() {
       if (!this.isValid()) {
@@ -122,12 +124,14 @@ namespace KIKAKU {
   export class KPropertyGroup<T extends PropertyGroup> extends KPropertyBase<T> {
     //static
     static isValid(prop) {
+      if (prop instanceof KPropertyBase) {
+        prop = prop.get();
+      }
       return isValid(prop) && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup);
     }
     //prototype
     isValid() {
-      const prop = this._prop;
-      return KPropertyGroup.isValid(prop);
+      return KPropertyGroup.isValid(this);
     }
     //attributes
     numProperties() {
@@ -176,12 +180,14 @@ namespace KIKAKU {
   export class KMaskPropertyGroup extends KPropertyGroup<MaskPropertyGroup> {
     //static
     static isValid(prop) {
+      if (prop instanceof KPropertyBase) {
+        prop = prop.get();
+      }
       return isValid(prop) && prop instanceof MaskPropertyGroup;
     }
     //prototype
     isValid() {
-      const prop = this._prop;
-      return KMaskPropertyGroup.isValid(prop);
+      return KMaskPropertyGroup.isValid(this);
     }
     //properties
     maskPath() {
@@ -241,12 +247,14 @@ namespace KIKAKU {
   export class KProperty<T extends PropertyValue> extends KPropertyBase<Property> {
     //static
     static isValid(prop) {
+      if (prop instanceof KPropertyBase) {
+        prop = prop.get();
+      }
       return isValid(prop) && prop instanceof Property;
     }
     //prototype
     isValid() {
-      const prop = this._prop;
-      return KProperty.isValid(prop);
+      return KProperty.isValid(this);
     }
     //cast
     asNoValue() {

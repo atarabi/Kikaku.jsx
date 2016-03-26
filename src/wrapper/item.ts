@@ -27,6 +27,9 @@ namespace KIKAKU {
   export class KItem<T extends Item> {
     //static
     static isValid(item) {
+      if (item instanceof KItem) {
+        item = item.get();
+      }
       return isValid(item) && (item instanceof FolderItem || item instanceof FootageItem || item instanceof CompItem);
     }
     //prototype
@@ -35,8 +38,7 @@ namespace KIKAKU {
       return this._item;
     }
     isValid() {
-      let item = this._item;
-      return KItem.isValid(item);
+      return KItem.isValid(this);
     }
     //cast
     asFolder() {
@@ -86,12 +88,14 @@ namespace KIKAKU {
   export class KFolderItem extends KItem<FolderItem> {
     //static
     static isValid(item) {
+      if (item instanceof KItem) {
+        item = item.get();
+      }
       return isValid(item) && item instanceof FolderItem;
     }
     //prototype
     isValid() {
-      let item = this._item;
-      return KFolderItem.isValid(item);
+      return KItem.isValid(this);
     }
     //attributes
     items() {
@@ -117,12 +121,14 @@ namespace KIKAKU {
   export class KAVItem<T extends AVItem> extends KItem<T> {
     //static
     static isValid(item) {
+      if (item instanceof KItem) {
+        item = item.get();
+      }
       return isValid(item) && (item instanceof FootageItem || item instanceof CompItem);
     }
     //prototype
     isValid() {
-      let item = this._item;
-      return KAVItem.isValid(item);
+      return KAVItem.isValid(this);
     }
     //attributes
     width(width?: number) {
@@ -200,12 +206,14 @@ namespace KIKAKU {
   export class KCompItem extends KAVItem<CompItem> {
     //static
     static isValid(item) {
+      if (item instanceof KItem) {
+        item = item.get();
+      }
       return isValid(item) && item instanceof CompItem;
     }
     //prototype
     isValid() {
-      let item = this._item;
-      return KCompItem.isValid(item);
+      return KCompItem.isValid(this);
     }
     //attributes
     dropFrame(dropFrame?: boolean) {
@@ -317,12 +325,14 @@ namespace KIKAKU {
   export class KFootageItem extends KAVItem<FootageItem> {
     //static
     static isValid(item) {
+      if (item instanceof KItem) {
+        item = item.get();
+      }
       return isValid(item) && item instanceof FootageItem;
     }
     //prototype
     isValid() {
-      let item = this._item;
-      return KFootageItem.isValid(item);
+      return KFootageItem.isValid(this);
     }
     //attributes
     file() {

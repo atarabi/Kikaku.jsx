@@ -69,6 +69,9 @@ namespace KIKAKU {
   export class KLayer<T extends Layer> {
     //static
     static isValid(layer) {
+      if (layer instanceof KLayer) {
+        layer = layer.get();
+      }
       return isValid(layer) && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
     }
     //prototype
@@ -77,8 +80,7 @@ namespace KIKAKU {
       return this._layer;
     }
     isValid() {
-      let layer = this._layer;
-      return KLayer.isValid(layer);
+      return KLayer.isValid(this);
     }
     //cast
     asAV() {
@@ -279,12 +281,14 @@ namespace KIKAKU {
   export class KAVLayer<T extends AVLayer> extends KLayer<T> {
     //static
     static isValid(layer) {
+      if (layer instanceof KLayer) {
+        layer = layer.get();
+      }
       return isValid(layer) && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
     }
     //prototype
     isValid() {
-      let layer = this._layer;
-      return KAVItem.isValid(layer);
+      return KAVItem.isValid(this);
     }
     //properties
     timeRemap() {
@@ -439,12 +443,14 @@ namespace KIKAKU {
   export class KShapeLayer extends KAVLayer<ShapeLayer> {
     //static
     static isValid(layer) {
+      if (layer instanceof KLayer) {
+        layer = layer.get();
+      }
       return isValid(layer) && layer instanceof ShapeLayer;
     }
     //prototype
     isValid() {
-      let layer = this._layer;
-      return KShapeLayer.isValid(layer);
+      return KShapeLayer.isValid(this);
     }
     //properties
     contents() {
@@ -455,12 +461,14 @@ namespace KIKAKU {
   export class KTextLayer extends KAVLayer<TextLayer> {
     //static
     static isValid(layer) {
+      if (layer instanceof KLayer) {
+        layer = layer.get();
+      }
       return isValid(layer) && layer instanceof TextLayer;
     }
     //prototype
     isValid() {
-      let layer = this._layer;
-      return isValid(layer);
+      return isValid(this);
     }
     //properties
     text() {
@@ -474,12 +482,14 @@ namespace KIKAKU {
   export class KCameraLayer extends KLayer<CameraLayer> {
     //static
     static isValid(layer) {
+      if (layer instanceof KLayer) {
+        layer = layer.get();
+      }
       return isValid(layer) && layer instanceof CameraLayer;
     }
     //prototype
     isValid() {
-      let layer = this._layer;
-      return KCameraLayer.isValid(layer);
+      return KCameraLayer.isValid(this);
     }
     //properties
     cameraOption() {
@@ -490,12 +500,14 @@ namespace KIKAKU {
   export class KLightLayer extends KLayer<LightLayer> {
     //static
     static isValid(layer) {
+      if (layer instanceof KLayer) {
+        layer = layer.get();
+      }
       return isValid(layer) && layer instanceof LightLayer;
     }
     //prototype
     isValid() {
-      let layer = this._layer;
-      return KLightLayer.isValid(layer);
+      return KLightLayer.isValid(this);
     }
     //properties
     lightOption() {
