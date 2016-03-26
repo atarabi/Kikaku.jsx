@@ -33,11 +33,29 @@ namespace KIKAKU {
     asPropertyGroup() {
       return new KPropertyGroup<PropertyGroup>(<any>this._prop, this._parent);
     }
+    ifPropertyGroup(fn: (property: KPropertyGroup<PropertyGroup>) => any) {
+      if (KPropertyGroup.isValid(this)) {
+        fn(this.asPropertyGroup());
+      }
+      return this;
+    }
     asMaskPropertyGroup() {
       return new KMaskPropertyGroup(<MaskPropertyGroup>(<any>this._prop), this._parent);
     }
+    ifMaskPropertyGroup(fn: (property: KMaskPropertyGroup) => any) {
+      if (KMaskPropertyGroup.isValid(this)) {
+        fn(this.asMaskPropertyGroup());
+      }
+      return this;
+    }
     asProperty() {
       return new KProperty(<any>this._prop, this._parent);
+    }
+    ifProperty(fn: (property: KProperty<PropertyValue>) => any) {
+      if (KProperty.isValid(this)) {
+        fn(this.asProperty());
+      }
+      return this;
     }
     //attributes
     name(name?: string) {

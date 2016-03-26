@@ -86,17 +86,47 @@ namespace KIKAKU {
     asAV() {
       return new KAVLayer<AVLayer>(<any>this._layer);
     }
+    ifAV(fn: (layer: KAVLayer<AVLayer>) => any) {
+      if (KAVLayer.isValid(this)) {
+        fn(this.asAV());
+      }
+      return this;
+    }
     asShape() {
       return new KShapeLayer(<any>this._layer);
+    }
+    ifShape(fn: (layer: KShapeLayer) => any) {
+      if (KShapeLayer.isValid(this)) {
+        fn(this.asShape());
+      }
+      return this;
     }
     asText() {
       return new KTextLayer(<any>this._layer);
     }
+    ifText(fn: (layer: KTextLayer) => any) {
+      if (KTextLayer.isValid(this)) {
+        fn(this.asText());
+      }
+      return this;
+    }
     asLight() {
       return new KLightLayer(<any>this._layer);
     }
+    ifLight(fn: (layer: KLightLayer) => any) {
+      if (KLightLayer.isValid(this)) {
+        fn(this.asLight());
+      }
+      return this;
+    }
     asCamera() {
       return new KCameraLayer(<any>this._layer);
+    }
+    ifCamera(fn: (layer: KCameraLayer) => any) {
+      if (KCameraLayer.isValid(this)) {
+        fn(this.asCamera());
+      }
+      return this;
     }
     //properties
     marker() {

@@ -44,14 +44,38 @@ namespace KIKAKU {
     asFolder() {
       return new KFolderItem(<any>this._item);
     }
+    ifFolder(fn: (item: KFolderItem) => any) {
+      if (KFolderItem.isValid(this)) {
+        fn(this.asFolder());
+      }
+      return this;
+    }
     asAV() {
       return new KAVItem<AVItem>(<any>this._item);
+    }
+    ifAV(fn: (item: KAVItem<AVItem>) => any) {
+      if (KAVItem.isValid(this)) {
+        fn(this.asAV());
+      }
+      return this;
     }
     asComp() {
       return new KCompItem(<any>this._item);
     }
+    ifComp(fn: (item: KCompItem) => any) {
+      if (KCompItem.isValid(this)) {
+        fn(this.asComp());
+      }
+      return this;
+    }
     asFootage() {
       return new KFootageItem(<any>this._item);
+    }
+    ifFootage(fn: (item: KFootageItem) => any) {
+      if (KFootageItem.isValid(this)) {
+        fn(this.asFootage());
+      }
+      return this;
     }
     //attributes
     name(name?: string) {
