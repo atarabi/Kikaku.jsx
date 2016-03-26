@@ -15,7 +15,7 @@
 			"isWatching": true,
 			"suppressTaskName": true,
 			"args": [
-				"-w",
+				"-w"
 			],
 			"problemMatcher": "$tsc"
 		}

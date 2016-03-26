@@ -6,8 +6,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
-    KIKAKU.MINOR_VERSION = 7;
-    KIKAKU.PATCH_VERSION = 1;
+    KIKAKU.MINOR_VERSION = 8;
+    KIKAKU.PATCH_VERSION = 0;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -2633,7 +2633,7 @@ var KIKAKU;
         KItemCollection.prototype.forEach = function (fn) {
             var items = this._items;
             for (var i = 1, l = items.length; i <= l; i++) {
-                fn(items[i], i);
+                fn(new KItem(items[i]), i);
             }
         };
         //methods
@@ -2650,28 +2650,59 @@ var KIKAKU;
     }());
     KIKAKU.KItemCollection = KItemCollection;
     var KItem = (function () {
+        //prototype
         function KItem(_item) {
             this._item = _item;
         }
+        //static
+        KItem.isValid = function (item) {
+            if (item instanceof KItem) {
+                item = item.get();
+            }
+            return isValid(item) && (item instanceof FolderItem || item instanceof FootageItem || item instanceof CompItem);
+        };
         KItem.prototype.get = function () {
             return this._item;
         };
         KItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && (item instanceof FolderItem || item instanceof FootageItem || item instanceof CompItem) && isValid(item);
+            return KItem.isValid(this);
         };
         //cast
         KItem.prototype.asFolder = function () {
             return new KFolderItem(this._item);
         };
+        KItem.prototype.ifFolder = function (fn) {
+            if (KFolderItem.isValid(this)) {
+                fn(this.asFolder());
+            }
+            return this;
+        };
         KItem.prototype.asAV = function () {
             return new KAVItem(this._item);
+        };
+        KItem.prototype.ifAV = function (fn) {
+            if (KAVItem.isValid(this)) {
+                fn(this.asAV());
+            }
+            return this;
         };
         KItem.prototype.asComp = function () {
             return new KCompItem(this._item);
         };
+        KItem.prototype.ifComp = function (fn) {
+            if (KCompItem.isValid(this)) {
+                fn(this.asComp());
+            }
+            return this;
+        };
         KItem.prototype.asFootage = function () {
             return new KFootageItem(this._item);
+        };
+        KItem.prototype.ifFootage = function (fn) {
+            if (KFootageItem.isValid(this)) {
+                fn(this.asFootage());
+            }
+            return this;
         };
         //attributes
         KItem.prototype.name = function (name) {
@@ -2715,9 +2746,16 @@ var KIKAKU;
         function KFolderItem() {
             _super.apply(this, arguments);
         }
+        //static
+        KFolderItem.isValid = function (item) {
+            if (item instanceof KItem) {
+                item = item.get();
+            }
+            return isValid(item) && item instanceof FolderItem;
+        };
+        //prototype
         KFolderItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && item instanceof FolderItem && isValid(item);
+            return KItem.isValid(this);
         };
         //attributes
         KFolderItem.prototype.items = function () {
@@ -2730,6 +2768,14 @@ var KIKAKU;
         KFolderItem.prototype.item = function (index) {
             return new KItem(this._item.item(index));
         };
+        //custom methods
+        KFolderItem.prototype.forEach = function (fn) {
+            var item = this._item;
+            var item_num = item.numItems;
+            for (var i = 1; i <= item_num; ++i) {
+                fn(new KItem(item.item(i)), i);
+            }
+        };
         return KFolderItem;
     }(KItem));
     KIKAKU.KFolderItem = KFolderItem;
@@ -2738,9 +2784,16 @@ var KIKAKU;
         function KAVItem() {
             _super.apply(this, arguments);
         }
+        //static
+        KAVItem.isValid = function (item) {
+            if (item instanceof KItem) {
+                item = item.get();
+            }
+            return isValid(item) && (item instanceof FootageItem || item instanceof CompItem);
+        };
+        //prototype
         KAVItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && (item instanceof FootageItem || item instanceof CompItem) && isValid(item);
+            return KAVItem.isValid(this);
         };
         //attributes
         KAVItem.prototype.width = function (width) {
@@ -2831,9 +2884,16 @@ var KIKAKU;
         function KCompItem() {
             _super.apply(this, arguments);
         }
+        //static
+        KCompItem.isValid = function (item) {
+            if (item instanceof KItem) {
+                item = item.get();
+            }
+            return isValid(item) && item instanceof CompItem;
+        };
+        //prototype
         KCompItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && item instanceof CompItem && isValid(item);
+            return KCompItem.isValid(this);
         };
         //attributes
         KCompItem.prototype.dropFrame = function (dropFrame) {
@@ -2949,6 +3009,14 @@ var KIKAKU;
         KCompItem.prototype.openInViewer = function () {
             return this._item.openInViewer();
         };
+        //custom methods
+        KCompItem.prototype.forEach = function (fn) {
+            var item = this._item;
+            var layer_num = item.numLayers;
+            for (var i = 1; i <= layer_num; ++i) {
+                fn(new KIKAKU.KLayer(item.layer(i)), i);
+            }
+        };
         return KCompItem;
     }(KAVItem));
     KIKAKU.KCompItem = KCompItem;
@@ -2957,9 +3025,16 @@ var KIKAKU;
         function KFootageItem() {
             _super.apply(this, arguments);
         }
+        //static
+        KFootageItem.isValid = function (item) {
+            if (item instanceof KItem) {
+                item = item.get();
+            }
+            return isValid(item) && item instanceof FootageItem;
+        };
+        //prototype
         KFootageItem.prototype.isValid = function () {
-            var item = this._item;
-            return item && item instanceof FootageItem && isValid(item);
+            return KFootageItem.isValid(this);
         };
         //attributes
         KFootageItem.prototype.file = function () {
@@ -3014,7 +3089,7 @@ var KIKAKU;
         KLayerCollection.prototype.forEach = function (fn) {
             var layers = this._layers;
             for (var i = 1, l = layers.length; i <= l; i++) {
-                fn(layers[i], i);
+                fn(new KLayer(layers[i]), i);
             }
         };
         //methods
@@ -3072,31 +3147,68 @@ var KIKAKU;
     }());
     KIKAKU.KLayerCollection = KLayerCollection;
     var KLayer = (function () {
+        //prototype
         function KLayer(_layer) {
             this._layer = _layer;
         }
+        //static
+        KLayer.isValid = function (layer) {
+            if (layer instanceof KLayer) {
+                layer = layer.get();
+            }
+            return isValid(layer) && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
+        };
         KLayer.prototype.get = function () {
             return this._layer;
         };
         KLayer.prototype.isValid = function () {
-            var layer = this._layer;
-            return isValid(layer) && (layer instanceof CameraLayer || layer instanceof LightLayer || layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
+            return KLayer.isValid(this);
         };
         //cast
         KLayer.prototype.asAV = function () {
             return new KAVLayer(this._layer);
         };
+        KLayer.prototype.ifAV = function (fn) {
+            if (KAVLayer.isValid(this)) {
+                fn(this.asAV());
+            }
+            return this;
+        };
         KLayer.prototype.asShape = function () {
             return new KShapeLayer(this._layer);
+        };
+        KLayer.prototype.ifShape = function (fn) {
+            if (KShapeLayer.isValid(this)) {
+                fn(this.asShape());
+            }
+            return this;
         };
         KLayer.prototype.asText = function () {
             return new KTextLayer(this._layer);
         };
+        KLayer.prototype.ifText = function (fn) {
+            if (KTextLayer.isValid(this)) {
+                fn(this.asText());
+            }
+            return this;
+        };
         KLayer.prototype.asLight = function () {
             return new KLightLayer(this._layer);
         };
+        KLayer.prototype.ifLight = function (fn) {
+            if (KLightLayer.isValid(this)) {
+                fn(this.asLight());
+            }
+            return this;
+        };
         KLayer.prototype.asCamera = function () {
             return new KCameraLayer(this._layer);
+        };
+        KLayer.prototype.ifCamera = function (fn) {
+            if (KCameraLayer.isValid(this)) {
+                fn(this.asCamera());
+            }
+            return this;
         };
         //properties
         KLayer.prototype.marker = function () {
@@ -3282,6 +3394,14 @@ var KIKAKU;
                 this._layer.applyPreset(presetName);
             }
         };
+        //custom methods
+        KLayer.prototype.forEach = function (fn) {
+            var layer = this._layer;
+            var property_num = layer.numProperties;
+            for (var i = 1; i <= property_num; ++i) {
+                fn(new KIKAKU.KPropertyBase(layer.property(i)), i);
+            }
+        };
         return KLayer;
     }());
     KIKAKU.KLayer = KLayer;
@@ -3290,9 +3410,16 @@ var KIKAKU;
         function KAVLayer() {
             _super.apply(this, arguments);
         }
-        KAVLayer.prototype.isValid = function () {
-            var layer = this._layer;
+        //static
+        KAVLayer.isValid = function (layer) {
+            if (layer instanceof KLayer) {
+                layer = layer.get();
+            }
             return isValid(layer) && (layer instanceof AVLayer || layer instanceof ShapeLayer || layer instanceof TextLayer);
+        };
+        //prototype
+        KAVLayer.prototype.isValid = function () {
+            return KIKAKU.KAVItem.isValid(this);
         };
         //properties
         KAVLayer.prototype.timeRemap = function () {
@@ -3468,9 +3595,16 @@ var KIKAKU;
         function KShapeLayer() {
             _super.apply(this, arguments);
         }
-        KShapeLayer.prototype.isValid = function () {
-            var layer = this._layer;
+        //static
+        KShapeLayer.isValid = function (layer) {
+            if (layer instanceof KLayer) {
+                layer = layer.get();
+            }
             return isValid(layer) && layer instanceof ShapeLayer;
+        };
+        //prototype
+        KShapeLayer.prototype.isValid = function () {
+            return KShapeLayer.isValid(this);
         };
         //properties
         KShapeLayer.prototype.contents = function () {
@@ -3484,9 +3618,16 @@ var KIKAKU;
         function KTextLayer() {
             _super.apply(this, arguments);
         }
-        KTextLayer.prototype.isValid = function () {
-            var layer = this._layer;
+        //static
+        KTextLayer.isValid = function (layer) {
+            if (layer instanceof KLayer) {
+                layer = layer.get();
+            }
             return isValid(layer) && layer instanceof TextLayer;
+        };
+        //prototype
+        KTextLayer.prototype.isValid = function () {
+            return isValid(this);
         };
         //properties
         KTextLayer.prototype.text = function () {
@@ -3503,9 +3644,16 @@ var KIKAKU;
         function KCameraLayer() {
             _super.apply(this, arguments);
         }
-        KCameraLayer.prototype.isValid = function () {
-            var layer = this._layer;
+        //static
+        KCameraLayer.isValid = function (layer) {
+            if (layer instanceof KLayer) {
+                layer = layer.get();
+            }
             return isValid(layer) && layer instanceof CameraLayer;
+        };
+        //prototype
+        KCameraLayer.prototype.isValid = function () {
+            return KCameraLayer.isValid(this);
         };
         //properties
         KCameraLayer.prototype.cameraOption = function () {
@@ -3519,9 +3667,16 @@ var KIKAKU;
         function KLightLayer() {
             _super.apply(this, arguments);
         }
-        KLightLayer.prototype.isValid = function () {
-            var layer = this._layer;
+        //static
+        KLightLayer.isValid = function (layer) {
+            if (layer instanceof KLayer) {
+                layer = layer.get();
+            }
             return isValid(layer) && layer instanceof LightLayer;
+        };
+        //prototype
+        KLightLayer.prototype.isValid = function () {
+            return KLightLayer.isValid(this);
         };
         //properties
         KLightLayer.prototype.lightOption = function () {
@@ -3540,12 +3695,18 @@ var KIKAKU;
             this._parent = _parent;
             this._name = this._prop.name;
         }
+        //static
+        KPropertyBase.isValid = function (prop) {
+            if (prop instanceof KPropertyBase) {
+                prop = prop.get();
+            }
+            return isValid(prop) && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup || prop instanceof Property);
+        };
         KPropertyBase.prototype.get = function () {
             return this._prop;
         };
         KPropertyBase.prototype.isValid = function () {
-            var prop = this._prop;
-            return isValid(prop) && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup || prop instanceof Property);
+            return KPropertyBase.isValid(this);
         };
         KPropertyBase.prototype.validate = function () {
             if (!this.isValid()) {
@@ -3561,11 +3722,29 @@ var KIKAKU;
         KPropertyBase.prototype.asPropertyGroup = function () {
             return new KPropertyGroup(this._prop, this._parent);
         };
+        KPropertyBase.prototype.ifPropertyGroup = function (fn) {
+            if (KPropertyGroup.isValid(this)) {
+                fn(this.asPropertyGroup());
+            }
+            return this;
+        };
         KPropertyBase.prototype.asMaskPropertyGroup = function () {
             return new KMaskPropertyGroup(this._prop, this._parent);
         };
+        KPropertyBase.prototype.ifMaskPropertyGroup = function (fn) {
+            if (KMaskPropertyGroup.isValid(this)) {
+                fn(this.asMaskPropertyGroup());
+            }
+            return this;
+        };
         KPropertyBase.prototype.asProperty = function () {
             return new KProperty(this._prop, this._parent);
+        };
+        KPropertyBase.prototype.ifProperty = function (fn) {
+            if (KProperty.isValid(this)) {
+                fn(this.asProperty());
+            }
+            return this;
         };
         //attributes
         KPropertyBase.prototype.name = function (name) {
@@ -3659,9 +3838,16 @@ var KIKAKU;
         function KPropertyGroup() {
             _super.apply(this, arguments);
         }
-        KPropertyGroup.prototype.isValid = function () {
-            var prop = this._prop;
+        //static
+        KPropertyGroup.isValid = function (prop) {
+            if (prop instanceof KPropertyBase) {
+                prop = prop.get();
+            }
             return isValid(prop) && (prop instanceof PropertyGroup || prop instanceof MaskPropertyGroup);
+        };
+        //prototype
+        KPropertyGroup.prototype.isValid = function () {
+            return KPropertyGroup.isValid(this);
         };
         //attributes
         KPropertyGroup.prototype.numProperties = function () {
@@ -3697,6 +3883,14 @@ var KIKAKU;
             this.validate();
             return new KPropertyBase(this._prop.addProperty(name)).asPropertyGroup();
         };
+        //custom methods
+        KPropertyGroup.prototype.forEach = function (fn) {
+            var prop = this._prop;
+            var property_num = prop.numProperties;
+            for (var i = 1; i <= property_num; ++i) {
+                fn(new KPropertyBase(prop.property(i)), i);
+            }
+        };
         return KPropertyGroup;
     }(KPropertyBase));
     KIKAKU.KPropertyGroup = KPropertyGroup;
@@ -3705,9 +3899,16 @@ var KIKAKU;
         function KMaskPropertyGroup() {
             _super.apply(this, arguments);
         }
-        KMaskPropertyGroup.prototype.isValid = function () {
-            var prop = this._prop;
+        //static
+        KMaskPropertyGroup.isValid = function (prop) {
+            if (prop instanceof KPropertyBase) {
+                prop = prop.get();
+            }
             return isValid(prop) && prop instanceof MaskPropertyGroup;
+        };
+        //prototype
+        KMaskPropertyGroup.prototype.isValid = function () {
+            return KMaskPropertyGroup.isValid(this);
         };
         //properties
         KMaskPropertyGroup.prototype.maskPath = function () {
@@ -3777,9 +3978,16 @@ var KIKAKU;
         function KProperty() {
             _super.apply(this, arguments);
         }
-        KProperty.prototype.isValid = function () {
-            var prop = this._prop;
+        //static
+        KProperty.isValid = function (prop) {
+            if (prop instanceof KPropertyBase) {
+                prop = prop.get();
+            }
             return isValid(prop) && prop instanceof Property;
+        };
+        //prototype
+        KProperty.prototype.isValid = function () {
+            return KProperty.isValid(this);
         };
         //cast
         KProperty.prototype.asNoValue = function () {
@@ -9018,6 +9226,69 @@ var KIKAKU;
         Unit.Utility = Utility;
     })(Unit = KIKAKU.Unit || (KIKAKU.Unit = {}));
 })(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    var Decorator;
+    (function (Decorator) {
+        function wrap(fn, ctx) {
+            var args = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                args[_i - 2] = arguments[_i];
+            }
+            var result, err = null;
+            try {
+                result = fn.call.apply(fn, [ctx].concat(args));
+            }
+            catch (e) {
+                err = e;
+            }
+            return { result: result, err: err };
+        }
+        function debug(shouldDebug) {
+            if (shouldDebug === void 0) { shouldDebug = true; }
+            return function (proto, name) {
+                if (shouldDebug) {
+                    var fn_1 = proto[name];
+                    proto[name] = function () {
+                        var args = [];
+                        for (var _i = 0; _i < arguments.length; _i++) {
+                            args[_i - 0] = arguments[_i];
+                        }
+                        $.writeln(name + " in: " + args.join());
+                        $.hiresTimer;
+                        var _a = wrap.apply(void 0, [fn_1, this].concat(args)), result = _a.result, err = _a.err;
+                        $.writeln(name + " out: " + result);
+                        $.writeln("Elapsed Time: " + $.hiresTimer / 1000 + "ms");
+                        if (err) {
+                            throw err;
+                        }
+                        return result;
+                    };
+                }
+            };
+        }
+        Decorator.debug = debug;
+        function undo(text) {
+            return function (proto, name) {
+                var fn = proto[name];
+                proto[name] = function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i - 0] = arguments[_i];
+                    }
+                    app.beginUndoGroup("" + text);
+                    var _a = wrap.apply(void 0, [fn, this].concat(args)), result = _a.result, err = _a.err;
+                    app.endUndoGroup();
+                    if (err) {
+                        throw err;
+                    }
+                    return result;
+                };
+            };
+        }
+        Decorator.undo = undo;
+    })(Decorator = KIKAKU.Decorator || (KIKAKU.Decorator = {}));
+})(KIKAKU || (KIKAKU = {}));
 /// <reference path="KikakuConfig.ts" />
 /// <reference path="KikakuJSON.ts" />
 /// <reference path="KikakuUtils.ts" />
@@ -9027,4 +9298,5 @@ var KIKAKU;
 /// <reference path="KikakuRequest.ts" />
 /// <reference path="KikakuSettingManager.ts" />
 /// <reference path="KikakuUIBuilder.ts" />
-/// <reference path="KikakuUnit.ts" /> 
+/// <reference path="KikakuUnit.ts" />
+/// <reference path="KikakuDecorator.ts" /> 

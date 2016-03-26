@@ -484,20 +484,25 @@ declare namespace KIKAKU {
         protected _items: ItemCollection;
         constructor(_items: ItemCollection);
         length(): number;
-        forEach(fn: (item: Item, index: number) => void): void;
+        forEach(fn: (item: KItem<Item>, index: number) => void): void;
         at(index: number): KItem<Item>;
         addComp(name: string, width: number, height: number, pixelAspect: number, duration: number, frameRate: number): KCompItem;
         addFolder(name: string): KFolderItem;
     }
     class KItem<T extends Item> {
         protected _item: T;
+        static isValid(item: any): boolean;
         constructor(_item: T);
         get(): T;
         isValid(): boolean;
         asFolder(): KFolderItem;
+        ifFolder(fn: (item: KFolderItem) => any): this;
         asAV(): KAVItem<AVItem>;
+        ifAV(fn: (item: KAVItem<AVItem>) => any): this;
         asComp(): KCompItem;
+        ifComp(fn: (item: KCompItem) => any): this;
         asFootage(): KFootageItem;
+        ifFootage(fn: (item: KFootageItem) => any): this;
         name(name?: string): string;
         comment(comment?: string): string;
         id(): number;
@@ -508,12 +513,15 @@ declare namespace KIKAKU {
         remove(): void;
     }
     class KFolderItem extends KItem<FolderItem> {
+        static isValid(item: any): boolean;
         isValid(): boolean;
         items(): KItemCollection;
         numItems(): number;
         item(index: number): KItem<Item>;
+        forEach(fn: (item: KItem<Item>, index: number) => void): void;
     }
     class KAVItem<T extends AVItem> extends KItem<T> {
+        static isValid(item: any): boolean;
         isValid(): boolean;
         width(width?: number): number;
         height(height?: number): number;
@@ -535,6 +543,7 @@ declare namespace KIKAKU {
         setProxyToNone(): void;
     }
     class KCompItem extends KAVItem<CompItem> {
+        static isValid(item: any): boolean;
         isValid(): boolean;
         dropFrame(dropFrame?: boolean): boolean;
         workAreaStart(workAreaStart?: number): number;
@@ -562,8 +571,10 @@ declare namespace KIKAKU {
         duplicate(): KCompItem;
         layer(index_or_name: number | string): KLayer<Layer>;
         openInViewer(): Viewer;
+        forEach(fn: (layer: KLayer<Layer>, index: number) => void): void;
     }
     class KFootageItem extends KAVItem<FootageItem> {
+        static isValid(item: any): boolean;
         isValid(): boolean;
         file(): KFile;
         mainSource(): KFootageSource<FootageSource>;
@@ -580,7 +591,7 @@ declare namespace KIKAKU {
         constructor(_layers: LayerCollection);
         length(): number;
         at(index: number): KLayer<Layer>;
-        forEach(fn: (layer: Layer, index: number) => void): void;
+        forEach(fn: (layer: KLayer<Layer>, index: number) => void): void;
         add<T extends AVItem>(item: AVItem | KAVItem<T>, duration?: number): KAVLayer<AVLayer>;
         addNull(duration?: number): KAVLayer<AVLayer>;
         addSolid(color: [number, number, number], name: string, width: number, height: number, pixelAspect: number, duration?: number): KAVLayer<AVLayer>;
@@ -594,14 +605,20 @@ declare namespace KIKAKU {
     }
     class KLayer<T extends Layer> {
         protected _layer: T;
+        static isValid(layer: any): boolean;
         constructor(_layer: T);
         get(): T;
         isValid(): boolean;
         asAV(): KAVLayer<AVLayer>;
+        ifAV(fn: (layer: KAVLayer<AVLayer>) => any): this;
         asShape(): KShapeLayer;
+        ifShape(fn: (layer: KShapeLayer) => any): this;
         asText(): KTextLayer;
+        ifText(fn: (layer: KTextLayer) => any): this;
         asLight(): KLightLayer;
+        ifLight(fn: (layer: KLightLayer) => any): this;
         asCamera(): KCameraLayer;
+        ifCamera(fn: (layer: KCameraLayer) => any): this;
         marker(): KMarkerProperty;
         transform(): KPropertyGroup<_TransformGroup>;
         anchorPoint(): KThreeDSpatialProperty;
@@ -645,8 +662,10 @@ declare namespace KIKAKU {
         activeAtTime(time: number): boolean;
         setParentWithJump<U extends Layer>(newParent?: Layer | KLayer<U>): void;
         applyPreset(presetName: File | KFile): void;
+        forEach(fn: (prop: KPropertyBase<PropertyBase>, index: number) => void): void;
     }
     class KAVLayer<T extends AVLayer> extends KLayer<T> {
+        static isValid(layer: any): boolean;
         isValid(): boolean;
         timeRemap(): KOneDProperty;
         mask(): KMaskParade;
@@ -697,19 +716,23 @@ declare namespace KIKAKU {
         compPointToSource(point: [number, number]): [number, number];
     }
     class KShapeLayer extends KAVLayer<ShapeLayer> {
+        static isValid(layer: any): boolean;
         isValid(): boolean;
         contents(): KRootVectors;
     }
     class KTextLayer extends KAVLayer<TextLayer> {
+        static isValid(layer: any): boolean;
         isValid(): boolean;
         text(): KTextProperties;
         sourceText(): KTextDocumentProperty;
     }
     class KCameraLayer extends KLayer<CameraLayer> {
+        static isValid(layer: any): boolean;
         isValid(): boolean;
         cameraOption(): KCameraOptions;
     }
     class KLightLayer extends KLayer<LightLayer> {
+        static isValid(layer: any): boolean;
         isValid(): boolean;
         lightOption(): KLightOptions;
     }
@@ -718,14 +741,18 @@ declare namespace KIKAKU {
     class KPropertyBase<T extends PropertyBase> {
         protected _prop: T;
         protected _parent: KPropertyGroup<PropertyGroup>;
+        static isValid(prop: any): boolean;
         protected _name: string;
         constructor(_prop: T, _parent?: KPropertyGroup<PropertyGroup>);
         get(): T;
         isValid(): boolean;
         validate(): void;
         asPropertyGroup(): KPropertyGroup<PropertyGroup>;
+        ifPropertyGroup(fn: (property: KPropertyGroup<PropertyGroup>) => any): this;
         asMaskPropertyGroup(): KMaskPropertyGroup;
+        ifMaskPropertyGroup(fn: (property: KMaskPropertyGroup) => any): this;
         asProperty(): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
+        ifProperty(fn: (property: KProperty<PropertyValue>) => any): this;
         name(name?: string): string;
         matchName(): string;
         propertyIndex(): number;
@@ -746,6 +773,7 @@ declare namespace KIKAKU {
         duplicate(): KPropertyBase<PropertyBase>;
     }
     class KPropertyGroup<T extends PropertyGroup> extends KPropertyBase<T> {
+        static isValid(prop: any): boolean;
         isValid(): boolean;
         numProperties(): number;
         property(index_or_name: number | string): any;
@@ -755,8 +783,10 @@ declare namespace KIKAKU {
         addProperty(name: string): KPropertyBase<PropertyBase>;
         addPropertyAsProperty(name: string): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
         addPropertyAsPropertyGroup(name: string): KPropertyGroup<PropertyGroup>;
+        forEach(fn: (prop: KPropertyBase<PropertyBase>, index: number) => void): void;
     }
     class KMaskPropertyGroup extends KPropertyGroup<MaskPropertyGroup> {
+        static isValid(prop: any): boolean;
         isValid(): boolean;
         maskPath(): KShapeProperty;
         maskFeather(): KTwoDProperty;
@@ -771,6 +801,7 @@ declare namespace KIKAKU {
         maskFeatherFalloff(maskFeatherFalloff?: MaskFeatherFalloff): MaskFeatherFalloff;
     }
     class KProperty<T extends PropertyValue> extends KPropertyBase<Property> {
+        static isValid(prop: any): boolean;
         isValid(): boolean;
         asNoValue(): KNoValueProperty;
         asThreeDSpatial(): KThreeDSpatialProperty;
@@ -1866,4 +1897,8 @@ declare namespace KIKAKU.Unit {
         removeLayers(): void;
         removeAll(): void;
     }
+}
+declare namespace KIKAKU.Decorator {
+    function debug(shouldDebug?: boolean): (proto: any, name: string) => void;
+    function undo(text: string): (proto: any, name: string) => void;
 }
