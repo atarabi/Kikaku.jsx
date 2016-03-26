@@ -25,13 +25,18 @@ namespace KIKAKU {
   }
 
   export class KItem<T extends Item> {
+    //static
+    static isValid(item) {
+      return isValid(item) && (item instanceof FolderItem || item instanceof FootageItem || item instanceof CompItem);
+    }
+    //prototype
     constructor(protected _item: T) { }
     get() {
       return this._item;
     }
     isValid() {
       let item = this._item;
-      return item && (item instanceof FolderItem || item instanceof FootageItem || item instanceof CompItem) && isValid(item);
+      return KItem.isValid(item);
     }
     //cast
     asFolder() {
@@ -79,9 +84,14 @@ namespace KIKAKU {
   }
 
   export class KFolderItem extends KItem<FolderItem> {
+    //static
+    static isValid(item) {
+      return isValid(item) && item instanceof FolderItem;
+    }
+    //prototype
     isValid() {
       let item = this._item;
-      return item && item instanceof FolderItem && isValid(item);
+      return KFolderItem.isValid(item);
     }
     //attributes
     items() {
@@ -105,9 +115,14 @@ namespace KIKAKU {
   }
 
   export class KAVItem<T extends AVItem> extends KItem<T> {
+    //static
+    static isValid(item) {
+      return isValid(item) && (item instanceof FootageItem || item instanceof CompItem);
+    }
+    //prototype
     isValid() {
       let item = this._item;
-      return item && (item instanceof FootageItem || item instanceof CompItem) && isValid(item);
+      return KAVItem.isValid(item);
     }
     //attributes
     width(width?: number) {
@@ -183,9 +198,14 @@ namespace KIKAKU {
   }
 
   export class KCompItem extends KAVItem<CompItem> {
+    //static
+    static isValid(item) {
+      return isValid(item) && item instanceof CompItem;
+    }
+    //prototype
     isValid() {
       let item = this._item;
-      return item && item instanceof CompItem && isValid(item);
+      return KCompItem.isValid(item);
     }
     //attributes
     dropFrame(dropFrame?: boolean) {
@@ -295,9 +315,14 @@ namespace KIKAKU {
   }
 
   export class KFootageItem extends KAVItem<FootageItem> {
+    //static
+    static isValid(item) {
+      return isValid(item) && item instanceof FootageItem;
+    }
+    //prototype
     isValid() {
       let item = this._item;
-      return item && item instanceof FootageItem && isValid(item);
+      return KFootageItem.isValid(item);
     }
     //attributes
     file() {
