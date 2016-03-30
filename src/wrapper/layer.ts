@@ -318,7 +318,7 @@ namespace KIKAKU {
     }
     //prototype
     isValid() {
-      return KAVItem.isValid(this);
+      return KAVLayer.isValid(this);
     }
     //properties
     timeRemap() {
