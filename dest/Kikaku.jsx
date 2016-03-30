@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 8;
-    KIKAKU.PATCH_VERSION = 0;
+    KIKAKU.PATCH_VERSION = 1;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -3419,7 +3419,7 @@ var KIKAKU;
         };
         //prototype
         KAVLayer.prototype.isValid = function () {
-            return KIKAKU.KAVItem.isValid(this);
+            return KAVLayer.isValid(this);
         };
         //properties
         KAVLayer.prototype.timeRemap = function () {
