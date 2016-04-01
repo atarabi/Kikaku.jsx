@@ -1,13 +1,20 @@
 namespace KIKAKU {
 
   export class KFootageSource<T extends FootageSource> {
+    //static
+    static isValid(source) {
+      if (source instanceof KFootageSource) {
+        source = source.get();
+      }
+      return isValid(source) && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource);
+    }
+    //prototype
     constructor(protected _source: T) { }
     get() {
       return this._source;
     }
     isValid() {
-      let source = this._source;
-      return isValid(source) && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource);
+      return KFootageSource.isValid(this);
     }
     //cast
     asSolid() {
@@ -76,9 +83,16 @@ namespace KIKAKU {
   }
 
   export class KSolidSource extends KFootageSource<SolidSource> {
-    isValid() {
-      let source = this._source;
+    //static
+    static isValid(source) {
+      if (source instanceof KFootageSource) {
+        source = source.get();
+      }
       return isValid(source) && source instanceof SolidSource;
+    }
+    //prototype
+    isValid() {
+      return KSolidSource.isValid(this);
     }
     //attributes
     color(color?: [number, number, number]) {
@@ -88,16 +102,30 @@ namespace KIKAKU {
   }
 
   export class KPlaceholderSource extends KFootageSource<PlaceholderSource> {
-    isValid() {
-      let source = this._source;
+    //static
+    static isValid(source) {
+      if (source instanceof KFootageSource) {
+        source = source.get();
+      }
       return isValid(source) && source instanceof PlaceholderSource;
+    }
+    //prototype
+    isValid() {
+      return KPlaceholderSource.isValid(this);
     }
   }
 
   export class KFileSource extends KFootageSource<FileSource> {
-    isValid() {
-      let source = this._source;
+    //static
+    static isValid(source) {
+      if (source instanceof KFootageSource) {
+        source = source.get();
+      }
       return isValid(source) && source instanceof FileSource;
+    }
+    //prototype
+    isValid() {
+      return KFileSource.isValid(this);
     }
     //attributes
     file() {
