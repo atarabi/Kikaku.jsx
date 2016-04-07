@@ -558,7 +558,7 @@ namespace KIKAKU {
     }
   }
 
-  export class KTextDocumentProperty extends KProperty<Shape> {
+  export class KTextDocumentProperty extends KProperty<TextDocument> {
     isValid() {
       return super.isValid() && this._prop.propertyValueType === PropertyValueType.TEXT_DOCUMENT;
     }
