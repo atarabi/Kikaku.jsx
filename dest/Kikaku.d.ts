@@ -444,6 +444,7 @@ declare namespace KIKAKU {
 declare namespace KIKAKU {
     class KFootageSource<T extends FootageSource> {
         protected _source: T;
+        static isValid(source: any): boolean;
         constructor(_source: T);
         get(): T;
         isValid(): boolean;
@@ -466,13 +467,16 @@ declare namespace KIKAKU {
         guessPulldown(method: PulldownMethod): void;
     }
     class KSolidSource extends KFootageSource<SolidSource> {
+        static isValid(source: any): boolean;
         isValid(): boolean;
         color(color?: [number, number, number]): [number, number, number];
     }
     class KPlaceholderSource extends KFootageSource<PlaceholderSource> {
+        static isValid(source: any): boolean;
         isValid(): boolean;
     }
     class KFileSource extends KFootageSource<FileSource> {
+        static isValid(source: any): boolean;
         isValid(): boolean;
         file(): KFile;
         missingFootagePath(): string;
@@ -908,7 +912,7 @@ declare namespace KIKAKU {
     class KShapeProperty extends KProperty<Shape> {
         isValid(): boolean;
     }
-    class KTextDocumentProperty extends KProperty<Shape> {
+    class KTextDocumentProperty extends KProperty<TextDocument> {
         isValid(): boolean;
     }
     class KMaskParade extends KPropertyGroup<PropertyGroup> {

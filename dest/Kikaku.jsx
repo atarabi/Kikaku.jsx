@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 8;
-    KIKAKU.PATCH_VERSION = 1;
+    KIKAKU.PATCH_VERSION = 2;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -2479,15 +2479,22 @@ var KIKAKU;
 var KIKAKU;
 (function (KIKAKU) {
     var KFootageSource = (function () {
+        //prototype
         function KFootageSource(_source) {
             this._source = _source;
         }
+        //static
+        KFootageSource.isValid = function (source) {
+            if (source instanceof KFootageSource) {
+                source = source.get();
+            }
+            return isValid(source) && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource);
+        };
         KFootageSource.prototype.get = function () {
             return this._source;
         };
         KFootageSource.prototype.isValid = function () {
-            var source = this._source;
-            return isValid(source) && (source instanceof FootageSource || source instanceof SolidSource || source instanceof PlaceholderSource || source instanceof FileSource);
+            return KFootageSource.isValid(this);
         };
         //cast
         KFootageSource.prototype.asSolid = function () {
@@ -2571,9 +2578,16 @@ var KIKAKU;
         function KSolidSource() {
             _super.apply(this, arguments);
         }
-        KSolidSource.prototype.isValid = function () {
-            var source = this._source;
+        //static
+        KSolidSource.isValid = function (source) {
+            if (source instanceof KFootageSource) {
+                source = source.get();
+            }
             return isValid(source) && source instanceof SolidSource;
+        };
+        //prototype
+        KSolidSource.prototype.isValid = function () {
+            return KSolidSource.isValid(this);
         };
         //attributes
         KSolidSource.prototype.color = function (color) {
@@ -2589,9 +2603,16 @@ var KIKAKU;
         function KPlaceholderSource() {
             _super.apply(this, arguments);
         }
-        KPlaceholderSource.prototype.isValid = function () {
-            var source = this._source;
+        //static
+        KPlaceholderSource.isValid = function (source) {
+            if (source instanceof KFootageSource) {
+                source = source.get();
+            }
             return isValid(source) && source instanceof PlaceholderSource;
+        };
+        //prototype
+        KPlaceholderSource.prototype.isValid = function () {
+            return KPlaceholderSource.isValid(this);
         };
         return KPlaceholderSource;
     }(KFootageSource));
@@ -2601,9 +2622,16 @@ var KIKAKU;
         function KFileSource() {
             _super.apply(this, arguments);
         }
-        KFileSource.prototype.isValid = function () {
-            var source = this._source;
+        //static
+        KFileSource.isValid = function (source) {
+            if (source instanceof KFootageSource) {
+                source = source.get();
+            }
             return isValid(source) && source instanceof FileSource;
+        };
+        //prototype
+        KFileSource.prototype.isValid = function () {
+            return KFileSource.isValid(this);
         };
         //attributes
         KFileSource.prototype.file = function () {
@@ -3627,7 +3655,7 @@ var KIKAKU;
         };
         //prototype
         KTextLayer.prototype.isValid = function () {
-            return isValid(this);
+            return KTextLayer.isValid(this);
         };
         //properties
         KTextLayer.prototype.text = function () {
