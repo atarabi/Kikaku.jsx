@@ -498,7 +498,7 @@ namespace KIKAKU {
     }
     //prototype
     isValid() {
-      return isValid(this);
+      return KTextLayer.isValid(this);
     }
     //properties
     text() {
