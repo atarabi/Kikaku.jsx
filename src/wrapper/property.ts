@@ -12,6 +12,12 @@ namespace KIKAKU {
     protected _name: string;
     constructor(protected _prop: T, protected _parent: KPropertyGroup<PropertyGroup> = null) {
       this._name = this._prop.name;
+      if (!this._parent) {
+        const parent = this._prop.parentProperty;
+        if (parent) {
+          this._parent = new KPropertyGroup<PropertyGroup>(parent);
+        }
+      }
     }
     get() {
       return this._prop;
@@ -931,7 +937,7 @@ namespace KIKAKU {
       return new KOneDProperty(<Property>this._prop.property('bevelEmboss/shadowOpacity'), this);
     }
   }
-  
+
   export class KLayerStylesSatin extends KPropertyGroup<PropertyGroup> {
     blendMode() {
       return new KOneDProperty(<Property>this._prop.property('chromeFX/mode2'), this);
@@ -955,7 +961,7 @@ namespace KIKAKU {
       return new KOneDProperty(<Property>this._prop.property('chromeFX/invert'), this);
     }
   }
-  
+
   export class KLayerStylesColorOverlay extends KPropertyGroup<PropertyGroup> {
     blendMode() {
       return new KOneDProperty(<Property>this._prop.property('solidFill/mode2'), this);
@@ -1000,7 +1006,7 @@ namespace KIKAKU {
       return new KOneDProperty(<Property>this._prop.property('gradientFill/offset'), this);
     }
   }
-  
+
   export class KLayerStylesStroke extends KPropertyGroup<PropertyGroup> {
     blendMode() {
       return new KOneDProperty(<Property>this._prop.property('frameFX/mode2'), this);
