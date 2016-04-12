@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 8;
-    KIKAKU.PATCH_VERSION = 2;
+    KIKAKU.PATCH_VERSION = 3;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -3722,6 +3722,12 @@ var KIKAKU;
             this._prop = _prop;
             this._parent = _parent;
             this._name = this._prop.name;
+            if (!this._parent) {
+                var parent = this._prop.parentProperty;
+                if (parent) {
+                    this._parent = new KPropertyGroup(parent);
+                }
+            }
         }
         //static
         KPropertyBase.isValid = function (prop) {
