@@ -20,11 +20,29 @@ namespace KIKAKU {
     asSolid() {
       return new KSolidSource(<any>this._source);
     }
+    ifSolid(fn: (source: KSolidSource) => any) {
+      if (KSolidSource.isValid(this)) {
+        fn(this.asSolid());
+      }
+      return this;
+    }
     asPlaceholder() {
       return new KPlaceholderSource(<any>this._source);
     }
+    ifPlaceholder(fn: (source: KPlaceholderSource) => any) {
+      if (KPlaceholderSource.isValid(this)) {
+        fn(this.asPlaceholder());
+      }
+      return this;
+    }
     asFile() {
       return new KFileSource(<any>this._source);
+    }
+    ifFile(fn: (source: KFileSource) => any) {
+      if (KPlaceholderSource.isValid(this)) {
+        fn(this.asFile());
+      }
+      return this;
     }
     //attributes
     hasAlpha(hasAlpha?: boolean) {
