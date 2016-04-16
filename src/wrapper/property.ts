@@ -163,15 +163,15 @@ namespace KIKAKU {
       return this._prop.numProperties;
     }
     //methods
-    property(index_or_name: number | string) {
+    property(index_or_name: number | string): KPropertyBase<PropertyBase> {
       this.validate();
       return new KPropertyBase(this._prop.property(<any>index_or_name), this);
     }
-    propertyAsProperty(index_or_name: number | string) {
+    propertyAsProperty(index_or_name: number | string): KProperty<PropertyValue> {
       this.validate();
       return new KProperty(<Property>this._prop.property(<any>index_or_name), this);
     }
-    propertyAsPropertyGroup(index_or_name: number | string) {
+    propertyAsPropertyGroup(index_or_name: number | string): KPropertyGroup<PropertyGroup> {
       this.validate();
       return new KPropertyGroup(<PropertyGroup>this._prop.property(<any>index_or_name), this)
     }
