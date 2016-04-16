@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 8;
-    KIKAKU.PATCH_VERSION = 3;
+    KIKAKU.PATCH_VERSION = 4;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -2500,11 +2500,29 @@ var KIKAKU;
         KFootageSource.prototype.asSolid = function () {
             return new KSolidSource(this._source);
         };
+        KFootageSource.prototype.ifSolid = function (fn) {
+            if (KSolidSource.isValid(this)) {
+                fn(this.asSolid());
+            }
+            return this;
+        };
         KFootageSource.prototype.asPlaceholder = function () {
             return new KPlaceholderSource(this._source);
         };
+        KFootageSource.prototype.ifPlaceholder = function (fn) {
+            if (KPlaceholderSource.isValid(this)) {
+                fn(this.asPlaceholder());
+            }
+            return this;
+        };
         KFootageSource.prototype.asFile = function () {
             return new KFileSource(this._source);
+        };
+        KFootageSource.prototype.ifFile = function (fn) {
+            if (KPlaceholderSource.isValid(this)) {
+                fn(this.asFile());
+            }
+            return this;
         };
         //attributes
         KFootageSource.prototype.hasAlpha = function (hasAlpha) {
@@ -2746,7 +2764,11 @@ var KIKAKU;
         KItem.prototype.id = function () {
             return this._item.id;
         };
-        KItem.prototype.parentFolder = function () {
+        KItem.prototype.parentFolder = function (parent) {
+            if (parent !== void 0) {
+                var parent_item = parent instanceof KFolderItem ? parent.get() : parent;
+                this._item.parentFolder = parent_item;
+            }
             return new KFolderItem(this._item.parentFolder);
         };
         KItem.prototype.selected = function (selected) {
@@ -3368,6 +3390,9 @@ var KIKAKU;
         };
         KLayer.prototype.isNameSet = function () {
             return this._layer.isNameSet;
+        };
+        KLayer.prototype.property = function (index_or_string) {
+            return new KIKAKU.KPropertyBase(this._layer.property(index_or_string));
         };
         //methods
         KLayer.prototype.remove = function () {

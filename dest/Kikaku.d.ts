@@ -449,8 +449,11 @@ declare namespace KIKAKU {
         get(): T;
         isValid(): boolean;
         asSolid(): KSolidSource;
+        ifSolid(fn: (source: KSolidSource) => any): this;
         asPlaceholder(): KPlaceholderSource;
+        ifPlaceholder(fn: (source: KPlaceholderSource) => any): this;
         asFile(): KFileSource;
+        ifFile(fn: (source: KFileSource) => any): this;
         hasAlpha(hasAlpha?: boolean): boolean;
         alphaMode(alphaMode?: AlphaMode): AlphaMode;
         premulColor(premulColor?: [number, number, number]): [number, number, number];
@@ -510,7 +513,7 @@ declare namespace KIKAKU {
         name(name?: string): string;
         comment(comment?: string): string;
         id(): number;
-        parentFolder(): KFolderItem;
+        parentFolder(parent?: FolderItem | KFolderItem): KFolderItem;
         selected(selected?: boolean): boolean;
         typeName(): string;
         label(label?: number): number;
@@ -656,6 +659,7 @@ declare namespace KIKAKU {
         comment(comment?: string): string;
         containingComp(): KCompItem;
         isNameSet(): boolean;
+        property(index_or_string: number | string): KPropertyBase<PropertyBase>;
         remove(): void;
         moveToBeginning(): void;
         moveToEnd(): void;
@@ -780,9 +784,9 @@ declare namespace KIKAKU {
         static isValid(prop: any): boolean;
         isValid(): boolean;
         numProperties(): number;
-        property(index_or_name: number | string): any;
-        propertyAsProperty(index_or_name: number | string): any;
-        propertyAsPropertyGroup(index_or_name: number | string): any;
+        property(index_or_name: number | string): KPropertyBase<PropertyBase>;
+        propertyAsProperty(index_or_name: number | string): KProperty<PropertyValue>;
+        propertyAsPropertyGroup(index_or_name: number | string): KPropertyGroup<PropertyGroup>;
         canAddProperty(name: string): boolean;
         addProperty(name: string): KPropertyBase<PropertyBase>;
         addPropertyAsProperty(name: string): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
