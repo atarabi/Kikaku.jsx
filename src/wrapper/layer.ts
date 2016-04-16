@@ -247,8 +247,21 @@ namespace KIKAKU {
     isNameSet() {
       return this._layer.isNameSet;
     }
-    property(index_or_string: number | string) {
-      return new KPropertyBase(this._layer.property(<any>index_or_string));
+    matchName() {
+      return this._layer.matchName;
+    }
+    propertyDepth() {
+      return this._layer.propertyDepth;
+    }
+    propertyType() {
+      return this._layer.propertyType;
+    }
+    selected(selected?: boolean) {
+      if (selected !== void 0) this._layer.selected = selected;
+      return this._layer.selected;
+    }
+    numProperties() {
+      return this._layer.numProperties;
     }
     //methods
     remove() {
@@ -300,6 +313,9 @@ namespace KIKAKU {
         this._layer.applyPreset(presetName);
 
       }
+    }
+    property(index_or_string: number | string) {
+      return new KPropertyBase(this._layer.property(<any>index_or_string));
     }
     //custom methods
     forEach(fn: (prop: KPropertyBase<PropertyBase>, index: number) => void) {
