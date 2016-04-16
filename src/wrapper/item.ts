@@ -89,7 +89,11 @@ namespace KIKAKU {
     id() {
       return this._item.id;
     }
-    parentFolder() {
+    parentFolder(parent?: FolderItem | KFolderItem) {
+      if (parent !== void 0) {
+        const parent_item = parent instanceof KFolderItem ? parent.get() : parent;
+        this._item.parentFolder = parent_item;
+      }
       return new KFolderItem(this._item.parentFolder);
     }
     selected(selected?: boolean) {
