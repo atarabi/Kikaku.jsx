@@ -247,6 +247,9 @@ namespace KIKAKU {
     isNameSet() {
       return this._layer.isNameSet;
     }
+    property(index_or_string: number | string) {
+      return new KPropertyBase(this._layer.property(<any>index_or_string));
+    }
     //methods
     remove() {
       this._layer.remove();
