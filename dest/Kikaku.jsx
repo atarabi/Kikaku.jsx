@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 8;
-    KIKAKU.PATCH_VERSION = 4;
+    KIKAKU.PATCH_VERSION = 5;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -3391,8 +3391,22 @@ var KIKAKU;
         KLayer.prototype.isNameSet = function () {
             return this._layer.isNameSet;
         };
-        KLayer.prototype.property = function (index_or_string) {
-            return new KIKAKU.KPropertyBase(this._layer.property(index_or_string));
+        KLayer.prototype.matchName = function () {
+            return this._layer.matchName;
+        };
+        KLayer.prototype.propertyDepth = function () {
+            return this._layer.propertyDepth;
+        };
+        KLayer.prototype.propertyType = function () {
+            return this._layer.propertyType;
+        };
+        KLayer.prototype.selected = function (selected) {
+            if (selected !== void 0)
+                this._layer.selected = selected;
+            return this._layer.selected;
+        };
+        KLayer.prototype.numProperties = function () {
+            return this._layer.numProperties;
         };
         //methods
         KLayer.prototype.remove = function () {
@@ -3446,6 +3460,9 @@ var KIKAKU;
             else {
                 this._layer.applyPreset(presetName);
             }
+        };
+        KLayer.prototype.property = function (index_or_string) {
+            return new KIKAKU.KPropertyBase(this._layer.property(index_or_string));
         };
         //custom methods
         KLayer.prototype.forEach = function (fn) {

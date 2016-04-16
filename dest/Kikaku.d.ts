@@ -659,7 +659,11 @@ declare namespace KIKAKU {
         comment(comment?: string): string;
         containingComp(): KCompItem;
         isNameSet(): boolean;
-        property(index_or_string: number | string): KPropertyBase<PropertyBase>;
+        matchName(): string;
+        propertyDepth(): number;
+        propertyType(): PropertyType;
+        selected(selected?: boolean): boolean;
+        numProperties(): number;
         remove(): void;
         moveToBeginning(): void;
         moveToEnd(): void;
@@ -670,6 +674,7 @@ declare namespace KIKAKU {
         activeAtTime(time: number): boolean;
         setParentWithJump<U extends Layer>(newParent?: Layer | KLayer<U>): void;
         applyPreset(presetName: File | KFile): void;
+        property(index_or_string: number | string): KPropertyBase<PropertyBase>;
         forEach(fn: (prop: KPropertyBase<PropertyBase>, index: number) => void): void;
     }
     class KAVLayer<T extends AVLayer> extends KLayer<T> {
