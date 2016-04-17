@@ -92,6 +92,12 @@ namespace KIKAKU {
       }
       return this;
     }
+    ifAVBase(fn: (layer: KAVLayer<AVLayer>) => any) {
+      if (KAVLayer.isValid(this) && !(KShapeLayer.isValid(this) || KTextLayer.isValid(this))) {
+        fn(this.asAV());
+      }
+      return this;
+    }
     asShape() {
       return new KShapeLayer(<any>this._layer);
     }
