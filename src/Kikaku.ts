@@ -6,6 +6,7 @@
 /// <reference path="KikakuFileManager.ts" />
 /// <reference path="KikakuRequest.ts" />
 /// <reference path="KikakuSettingManager.ts" />
+/// <reference path="KikakuTimer.ts" />
 /// <reference path="KikakuUIBuilder.ts" />
 /// <reference path="KikakuUnit.ts" />
 /// <reference path="KikakuDecorator.ts" />
