@@ -340,6 +340,9 @@ namespace KIKAKU {
     openInViewer() {
       return this._item.openInViewer();
     }
+    saveFrameToPng(time: number, file: File | KFile) {
+      this._item.saveFrameToPng(time, file instanceof KFile ? file.get() : file);
+    }
     //custom methods
     forEach(fn: (layer: KLayer<Layer>, index: number) => void) {
       const item = this._item;
