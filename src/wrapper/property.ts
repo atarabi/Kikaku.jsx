@@ -126,6 +126,18 @@ namespace KIKAKU {
       if (selected !== void 0) this._prop.selected = selected;
       return this._prop.selected;
     }
+    //custom attributes
+    hidden() {
+      let hidden = false;
+      try {
+        const prop = this._prop;
+        let selected = prop.selected;
+        prop.selected = selected;
+      } catch (e) {
+        hidden = true;
+      }
+      return hidden;
+    }
     //methods
     propertyGroup(countUp = 1) {
       this.validate();
