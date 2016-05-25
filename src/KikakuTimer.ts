@@ -70,9 +70,17 @@ namespace KIKAKU.Timer {
   export function clearTimeout(id: TimeoutID) {
     return store.unregister(id);
   }
-
+  
   export function execute(id: string) {
     return store.execute(id);
+  }
+  
+  export function debounce(fn: Function, interval: number, ctx?: any) {
+    let timeout_id = '';
+    return function () {
+      clearTimeout(timeout_id);
+      timeout_id = setTimeout(fn, interval, ctx);
+    };
   }
 
 }
