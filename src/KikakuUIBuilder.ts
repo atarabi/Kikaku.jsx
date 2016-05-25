@@ -2530,7 +2530,7 @@ namespace KIKAKU {
 
       let resizeable = this._options.resizeable;
       let title = this._options.title;
-      let w: Panel | Window = this._ui = ((global) => {
+      let w: Panel | Window = this._ui = ((global): Panel | Window => {
         if (global instanceof Panel) {
           return global;
         } else if (global === 'dialog') {
