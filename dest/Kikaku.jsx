@@ -3059,6 +3059,9 @@ var KIKAKU;
         KCompItem.prototype.openInViewer = function () {
             return this._item.openInViewer();
         };
+        KCompItem.prototype.saveFrameToPng = function (time, file) {
+            this._item.saveFrameToPng(time, file instanceof KIKAKU.KFile ? file.get() : file);
+        };
         //custom methods
         KCompItem.prototype.forEach = function (fn) {
             var item = this._item;
@@ -3220,6 +3223,12 @@ var KIKAKU;
         };
         KLayer.prototype.ifAV = function (fn) {
             if (KAVLayer.isValid(this)) {
+                fn(this.asAV());
+            }
+            return this;
+        };
+        KLayer.prototype.ifAVBase = function (fn) {
+            if (KAVLayer.isValid(this) && !(KShapeLayer.isValid(this) || KTextLayer.isValid(this))) {
                 fn(this.asAV());
             }
             return this;
@@ -3887,6 +3896,19 @@ var KIKAKU;
             if (selected !== void 0)
                 this._prop.selected = selected;
             return this._prop.selected;
+        };
+        //custom attributes
+        KPropertyBase.prototype.hidden = function () {
+            var hidden = false;
+            try {
+                var prop = this._prop;
+                var selected = prop.selected;
+                prop.selected = selected;
+            }
+            catch (e) {
+                hidden = true;
+            }
+            return hidden;
         };
         //methods
         KPropertyBase.prototype.propertyGroup = function (countUp) {
@@ -6439,6 +6461,87 @@ var KIKAKU;
         return SettingManager;
     }());
     KIKAKU.SettingManager = SettingManager;
+})(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    var Timer;
+    (function (Timer) {
+        function generateTimeoutID() {
+            var s4 = function () {
+                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            };
+            return "" + s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
+        }
+        var TimerStore = (function () {
+            function TimerStore() {
+                this._store = {};
+            }
+            TimerStore.prototype.register = function (fn, delay, ctx) {
+                var timeout_id = generateTimeoutID();
+                var actual_id = app.scheduleTask("KIKAKU.Timer.execute(\"" + timeout_id + "\")", delay, false);
+                this._store[timeout_id] = {
+                    fn: fn,
+                    ctx: ctx,
+                    time: Date.now(),
+                    delay: delay,
+                    id: actual_id
+                };
+                return timeout_id;
+            };
+            TimerStore.prototype.unregister = function (id) {
+                if (this._store[id]) {
+                    app.cancelTask(this._store[id].id);
+                    delete this._store[id];
+                }
+            };
+            TimerStore.prototype.clean = function () {
+                var now = Date.now();
+                for (var id in this._store) {
+                    var _a = this._store[id], time = _a.time, delay = _a.delay;
+                    if (time + delay > now) {
+                        delete this._store[id];
+                    }
+                }
+            };
+            TimerStore.prototype.execute = function (id) {
+                if (this._store[id]) {
+                    var _a = this._store[id], fn = _a.fn, ctx = _a.ctx;
+                    try {
+                        fn.call(ctx);
+                    }
+                    catch (e) {
+                        alert(e);
+                    }
+                    finally {
+                        this.unregister(id);
+                    }
+                }
+                this.clean();
+            };
+            return TimerStore;
+        }());
+        var store = new TimerStore;
+        function setTimeout(fn, delay, ctx) {
+            return store.register(fn, delay, ctx);
+        }
+        Timer.setTimeout = setTimeout;
+        function clearTimeout(id) {
+            return store.unregister(id);
+        }
+        Timer.clearTimeout = clearTimeout;
+        function execute(id) {
+            return store.execute(id);
+        }
+        Timer.execute = execute;
+        function debounce(fn, interval, ctx) {
+            var timeout_id = '';
+            return function () {
+                clearTimeout(timeout_id);
+                timeout_id = setTimeout(fn, interval, ctx);
+            };
+        }
+        Timer.debounce = debounce;
+    })(Timer = KIKAKU.Timer || (KIKAKU.Timer = {}));
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
 (function (KIKAKU) {
@@ -9373,6 +9476,7 @@ var KIKAKU;
 /// <reference path="KikakuFileManager.ts" />
 /// <reference path="KikakuRequest.ts" />
 /// <reference path="KikakuSettingManager.ts" />
+/// <reference path="KikakuTimer.ts" />
 /// <reference path="KikakuUIBuilder.ts" />
 /// <reference path="KikakuUnit.ts" />
 /// <reference path="KikakuDecorator.ts" /> 

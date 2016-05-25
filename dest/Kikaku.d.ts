@@ -578,6 +578,7 @@ declare namespace KIKAKU {
         duplicate(): KCompItem;
         layer(index_or_name: number | string): KLayer<Layer>;
         openInViewer(): Viewer;
+        saveFrameToPng(time: number, file: File | KFile): void;
         forEach(fn: (layer: KLayer<Layer>, index: number) => void): void;
     }
     class KFootageItem extends KAVItem<FootageItem> {
@@ -618,6 +619,7 @@ declare namespace KIKAKU {
         isValid(): boolean;
         asAV(): KAVLayer<AVLayer>;
         ifAV(fn: (layer: KAVLayer<AVLayer>) => any): this;
+        ifAVBase(fn: (layer: KAVLayer<AVLayer>) => any): this;
         asShape(): KShapeLayer;
         ifShape(fn: (layer: KShapeLayer) => any): this;
         asText(): KTextLayer;
@@ -780,6 +782,7 @@ declare namespace KIKAKU {
         isEffect(): boolean;
         isMask(): boolean;
         selected(selected?: boolean): boolean;
+        hidden(): boolean;
         propertyGroup(countUp?: number): KPropertyGroup<PropertyGroup>;
         remove(): void;
         moveTo(newIndex: number): void;
@@ -1469,6 +1472,13 @@ declare namespace KIKAKU {
         save(key: string, value: any): void;
         delete(key: string): void;
     }
+}
+declare namespace KIKAKU.Timer {
+    type TimeoutID = string;
+    function setTimeout(fn: Function, delay: number, ctx?: any): TimeoutID;
+    function clearTimeout(id: TimeoutID): void;
+    function execute(id: string): void;
+    function debounce(fn: Function, interval: number, ctx?: any): () => void;
 }
 declare namespace KIKAKU {
     interface UIParameterOptions {
