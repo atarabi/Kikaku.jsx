@@ -2423,9 +2423,9 @@ namespace KIKAKU {
       this.validateParameter(name);
       return this._parameters[name].get(index);
     }
-    set(name: string, arg1?, arg2?) {
+    set(name: string, value_or_index?, value2?) {
       this.validateParameter(name);
-      this._parameters[name].set(arg1, arg2);
+      this._parameters[name].set(value_or_index, value2);
       return this;
     }
     execute(name: string, undo?: boolean, ...args: any[]) {

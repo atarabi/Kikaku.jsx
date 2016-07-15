@@ -1477,7 +1477,7 @@ declare namespace KIKAKU.Timer {
     type TimeoutID = string;
     function setTimeout(fn: Function, delay: number, ctx?: any): TimeoutID;
     function clearTimeout(id: TimeoutID): void;
-    function execute(id: string): void;
+    function execute(id: TimeoutID): void;
     function debounce(fn: Function, interval: number, ctx?: any): () => void;
 }
 declare namespace KIKAKU {
@@ -1844,7 +1844,7 @@ declare namespace KIKAKU {
         trigger(type: string, ...args: any[]): this;
         private validateParameter(name);
         get(name: string, index?: number): any;
-        set(name: string, arg1?: any, arg2?: any): this;
+        set(name: string, value_or_index?: any, value2?: any): this;
         execute(name: string, undo?: boolean, ...args: any[]): any;
         enable(name: string, index?: number): this;
         disable(name: string, index?: number): this;
@@ -1924,4 +1924,15 @@ declare namespace KIKAKU.Unit {
 declare namespace KIKAKU.Decorator {
     function debug(shouldDebug?: boolean): (proto: any, name: string) => void;
     function undo(text: string): (proto: any, name: string) => void;
+}
+declare namespace KIKAKU {
+    class Xorshift {
+        static MAX: number;
+        private _x;
+        private _y;
+        private _z;
+        private _w;
+        constructor(seed?: number);
+        random(mn?: number, mx?: number): number;
+    }
 }

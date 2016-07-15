@@ -7,7 +7,7 @@ var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 8;
-    KIKAKU.PATCH_VERSION = 5;
+    KIKAKU.PATCH_VERSION = 6;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -6466,9 +6466,15 @@ var KIKAKU;
 (function (KIKAKU) {
     var Timer;
     (function (Timer) {
+        var rand = (function () {
+            if (parseFloat(app.version) > 13.5 /* CC2015 */) {
+                return generateRandomNumber;
+            }
+            return Math.random;
+        })();
         function generateTimeoutID() {
             var s4 = function () {
-                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+                return Math.floor((1 + rand()) * 0x10000).toString(16).substring(1);
             };
             return "" + s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
         }
@@ -8795,9 +8801,9 @@ var KIKAKU;
             this.validateParameter(name);
             return this._parameters[name].get(index);
         };
-        UIBuilder.prototype.set = function (name, arg1, arg2) {
+        UIBuilder.prototype.set = function (name, value_or_index, value2) {
             this.validateParameter(name);
-            this._parameters[name].set(arg1, arg2);
+            this._parameters[name].set(value_or_index, value2);
             return this;
         };
         UIBuilder.prototype.execute = function (name, undo) {
@@ -9468,6 +9474,31 @@ var KIKAKU;
         Decorator.undo = undo;
     })(Decorator = KIKAKU.Decorator || (KIKAKU.Decorator = {}));
 })(KIKAKU || (KIKAKU = {}));
+var KIKAKU;
+(function (KIKAKU) {
+    var Xorshift = (function () {
+        function Xorshift(seed) {
+            this._x = 123456789;
+            this._y = 362436069;
+            this._z = 521288629;
+            this._w = 88675123;
+            if (typeof seed !== 'undefined') {
+                this._w = Math.max(0, ~~seed);
+            }
+        }
+        Xorshift.prototype.random = function (mn, mx) {
+            if (mn === void 0) { mn = 0; }
+            if (mx === void 0) { mx = 1; }
+            var _a = [this._x ^ (this._x << 11), this._w], t = _a[0], w = _a[1];
+            _b = [this._y, this._z, this._w, (w ^ (w >> 19)) ^ (t ^ (t >> 8))], this._x = _b[0], this._y = _b[1], this._z = _b[2], this._w = _b[3];
+            return mn + this._w / Xorshift.MAX * (mx - mn);
+            var _b;
+        };
+        Xorshift.MAX = Math.pow(2, 31);
+        return Xorshift;
+    }());
+    KIKAKU.Xorshift = Xorshift;
+})(KIKAKU || (KIKAKU = {}));
 /// <reference path="KikakuConfig.ts" />
 /// <reference path="KikakuJSON.ts" />
 /// <reference path="KikakuUtils.ts" />
@@ -9479,4 +9510,5 @@ var KIKAKU;
 /// <reference path="KikakuTimer.ts" />
 /// <reference path="KikakuUIBuilder.ts" />
 /// <reference path="KikakuUnit.ts" />
-/// <reference path="KikakuDecorator.ts" /> 
+/// <reference path="KikakuDecorator.ts" />
+/// <reference path="KikakuXorshift.ts" /> 

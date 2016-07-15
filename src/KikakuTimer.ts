@@ -2,9 +2,16 @@ namespace KIKAKU.Timer {
 
   export type TimeoutID = string;
   
+  const rand = (() => {
+    if (parseFloat(app.version) > AppVersion.CC2015) {
+      return generateRandomNumber;
+    }
+    return Math.random;
+  })();
+  
   function generateTimeoutID(): TimeoutID {
     const s4 = () => {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+      return Math.floor((1 + rand()) * 0x10000).toString(16).substring(1);
     };
     return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
   }
@@ -71,7 +78,7 @@ namespace KIKAKU.Timer {
     return store.unregister(id);
   }
   
-  export function execute(id: string) {
+  export function execute(id: TimeoutID) {
     return store.execute(id);
   }
   

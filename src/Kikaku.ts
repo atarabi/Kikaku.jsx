@@ -10,3 +10,4 @@
 /// <reference path="KikakuUIBuilder.ts" />
 /// <reference path="KikakuUnit.ts" />
 /// <reference path="KikakuDecorator.ts" />
+/// <reference path="KikakuXorshift.ts" />
