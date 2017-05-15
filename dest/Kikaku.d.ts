@@ -20,7 +20,7 @@ declare namespace KIKAKU {
 }
 declare namespace KIKAKU.Utils {
     function isObject(arg: any): boolean;
-    function isArray<T>(arg: any): arg is T[];
+    function isArray(arg: any): boolean;
     function isFunction(arg: any): arg is Function;
     function isString(arg: any): arg is string;
     function isNumber(arg: any): arg is number;
@@ -186,7 +186,7 @@ declare namespace KIKAKU.Utils {
     function isProperty(property: PropertyBase): property is Property;
     function isPropertyGroup(property: PropertyBase): property is PropertyGroup;
     function isHiddenProperty(property: PropertyBase): boolean;
-    function getPropertyDimensions(property: Property): number;
+    function getPropertyDimensions(property: Property): 0 | 1 | 2 | 4 | 3;
     const PROPERTY_FILTER: {
         NONE: string;
         ALL: string;
@@ -766,7 +766,7 @@ declare namespace KIKAKU {
         ifPropertyGroup(fn: (property: KPropertyGroup<PropertyGroup>) => any): this;
         asMaskPropertyGroup(): KMaskPropertyGroup;
         ifMaskPropertyGroup(fn: (property: KMaskPropertyGroup) => any): this;
-        asProperty(): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
+        asProperty(): KProperty<PropertyValue>;
         ifProperty(fn: (property: KProperty<PropertyValue>) => any): this;
         name(name?: string): string;
         matchName(): string;
@@ -797,7 +797,7 @@ declare namespace KIKAKU {
         propertyAsPropertyGroup(index_or_name: number | string): KPropertyGroup<PropertyGroup>;
         canAddProperty(name: string): boolean;
         addProperty(name: string): KPropertyBase<PropertyBase>;
-        addPropertyAsProperty(name: string): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
+        addPropertyAsProperty(name: string): KProperty<PropertyValue>;
         addPropertyAsPropertyGroup(name: string): KPropertyGroup<PropertyGroup>;
         forEach(fn: (prop: KPropertyBase<PropertyBase>, index: number) => void): void;
     }
@@ -886,7 +886,7 @@ declare namespace KIKAKU {
         keyRoving(keyIndex: number): boolean;
         setSelectedAtKey(keyIndex: number, onOff: boolean): void;
         keySelected(keyIndex: number): boolean;
-        getSeparationFollower(dim: number): KProperty<void | boolean | number | [number, number] | [number, number, number] | [number, number, number, number] | MarkerValue | Shape | TextDocument>;
+        getSeparationFollower(dim: number): KProperty<PropertyValue>;
     }
     class KNoValueProperty extends KProperty<void> {
         isValid(): boolean;
@@ -1542,6 +1542,8 @@ declare namespace KIKAKU {
             TEXTAREAS: string;
             STATICTEXT: string;
             STATICTEXTS: string;
+            STATICTEXTAREA: string;
+            STATICTEXTAREAS: string;
             NUMBER: string;
             NUMBERS: string;
             SLIDER: string;
@@ -1663,6 +1665,20 @@ declare namespace KIKAKU {
             autoSave?: boolean;
             callback?: Function | Function[];
         }): this;
+        addStatictextArea(name: string, initial_value?: string, options?: Function | {
+            title?: boolean | string;
+            height?: number;
+            helpTip?: string;
+            autoSave?: boolean;
+            callback?: Function;
+        }): this;
+        addStatictextAreas(name: string, initial_values?: string[], options?: Function | {
+            title?: boolean | string;
+            height?: number;
+            helpTip?: string | string[];
+            autoSave?: boolean;
+            callback?: Function | Function[];
+        }): this;
         addNumber(name: string, initial_value?: number | {
             value?: number;
             minvalue?: number;
@@ -1728,6 +1744,7 @@ declare namespace KIKAKU {
             onEnterKey?: Function;
             onActivate?: Function;
             onDeactivate?: Function;
+            filter?: string;
         }): this;
         addFolder(name: string, initial_value?: string, options?: Function | {
             title?: boolean | string;

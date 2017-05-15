@@ -331,25 +331,11 @@ namespace KIKAKU {
   class GroupEndParameter extends ParameterBase { }
 
   //text parameter
-  class TextParameter extends SingleParameter {
-    protected _ui: EditText | StaticText;
+  class TextBaseParameter extends SingleParameter {
     protected getCreationProperties(): any {
       return {};
     }
-    buildParameter(width: number) {
-      let group = this._group;
-      let value: string = this._value || '';
-
-      let text_ui = this._ui = <EditText>group.add('edittext', undefined, value, this.getCreationProperties());
-      if (this._options.helpTip) {
-        text_ui.helpTip = <string>this._options.helpTip;
-      }
-      text_ui.onChange = () => { this.onChange(); };
-      text_ui.onChanging = () => { this.on('onChanging', false); };
-      text_ui.onEnterKey = () => { this.on('onEnterKey', false); };
-      text_ui.onActivate = () => { this.on('onActivate', false); };
-      text_ui.onDeactivate = () => { this.on('onDeactivate', false); };
-    }
+    protected _ui: EditText | StaticText;
     get() {
       return this._ui.text;
     }
@@ -362,38 +348,10 @@ namespace KIKAKU {
     }
   }
 
-  class TextsParameter extends MultipleParameter<(EditText | StaticText)> {
+
+  class TextsBaseParameter extends MultipleParameter<(EditText | StaticText)> {
     protected getCreationProperties(): any {
       return {};
-    }
-    buildParameter() {
-      let group = this._group;
-      let help_tip = this._options.helpTip;
-
-      Utils.forEach(this._value, (value, i: number) => {
-        let ui = <EditText>group.add('edittext', undefined, '', this.getCreationProperties());
-        if (Utils.isString(help_tip)) {
-          ui.helpTip = <string>help_tip;
-        } else if (Utils.isArray(help_tip) && Utils.isString(help_tip[i])) {
-          ui.helpTip = help_tip[i];
-        }
-        ui.onChange = ((index: number) => {
-          return () => { this.onChange(index); };
-        })(i);
-        ui.onChanging = ((index: number) => {
-          return () => { this.on(index, 'onChanging', false); };
-        })(i);
-        ui.onEnterKey = ((index: number) => {
-          return () => { this.on(index, 'onEnterKey', false); };
-        })(i);
-        ui.onActivate = ((index: number) => {
-          return () => { this.on(index, 'onActivate', false); };
-        })(i);
-        ui.onDeactivate = ((index: number) => {
-          return () => { this.on(index, 'onDeactivate', false); };
-        })(i);
-        this._uis.push(ui);
-      });
     }
     init(obj?) {
       this.set(this._value);
@@ -436,6 +394,55 @@ namespace KIKAKU {
     }
   }
 
+  class TextParameter extends TextBaseParameter {
+    buildParameter(width: number) {
+      let group = this._group;
+      let value: string = this._value || '';
+
+      let text_ui = this._ui = <EditText>group.add('edittext', undefined, value, this.getCreationProperties());
+      if (this._options.helpTip) {
+        text_ui.helpTip = <string>this._options.helpTip;
+      }
+      text_ui.onChange = () => { this.onChange(); };
+      text_ui.onChanging = () => { this.on('onChanging', false); };
+      text_ui.onEnterKey = () => { this.on('onEnterKey', false); };
+      text_ui.onActivate = () => { this.on('onActivate', false); };
+      text_ui.onDeactivate = () => { this.on('onDeactivate', false); };
+    }
+  }
+
+  class TextsParameter extends TextsBaseParameter {
+    buildParameter() {
+      let group = this._group;
+      let help_tip = this._options.helpTip;
+
+      Utils.forEach(this._value, (value, i: number) => {
+        let ui = <EditText>group.add('edittext', undefined, '', this.getCreationProperties());
+        if (Utils.isString(help_tip)) {
+          ui.helpTip = <string>help_tip;
+        } else if (Utils.isArray(help_tip) && Utils.isString(help_tip[i])) {
+          ui.helpTip = help_tip[i];
+        }
+        ui.onChange = ((index: number) => {
+          return () => { this.onChange(index); };
+        })(i);
+        ui.onChanging = ((index: number) => {
+          return () => { this.on(index, 'onChanging', false); };
+        })(i);
+        ui.onEnterKey = ((index: number) => {
+          return () => { this.on(index, 'onEnterKey', false); };
+        })(i);
+        ui.onActivate = ((index: number) => {
+          return () => { this.on(index, 'onActivate', false); };
+        })(i);
+        ui.onDeactivate = ((index: number) => {
+          return () => { this.on(index, 'onDeactivate', false); };
+        })(i);
+        this._uis.push(ui);
+      });
+    }
+  }
+
   class TextAreaParameter extends TextParameter {
     static DEFAULT_HEIGHT = 80;
     protected getCreationProperties(): any {
@@ -470,25 +477,25 @@ namespace KIKAKU {
     }
   }
 
-  class StaticTextParameter extends TextParameter {
+  class StaticTextParameter extends TextBaseParameter {
     buildParameter(width: number) {
       let group = this._group;
       let value: string = this._value || '';
 
-      let text_ui = this._ui = <StaticText>group.add('statictext', undefined, value);
+      let text_ui = this._ui = <StaticText>group.add('statictext', undefined, value, this.getCreationProperties());
       if (this._options.helpTip) {
         text_ui.helpTip = <string>this._options.helpTip;
       }
     }
   }
 
-  class StaticTextsParameter extends TextsParameter {
+  class StaticTextsParameter extends TextsBaseParameter {
     buildParameter() {
       let group = this._group;
       let help_tip = this._options.helpTip;
 
       Utils.forEach(this._value, (value, i: number) => {
-        let ui = <EditText>group.add('statictext', undefined, '');
+        let ui = <EditText>group.add('statictext', undefined, '', this.getCreationProperties());
         if (Utils.isString(help_tip)) {
           ui.helpTip = <string>help_tip;
         } else if (Utils.isArray(help_tip) && Utils.isString(help_tip[i])) {
@@ -496,6 +503,40 @@ namespace KIKAKU {
         }
         this._uis.push(ui);
       });
+    }
+  }
+
+  class StaticTextAreaParameter extends StaticTextParameter {
+    static DEFAULT_HEIGHT = 80;
+    protected getCreationProperties(): any {
+      return {
+        multiline: true,
+        truncate: 'end',
+      };
+    }
+    getHeight() {
+      let height = TextAreaParameter.DEFAULT_HEIGHT;
+      if (Utils.isNumber(this._options.height)) {
+        height = this._options.height;
+      }
+      return height;
+    }
+  }
+
+  class StaticTextAreasParameter extends StaticTextsParameter {
+    static DEFAULT_HEIGHT = 80;
+    protected getCreationProperties(): any {
+      return {
+        multiline: true,
+        truncate: 'end',
+      };
+    }
+    getHeight() {
+      let height = TextAreasParameter.DEFAULT_HEIGHT;
+      if (Utils.isNumber(this._options.height)) {
+        height = this._options.height;
+      }
+      return height;
     }
   }
 
@@ -507,7 +548,7 @@ namespace KIKAKU {
       index: null
     }, options);
 
-    return function() {
+    return function () {
       let value = Utils.clamp(parseNumber(this.text), _options.minvalue, _options.maxvalue);
       this.text = value + '';
       (<any>parameter).onChange(_options.index);
@@ -707,14 +748,14 @@ namespace KIKAKU {
         number_ui.helpTip = <string>this._options.helpTip;
       }
 
-      slider_ui.onChange = function() {
+      slider_ui.onChange = function () {
         number_ui.text = this.value;
         self.onChange();
       };
       slider_ui.onActivate = () => { this.on('onActivate', false); };
       slider_ui.onDeactivate = () => { this.on('onDeactivate', false); };
 
-      number_ui.onChange = function() {
+      number_ui.onChange = function () {
         let value = Utils.clamp(parseNumber(this.text), self._minvalue, self._maxvalue);
         this.text = value;
         slider_ui.value = value;
@@ -1782,7 +1823,7 @@ namespace KIKAKU {
 
   //file manager
   export type FileType = 'txt' | 'json';
-  
+
   class UIFileManager {
     static FILE_TYPE = {
       TEXT: 'txt',
@@ -1852,7 +1893,7 @@ namespace KIKAKU {
     };
   } = {};
 
-  let API: UIAPI = <UIAPI>function(script_name: string, api_name: string, ...args) {
+  let API: UIAPI = <UIAPI>function (script_name: string, api_name: string, ...args) {
     if (api_scripts[script_name] && api_scripts[script_name][api_name]) {
       let api = api_scripts[script_name][api_name];
       return api.fn.apply(api.ctx, args);
@@ -1860,14 +1901,14 @@ namespace KIKAKU {
     throw new Error('API error');
   };
 
-  API.exists = function(script_name: string, api_name?: string) {
+  API.exists = function (script_name: string, api_name?: string) {
     if (Utils.isUndefined(api_name)) {
       return !!api_scripts[script_name];
     }
     return !!api_scripts[script_name] && !!api_scripts[script_name][api_name];
   };
 
-  API.add = function(script_name: string, api_name: string, fn: Function, ctx?) {
+  API.add = function (script_name: string, api_name: string, fn: Function, ctx?) {
     if (!api_scripts[script_name]) {
       api_scripts[script_name] = {};
     }
@@ -1877,7 +1918,7 @@ namespace KIKAKU {
     };
   };
 
-  API.remove = function(script_name: string) {
+  API.remove = function (script_name: string) {
     if (api_scripts[script_name]) {
       return delete api_scripts[script_name];
     }
@@ -1926,6 +1967,8 @@ namespace KIKAKU {
       TEXTAREAS: 'textareas',
       STATICTEXT: 'statictext',
       STATICTEXTS: 'statictexts',
+      STATICTEXTAREA: 'statictextarea',
+      STATICTEXTAREAS: 'statictextareas',
       NUMBER: 'number',
       NUMBERS: 'numbers',
       SLIDER: 'slider',
@@ -2051,6 +2094,12 @@ namespace KIKAKU {
           break;
         case UIBuilder.PARAMETER_TYPE.STATICTEXTS:
           this._parameters[name] = new StaticTextsParameter(name, value, options);
+          break;
+        case UIBuilder.PARAMETER_TYPE.STATICTEXTAREA:
+          this._parameters[name] = new StaticTextAreaParameter(name, value, options);
+          break;
+        case UIBuilder.PARAMETER_TYPE.STATICTEXTAREAS:
+          this._parameters[name] = new StaticTextAreasParameter(name, value, options);
           break;
         case UIBuilder.PARAMETER_TYPE.NUMBER:
           this._parameters[name] = new NumberParameter(name, value, options);
@@ -2211,6 +2260,24 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTS, name, initial_values, options);
     }
+    addStatictextArea(name: string, initial_value?: string, options?: Function | {
+      title?: boolean | string;
+      height?: number;
+      helpTip?: string;
+      autoSave?: boolean;
+      callback?: Function;
+    }) {
+      return this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTAREA, name, initial_value, options);
+    }
+    addStatictextAreas(name: string, initial_values?: string[], options?: Function | {
+      title?: boolean | string;
+      height?: number;
+      helpTip?: string | string[];
+      autoSave?: boolean;
+      callback?: Function | Function[];
+    }) {
+      return this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTAREAS, name, initial_values, options);
+    }
     addNumber(name: string, initial_value?: number | { value?: number; minvalue?: number; maxvalue?: number; }, options?: Function | {
       title?: boolean | string;
       helpTip?: string;
@@ -2274,6 +2341,7 @@ namespace KIKAKU {
       onEnterKey?: Function;
       onActivate?: Function;
       onDeactivate?: Function;
+      filter?: string;
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.FILE, name, initial_value, options);
     }
@@ -2336,7 +2404,7 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.COLORS, name, initial_values, options);
     }
-    addPopup(name: string, initial_value?: (string[] | {value: string; items: string[]}), options?: Function | {
+    addPopup(name: string, initial_value?: (string[] | { value: string; items: string[] }), options?: Function | {
       title?: boolean | string;
       helpTip?: string;
       autoSave?: boolean;
@@ -2346,7 +2414,7 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.POPUP, name, initial_value, options);
     }
-    addPopups(name: string, initial_values?: (string[] | {value: string; items: string[]})[], options?: Function | {
+    addPopups(name: string, initial_values?: (string[] | { value: string; items: string[] })[], options?: Function | {
       title?: boolean | string;
       helpTip?: string | string[];
       autoSave?: boolean;
@@ -2356,7 +2424,7 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.POPUPS, name, initial_values, options);
     }
-    addListbox(name: string, initial_value?: (string[] | {value: string; items: string[]}), options?: Function | {
+    addListbox(name: string, initial_value?: (string[] | { value: string; items: string[] }), options?: Function | {
       title?: boolean | string;
       height?: number;
       helpTip?: string;
@@ -2368,7 +2436,7 @@ namespace KIKAKU {
     }) {
       return this.add(UIBuilder.PARAMETER_TYPE.LISTBOX, name, initial_value, options);
     }
-    addListboxes(name: string, initial_values?: (string[] | {value: string; items: string[]})[], options?: Function | {
+    addListboxes(name: string, initial_values?: (string[] | { value: string; items: string[] })[], options?: Function | {
       title?: boolean | string;
       height?: number;
       helpTip?: string | string[];
@@ -2545,7 +2613,7 @@ namespace KIKAKU {
       w.spacing = UIBuilder.SPACING_SIZE;
       w.margins = UIBuilder.MARGINS_SIZE;
       if (resizeable) {
-        w.onResizing = w.onResize = function() {
+        w.onResizing = w.onResize = function () {
           this.layout.resize();
         };
       }
@@ -2682,7 +2750,9 @@ namespace KIKAKU {
         const event_type: string = UIBuilder.EVENT_TYPE[event_key];
         if (event_type !== UIBuilder.EVENT_TYPE.INIT && event_type !== UIBuilder.EVENT_TYPE.CLOSE && this._events[event_type]) {
           w.addEventListener(event_type, (ev) => {
-            this.trigger(event_type, ev);
+            if (!(w instanceof Panel) || ev.target === w) {
+              this.trigger(event_type, ev);
+            }
           });
         }
       }

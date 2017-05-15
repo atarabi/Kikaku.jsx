@@ -10,7 +10,11 @@ namespace KIKAKU.Utils.Comment {
 		try {
 			parsed_comment = JSON.parse(comment);
 		} catch (e) {
-			parsed_comment = comment ? { [COMMENT_KEY]: comment } : {};
+			if (comment) {
+				parsed_comment = { [COMMENT_KEY]: comment };
+			} else {
+				parsed_comment = {};
+			}
 		}
 		return parsed_comment;
 	}

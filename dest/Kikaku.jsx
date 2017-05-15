@@ -1,13 +1,18 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var KIKAKU;
 (function (KIKAKU) {
     KIKAKU.MAJOR_VERSION = 0;
     KIKAKU.MINOR_VERSION = 8;
-    KIKAKU.PATCH_VERSION = 6;
+    KIKAKU.PATCH_VERSION = 7;
     KIKAKU.VERSION = KIKAKU.MAJOR_VERSION + "." + KIKAKU.MINOR_VERSION + "." + KIKAKU.PATCH_VERSION;
     KIKAKU.AUTHOR = 'Kareobana';
     KIKAKU.LICENSE = 'MIT';
@@ -42,7 +47,7 @@ var KIKAKU;
             a = a.toJSON(e);
         } if (typeof rep === "function") {
             a = rep.call(t, e, a);
-        } switch (typeof a) {
+        } switch ((typeof a)) {
             case "string": return quote(a);
             case "number": return isFinite(a) ? String(a) : "null";
             case "boolean":
@@ -199,7 +204,7 @@ var KIKAKU;
             var F = function () { };
             F.prototype = parent.prototype;
             child.prototype = new F;
-            child.super = parent;
+            child["super"] = parent;
             child.uber = parent.prototype;
             child.prototype.constructor = child;
         }
@@ -574,7 +579,7 @@ var KIKAKU;
         function createItemFilter() {
             var filters = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                filters[_i - 0] = arguments[_i];
+                filters[_i] = arguments[_i];
             }
             var fns = [];
             Utils.forEach(filters, function (filter) {
@@ -896,7 +901,7 @@ var KIKAKU;
         function createLayerFilter() {
             var filters = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                filters[_i - 0] = arguments[_i];
+                filters[_i] = arguments[_i];
             }
             var fns = [];
             Utils.forEach(filters, function (filter) {
@@ -1312,7 +1317,7 @@ var KIKAKU;
         function createPropertyFilter() {
             var filters = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                filters[_i - 0] = arguments[_i];
+                filters[_i] = arguments[_i];
             }
             var fns = [];
             Utils.forEach(filters, function (filter) {
@@ -1665,7 +1670,12 @@ var KIKAKU;
                     parsed_comment = JSON.parse(comment);
                 }
                 catch (e) {
-                    parsed_comment = comment ? (_a = {}, _a[COMMENT_KEY] = comment, _a) : {};
+                    if (comment) {
+                        parsed_comment = (_a = {}, _a[COMMENT_KEY] = comment, _a);
+                    }
+                    else {
+                        parsed_comment = {};
+                    }
                 }
                 return parsed_comment;
                 var _a;
@@ -1730,7 +1740,7 @@ var KIKAKU;
         KArray.of = function () {
             var items = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                items[_i - 0] = arguments[_i];
+                items[_i] = arguments[_i];
             }
             return new KArray(items);
         };
@@ -1781,7 +1791,7 @@ var KIKAKU;
         KArray.prototype.push = function () {
             var items = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                items[_i - 0] = arguments[_i];
+                items[_i] = arguments[_i];
             }
             return (_a = this._arr).push.apply(_a, items);
             var _a;
@@ -1809,7 +1819,7 @@ var KIKAKU;
         KArray.prototype.unshift = function () {
             var items = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                items[_i - 0] = arguments[_i];
+                items[_i] = arguments[_i];
             }
             return (_a = this._arr).unshift.apply(_a, items);
             var _a;
@@ -1818,7 +1828,7 @@ var KIKAKU;
         KArray.prototype.concat = function () {
             var items = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                items[_i - 0] = arguments[_i];
+                items[_i] = arguments[_i];
             }
             return new KArray((_a = this._arr).concat.apply(_a, items));
             var _a;
@@ -2594,7 +2604,7 @@ var KIKAKU;
     var KSolidSource = (function (_super) {
         __extends(KSolidSource, _super);
         function KSolidSource() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KSolidSource.isValid = function (source) {
@@ -2619,7 +2629,7 @@ var KIKAKU;
     var KPlaceholderSource = (function (_super) {
         __extends(KPlaceholderSource, _super);
         function KPlaceholderSource() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KPlaceholderSource.isValid = function (source) {
@@ -2638,7 +2648,7 @@ var KIKAKU;
     var KFileSource = (function (_super) {
         __extends(KFileSource, _super);
         function KFileSource() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KFileSource.isValid = function (source) {
@@ -2794,7 +2804,7 @@ var KIKAKU;
     var KFolderItem = (function (_super) {
         __extends(KFolderItem, _super);
         function KFolderItem() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KFolderItem.isValid = function (item) {
@@ -2832,7 +2842,7 @@ var KIKAKU;
     var KAVItem = (function (_super) {
         __extends(KAVItem, _super);
         function KAVItem() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KAVItem.isValid = function (item) {
@@ -2932,7 +2942,7 @@ var KIKAKU;
     var KCompItem = (function (_super) {
         __extends(KCompItem, _super);
         function KCompItem() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KCompItem.isValid = function (item) {
@@ -3076,7 +3086,7 @@ var KIKAKU;
     var KFootageItem = (function (_super) {
         __extends(KFootageItem, _super);
         function KFootageItem() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KFootageItem.isValid = function (item) {
@@ -3487,7 +3497,7 @@ var KIKAKU;
     var KAVLayer = (function (_super) {
         __extends(KAVLayer, _super);
         function KAVLayer() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KAVLayer.isValid = function (layer) {
@@ -3672,7 +3682,7 @@ var KIKAKU;
     var KShapeLayer = (function (_super) {
         __extends(KShapeLayer, _super);
         function KShapeLayer() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KShapeLayer.isValid = function (layer) {
@@ -3695,7 +3705,7 @@ var KIKAKU;
     var KTextLayer = (function (_super) {
         __extends(KTextLayer, _super);
         function KTextLayer() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KTextLayer.isValid = function (layer) {
@@ -3721,7 +3731,7 @@ var KIKAKU;
     var KCameraLayer = (function (_super) {
         __extends(KCameraLayer, _super);
         function KCameraLayer() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KCameraLayer.isValid = function (layer) {
@@ -3744,7 +3754,7 @@ var KIKAKU;
     var KLightLayer = (function (_super) {
         __extends(KLightLayer, _super);
         function KLightLayer() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KLightLayer.isValid = function (layer) {
@@ -3934,7 +3944,7 @@ var KIKAKU;
     var KPropertyGroup = (function (_super) {
         __extends(KPropertyGroup, _super);
         function KPropertyGroup() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KPropertyGroup.isValid = function (prop) {
@@ -3995,7 +4005,7 @@ var KIKAKU;
     var KMaskPropertyGroup = (function (_super) {
         __extends(KMaskPropertyGroup, _super);
         function KMaskPropertyGroup() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KMaskPropertyGroup.isValid = function (prop) {
@@ -4074,7 +4084,7 @@ var KIKAKU;
     var KProperty = (function (_super) {
         __extends(KProperty, _super);
         function KProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //static
         KProperty.isValid = function (prop) {
@@ -4306,7 +4316,7 @@ var KIKAKU;
     var KNoValueProperty = (function (_super) {
         __extends(KNoValueProperty, _super);
         function KNoValueProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KNoValueProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.NO_VALUE;
@@ -4317,7 +4327,7 @@ var KIKAKU;
     var KThreeDSpatialProperty = (function (_super) {
         __extends(KThreeDSpatialProperty, _super);
         function KThreeDSpatialProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KThreeDSpatialProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.ThreeD_SPATIAL;
@@ -4328,7 +4338,7 @@ var KIKAKU;
     var KThreeDProperty = (function (_super) {
         __extends(KThreeDProperty, _super);
         function KThreeDProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KThreeDProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.ThreeD;
@@ -4339,7 +4349,7 @@ var KIKAKU;
     var KTwoDSpatialProperty = (function (_super) {
         __extends(KTwoDSpatialProperty, _super);
         function KTwoDSpatialProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTwoDSpatialProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.TwoD_SPATIAL;
@@ -4350,7 +4360,7 @@ var KIKAKU;
     var KTwoDProperty = (function (_super) {
         __extends(KTwoDProperty, _super);
         function KTwoDProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTwoDProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.TwoD;
@@ -4361,7 +4371,7 @@ var KIKAKU;
     var KOneDProperty = (function (_super) {
         __extends(KOneDProperty, _super);
         function KOneDProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KOneDProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.OneD;
@@ -4372,7 +4382,7 @@ var KIKAKU;
     var KColorProperty = (function (_super) {
         __extends(KColorProperty, _super);
         function KColorProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KColorProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.OneD;
@@ -4383,7 +4393,7 @@ var KIKAKU;
     var KCustomValueProperty = (function (_super) {
         __extends(KCustomValueProperty, _super);
         function KCustomValueProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KCustomValueProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.CUSTOM_VALUE;
@@ -4394,7 +4404,7 @@ var KIKAKU;
     var KMarkerProperty = (function (_super) {
         __extends(KMarkerProperty, _super);
         function KMarkerProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KMarkerProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.MARKER;
@@ -4405,7 +4415,7 @@ var KIKAKU;
     var KLayerIndexProperty = (function (_super) {
         __extends(KLayerIndexProperty, _super);
         function KLayerIndexProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerIndexProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.LAYER_INDEX;
@@ -4416,7 +4426,7 @@ var KIKAKU;
     var KMaskIndexProperty = (function (_super) {
         __extends(KMaskIndexProperty, _super);
         function KMaskIndexProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KMaskIndexProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.MASK_INDEX;
@@ -4427,7 +4437,7 @@ var KIKAKU;
     var KShapeProperty = (function (_super) {
         __extends(KShapeProperty, _super);
         function KShapeProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KShapeProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.SHAPE;
@@ -4438,7 +4448,7 @@ var KIKAKU;
     var KTextDocumentProperty = (function (_super) {
         __extends(KTextDocumentProperty, _super);
         function KTextDocumentProperty() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextDocumentProperty.prototype.isValid = function () {
             return _super.prototype.isValid.call(this) && this._prop.propertyValueType === PropertyValueType.TEXT_DOCUMENT;
@@ -4452,7 +4462,7 @@ var KIKAKU;
     var KMaskParade = (function (_super) {
         __extends(KMaskParade, _super);
         function KMaskParade() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //methods
         KMaskParade.prototype.addMaskAtom = function (name) {
@@ -4470,7 +4480,7 @@ var KIKAKU;
     var KEffectParade = (function (_super) {
         __extends(KEffectParade, _super);
         function KEffectParade() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //override
         KEffectParade.prototype.addProperty = function (name_or_matchname) {
@@ -4486,7 +4496,7 @@ var KIKAKU;
     var KEffect = (function (_super) {
         __extends(KEffect, _super);
         function KEffect() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //override
         KEffect.prototype.property = function (index_or_name) {
@@ -4503,12 +4513,13 @@ var KIKAKU;
         __extends(KLayerStyles, _super);
         function KLayerStyles(prop, parent) {
             if (parent === void 0) { parent = null; }
-            _super.call(this, prop, parent);
+            var _this = _super.call(this, prop, parent) || this;
             var parent_property = prop;
             while (parent_property.parentProperty) {
                 parent_property = parent_property.parentProperty;
             }
-            this._layer = parent_property;
+            _this._layer = parent_property;
+            return _this;
         }
         //properties
         KLayerStyles.prototype.blendingOptions = function () {
@@ -4597,6 +4608,7 @@ var KIKAKU;
                 app.executeCommand(command_id);
             }
             catch (e) {
+                //pass
             }
             finally {
                 this._layer.selected = false;
@@ -4611,7 +4623,7 @@ var KIKAKU;
     var KLayerStylesBlendingOptions = (function (_super) {
         __extends(KLayerStylesBlendingOptions, _super);
         function KLayerStylesBlendingOptions() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesBlendingOptions.prototype.globalLightAngle = function () {
             return new KOneDProperty(this._prop.property('ADBE Global Angle2'), this);
@@ -4628,7 +4640,7 @@ var KIKAKU;
     var KLayerStylesAdvancedBlending = (function (_super) {
         __extends(KLayerStylesAdvancedBlending, _super);
         function KLayerStylesAdvancedBlending() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesAdvancedBlending.prototype.fillOpacity = function () {
             return new KOneDProperty(this._prop.property('ADBE Layer Fill Opacity2'), this);
@@ -4654,7 +4666,7 @@ var KIKAKU;
     var KLayerStylesDropShadow = (function (_super) {
         __extends(KLayerStylesDropShadow, _super);
         function KLayerStylesDropShadow() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesDropShadow.prototype.blendMode = function () {
             return new KOneDProperty(this._prop.property('dropShadow/mode2'), this);
@@ -4692,7 +4704,7 @@ var KIKAKU;
     var KLayerStylesInnerShadow = (function (_super) {
         __extends(KLayerStylesInnerShadow, _super);
         function KLayerStylesInnerShadow() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesInnerShadow.prototype.blendMode = function () {
             return new KOneDProperty(this._prop.property('innerShadow/mode2'), this);
@@ -4727,7 +4739,7 @@ var KIKAKU;
     var KLayerStylesOuterGlow = (function (_super) {
         __extends(KLayerStylesOuterGlow, _super);
         function KLayerStylesOuterGlow() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesOuterGlow.prototype.blendMode = function () {
             return new KOneDProperty(this._prop.property('outerGlow/mode2'), this);
@@ -4771,7 +4783,7 @@ var KIKAKU;
     var KLayerStylesInnerGlow = (function (_super) {
         __extends(KLayerStylesInnerGlow, _super);
         function KLayerStylesInnerGlow() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesInnerGlow.prototype.blendMode = function () {
             return new KOneDProperty(this._prop.property('innerGlow/mode2'), this);
@@ -4818,7 +4830,7 @@ var KIKAKU;
     var KLayerStylesBevelAndEmboss = (function (_super) {
         __extends(KLayerStylesBevelAndEmboss, _super);
         function KLayerStylesBevelAndEmboss() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesBevelAndEmboss.prototype.style = function () {
             return new KOneDProperty(this._prop.property('bevelEmboss/bevelStyle'), this);
@@ -4871,7 +4883,7 @@ var KIKAKU;
     var KLayerStylesSatin = (function (_super) {
         __extends(KLayerStylesSatin, _super);
         function KLayerStylesSatin() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesSatin.prototype.blendMode = function () {
             return new KOneDProperty(this._prop.property('chromeFX/mode2'), this);
@@ -4900,7 +4912,7 @@ var KIKAKU;
     var KLayerStylesColorOverlay = (function (_super) {
         __extends(KLayerStylesColorOverlay, _super);
         function KLayerStylesColorOverlay() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesColorOverlay.prototype.blendMode = function () {
             return new KOneDProperty(this._prop.property('solidFill/mode2'), this);
@@ -4917,7 +4929,7 @@ var KIKAKU;
     var KLayerStylesGradientOverlay = (function (_super) {
         __extends(KLayerStylesGradientOverlay, _super);
         function KLayerStylesGradientOverlay() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesGradientOverlay.prototype.blendMode = function () {
             return new KOneDProperty(this._prop.property('gradientFill/mode2'), this);
@@ -4955,7 +4967,7 @@ var KIKAKU;
     var KLayerStylesStroke = (function (_super) {
         __extends(KLayerStylesStroke, _super);
         function KLayerStylesStroke() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLayerStylesStroke.prototype.blendMode = function () {
             return new KOneDProperty(this._prop.property('frameFX/mode2'), this);
@@ -4981,7 +4993,7 @@ var KIKAKU;
     var KTextProperties = (function (_super) {
         __extends(KTextProperties, _super);
         function KTextProperties() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextProperties.prototype.sourceText = function () {
             return new KTextDocumentProperty(this._prop.property('ADBE Text Document'), this);
@@ -5001,7 +5013,7 @@ var KIKAKU;
     var KTextPathOptions = (function (_super) {
         __extends(KTextPathOptions, _super);
         function KTextPathOptions() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextPathOptions.prototype.path = function () {
             return new KMaskIndexProperty(this._prop.property('ADBE Text Path'), this);
@@ -5012,7 +5024,7 @@ var KIKAKU;
     var KTextMoreOptions = (function (_super) {
         __extends(KTextMoreOptions, _super);
         function KTextMoreOptions() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextMoreOptions.prototype.anchorPointGrouping = function () {
             return new KOneDProperty(this._prop.property('ADBE Text Anchor Point Option'), this);
@@ -5032,7 +5044,7 @@ var KIKAKU;
     var KTextAnimators = (function (_super) {
         __extends(KTextAnimators, _super);
         function KTextAnimators() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextAnimators.prototype.addAnimator = function (name) {
             var animator = this._prop.addProperty('ADBE Text Animator');
@@ -5046,7 +5058,7 @@ var KIKAKU;
     var KTextAnimator = (function (_super) {
         __extends(KTextAnimator, _super);
         function KTextAnimator() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextAnimator.prototype.properties = function () {
             return new KTextAnimatorProperties(this._prop.property('ADBE Text Animator Properties'), this);
@@ -5060,7 +5072,7 @@ var KIKAKU;
     var KTextAnimatorProperties = (function (_super) {
         __extends(KTextAnimatorProperties, _super);
         function KTextAnimatorProperties() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextAnimatorProperties.prototype.anchorPoint = function () {
             return new KThreeDSpatialProperty(this._prop.property('ADBE Text Anchor Point 3D'), this);
@@ -5230,7 +5242,7 @@ var KIKAKU;
     var KTextSelectors = (function (_super) {
         __extends(KTextSelectors, _super);
         function KTextSelectors() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextSelectors.prototype.addRangeSelector = function (name) {
             var selector = this._prop.addProperty('ADBE Text Selector');
@@ -5256,7 +5268,7 @@ var KIKAKU;
     var KTextRangeSelector = (function (_super) {
         __extends(KTextRangeSelector, _super);
         function KTextRangeSelector() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextRangeSelector.prototype.start = function () {
             return new KOneDProperty(this._prop.property('ADBE Text Percent Start'), this);
@@ -5276,7 +5288,7 @@ var KIKAKU;
     var KTextRangeAdvanced = (function (_super) {
         __extends(KTextRangeAdvanced, _super);
         function KTextRangeAdvanced() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextRangeAdvanced.prototype.units = function () {
             return new KOneDProperty(this._prop.property('ADBE Text Range Units'), this);
@@ -5311,7 +5323,7 @@ var KIKAKU;
     var KWigglySelector = (function (_super) {
         __extends(KWigglySelector, _super);
         function KWigglySelector() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KWigglySelector.prototype.mode = function () {
             return new KOneDProperty(this._prop.property('ADBE Text Selector Mode'), this);
@@ -5349,7 +5361,7 @@ var KIKAKU;
     var KTextExpressionSelector = (function (_super) {
         __extends(KTextExpressionSelector, _super);
         function KTextExpressionSelector() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KTextExpressionSelector.prototype.basedOn = function () {
             return new KOneDProperty(this._prop.property('ADBE Text Range Type2'), this);
@@ -5366,7 +5378,7 @@ var KIKAKU;
     var KVectorsGroup = (function (_super) {
         __extends(KVectorsGroup, _super);
         function KVectorsGroup() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         //group
         KVectorsGroup.prototype.addGroup = function (name) {
@@ -5492,7 +5504,7 @@ var KIKAKU;
     var KRootVectors = (function (_super) {
         __extends(KRootVectors, _super);
         function KRootVectors() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         return KRootVectors;
     }(KVectorsGroup));
@@ -5500,7 +5512,7 @@ var KIKAKU;
     var KVectorGroup = (function (_super) {
         __extends(KVectorGroup, _super);
         function KVectorGroup() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorGroup.prototype.vectors = function () {
             return new KVectorsGroup(this._prop.property('ADBE Vectors Group'), this);
@@ -5514,7 +5526,7 @@ var KIKAKU;
     var KVectorTransform = (function (_super) {
         __extends(KVectorTransform, _super);
         function KVectorTransform() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorTransform.prototype.anchorPoint = function () {
             return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Anchor'), this);
@@ -5544,7 +5556,7 @@ var KIKAKU;
     var KVectorRect = (function (_super) {
         __extends(KVectorRect, _super);
         function KVectorRect() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorRect.prototype.size = function () {
             return new KTwoDProperty(this._prop.property('ADBE Vector Rect Size'), this);
@@ -5561,7 +5573,7 @@ var KIKAKU;
     var KVectorEllipse = (function (_super) {
         __extends(KVectorEllipse, _super);
         function KVectorEllipse() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorEllipse.prototype.size = function () {
             return new KTwoDProperty(this._prop.property('ADBE Vector Ellipse Size'), this);
@@ -5575,7 +5587,7 @@ var KIKAKU;
     var KVectorPolystar = (function (_super) {
         __extends(KVectorPolystar, _super);
         function KVectorPolystar() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorPolystar.prototype.type = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Star Type'), this);
@@ -5607,7 +5619,7 @@ var KIKAKU;
     var KVectorPath = (function (_super) {
         __extends(KVectorPath, _super);
         function KVectorPath() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorPath.prototype.path = function () {
             return new KShapeProperty(this._prop.property('ADBE Vector Shape'), this);
@@ -5619,7 +5631,7 @@ var KIKAKU;
     var KVectorFill = (function (_super) {
         __extends(KVectorFill, _super);
         function KVectorFill() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorFill.prototype.composite = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Composite Order'), this);
@@ -5639,7 +5651,7 @@ var KIKAKU;
     var KVectorStroke = (function (_super) {
         __extends(KVectorStroke, _super);
         function KVectorStroke() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorStroke.prototype.composite = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Composite Order'), this);
@@ -5668,7 +5680,7 @@ var KIKAKU;
     var KVectorGradientFill = (function (_super) {
         __extends(KVectorGradientFill, _super);
         function KVectorGradientFill() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorGradientFill.prototype.composite = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Composite Order'), this);
@@ -5697,7 +5709,7 @@ var KIKAKU;
     var KVectorGradientStroke = (function (_super) {
         __extends(KVectorGradientStroke, _super);
         function KVectorGradientStroke() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorGradientStroke.prototype.composite = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Composite Order'), this);
@@ -5736,7 +5748,7 @@ var KIKAKU;
     var KVectorMergePaths = (function (_super) {
         __extends(KVectorMergePaths, _super);
         function KVectorMergePaths() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorMergePaths.prototype.mode = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Merge Type'), this);
@@ -5747,7 +5759,7 @@ var KIKAKU;
     var KVectorOffsetPaths = (function (_super) {
         __extends(KVectorOffsetPaths, _super);
         function KVectorOffsetPaths() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorOffsetPaths.prototype.amount = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Offset Amount'), this);
@@ -5764,7 +5776,7 @@ var KIKAKU;
     var KVectorPuckerAndBloat = (function (_super) {
         __extends(KVectorPuckerAndBloat, _super);
         function KVectorPuckerAndBloat() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorPuckerAndBloat.prototype.amount = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector PuckerBloat Amount'), this);
@@ -5775,7 +5787,7 @@ var KIKAKU;
     var KVectorRepeater = (function (_super) {
         __extends(KVectorRepeater, _super);
         function KVectorRepeater() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorRepeater.prototype.copies = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Repeater Copies'), this);
@@ -5792,7 +5804,7 @@ var KIKAKU;
     var KVectorRepeaterTransform = (function (_super) {
         __extends(KVectorRepeaterTransform, _super);
         function KVectorRepeaterTransform() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorRepeaterTransform.prototype.anchorPoint = function () {
             return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Repeater Anchor'), this);
@@ -5818,7 +5830,7 @@ var KIKAKU;
     var KVectorRoundCorners = (function (_super) {
         __extends(KVectorRoundCorners, _super);
         function KVectorRoundCorners() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorRoundCorners.prototype.radius = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector RoundCorner Radius'), this);
@@ -5829,7 +5841,7 @@ var KIKAKU;
     var KVectorTrimPaths = (function (_super) {
         __extends(KVectorTrimPaths, _super);
         function KVectorTrimPaths() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorTrimPaths.prototype.start = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Trim Start'), this);
@@ -5849,7 +5861,7 @@ var KIKAKU;
     var KVectorTwist = (function (_super) {
         __extends(KVectorTwist, _super);
         function KVectorTwist() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorTwist.prototype.angle = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Twist Angle'), this);
@@ -5863,7 +5875,7 @@ var KIKAKU;
     var KVectorWigglePaths = (function (_super) {
         __extends(KVectorWigglePaths, _super);
         function KVectorWigglePaths() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorWigglePaths.prototype.size = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Roughen Size'), this);
@@ -5895,7 +5907,7 @@ var KIKAKU;
     var KVectorWiggler = (function (_super) {
         __extends(KVectorWiggler, _super);
         function KVectorWiggler() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorWiggler.prototype.wigglesPerSecond = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Xform Temporal Freq'), this);
@@ -5921,7 +5933,7 @@ var KIKAKU;
     var KVectorWigglerTransform = (function (_super) {
         __extends(KVectorWigglerTransform, _super);
         function KVectorWigglerTransform() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorWigglerTransform.prototype.anchorPoint = function () {
             return new KTwoDSpatialProperty(this._prop.property('ADBE Vector Wiggler Anchor'), this);
@@ -5941,7 +5953,7 @@ var KIKAKU;
     var KVectorZigzag = (function (_super) {
         __extends(KVectorZigzag, _super);
         function KVectorZigzag() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KVectorZigzag.prototype.size = function () {
             return new KOneDProperty(this._prop.property('ADBE Vector Zigzag Size'), this);
@@ -5961,7 +5973,7 @@ var KIKAKU;
     var KMaterialOptions = (function (_super) {
         __extends(KMaterialOptions, _super);
         function KMaterialOptions() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KMaterialOptions.prototype.castsShadows = function () {
             return new KOneDProperty(this._prop.property('ADBE Casts Shadows'), this);
@@ -5999,7 +6011,7 @@ var KIKAKU;
     var KCameraOptions = (function (_super) {
         __extends(KCameraOptions, _super);
         function KCameraOptions() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KCameraOptions.prototype.zoom = function () {
             return new KOneDProperty(this._prop.property('ADBE Camera Zoom'), this);
@@ -6049,7 +6061,7 @@ var KIKAKU;
     var KLightOptions = (function (_super) {
         __extends(KLightOptions, _super);
         function KLightOptions() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         KLightOptions.prototype.intensity = function () {
             return new KOneDProperty(this._prop.property('ADBE Light Intensity'), this);
@@ -6238,23 +6250,23 @@ var KIKAKU;
             file.write(text);
             file.close();
         };
-        FileManager.prototype.delete = function (file_name) {
+        FileManager.prototype["delete"] = function (file_name) {
             var file = this.getFile(file_name);
             if (file.exists) {
                 return file.remove();
             }
             return true;
         };
-        FileManager.TYPE = {
-            CUSTOM: 'custom',
-            APP_DATA: 'appData',
-            COMMON_FILES: 'commonFiles',
-            DESKTOP: 'desktop',
-            MY_DOCUMENTS: 'myDocuments',
-            USER_DATA: 'userData'
-        };
         return FileManager;
     }());
+    FileManager.TYPE = {
+        CUSTOM: 'custom',
+        APP_DATA: 'appData',
+        COMMON_FILES: 'commonFiles',
+        DESKTOP: 'desktop',
+        MY_DOCUMENTS: 'myDocuments',
+        USER_DATA: 'userData'
+    };
     KIKAKU.FileManager = FileManager;
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
@@ -6452,7 +6464,7 @@ var KIKAKU;
         SettingManager.prototype.save = function (key, value) {
             app.settings.saveSetting(this._section, key, JSON.stringify(value));
         };
-        SettingManager.prototype.delete = function (key) {
+        SettingManager.prototype["delete"] = function (key) {
             if (!this.have(key)) {
                 return;
             }
@@ -6561,6 +6573,7 @@ var KIKAKU;
                     value = eval(value);
                 }
                 catch (e) {
+                    //pass
                 }
             }
         }
@@ -6604,28 +6617,29 @@ var KIKAKU;
         ParameterBase.prototype.removeItem = function (item_or_index, item2) { };
         ParameterBase.prototype.replaceItems = function (items_or_index, items2) { };
         ParameterBase.prototype.toJSON = function () { return {}; };
-        ParameterBase.DEFAULT_HEIGHT = 24;
-        ParameterBase.DEFAULT_OPTIONS = {
-            title: true,
-            helpTip: null,
-            height: null,
-            filter: null,
-            stack: false,
-            autoSave: true,
-            callback: noop,
-            onDoubleClick: noop,
-            onChanging: noop,
-            onEnterKey: noop,
-            onActivate: noop,
-            onDeactivate: noop
-        };
         return ParameterBase;
     }());
+    ParameterBase.DEFAULT_HEIGHT = 24;
+    ParameterBase.DEFAULT_OPTIONS = {
+        title: true,
+        helpTip: null,
+        height: null,
+        filter: null,
+        stack: false,
+        autoSave: true,
+        callback: noop,
+        onDoubleClick: noop,
+        onChanging: noop,
+        onEnterKey: noop,
+        onActivate: noop,
+        onDeactivate: noop
+    };
     var Parameter = (function (_super) {
         __extends(Parameter, _super);
         function Parameter() {
-            _super.apply(this, arguments);
-            this._initialized = function () { return false; };
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._initialized = function () { return false; };
+            return _this;
         }
         Parameter.prototype.build = function (group, builder) {
             this._group = group;
@@ -6681,7 +6695,7 @@ var KIKAKU;
     var SingleParameter = (function (_super) {
         __extends(SingleParameter, _super);
         function SingleParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         SingleParameter.prototype.onChange = function () {
             this.on('callback');
@@ -6705,8 +6719,9 @@ var KIKAKU;
     var MultipleParameter = (function (_super) {
         __extends(MultipleParameter, _super);
         function MultipleParameter() {
-            _super.apply(this, arguments);
-            this._uis = [];
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._uis = [];
+            return _this;
         }
         MultipleParameter.prototype.onChange = function (index) {
             this.on(index, 'callback', true);
@@ -6752,7 +6767,7 @@ var KIKAKU;
     var HeadingParameter = (function (_super) {
         __extends(HeadingParameter, _super);
         function HeadingParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         HeadingParameter.prototype.buildUI = function () {
             var group = this._group;
@@ -6792,7 +6807,7 @@ var KIKAKU;
     var SeparatorParameter = (function (_super) {
         __extends(SeparatorParameter, _super);
         function SeparatorParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         SeparatorParameter.prototype.getHeight = function () {
             return SeparatorParameter.DEFAULT_HEIGHT;
@@ -6803,13 +6818,13 @@ var KIKAKU;
             group.alignChildren = ['fill', 'center'];
             group.add('panel', [0, 0, width, 2]);
         };
-        SeparatorParameter.DEFAULT_HEIGHT = 12;
         return SeparatorParameter;
     }(Parameter));
+    SeparatorParameter.DEFAULT_HEIGHT = 12;
     var SpaceParameter = (function (_super) {
         __extends(SpaceParameter, _super);
         function SpaceParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         SpaceParameter.prototype.getHeight = function () {
             if (KIKAKU.Utils.isNumber(this._value)) {
@@ -6828,8 +6843,9 @@ var KIKAKU;
     var PanelParameter = (function (_super) {
         __extends(PanelParameter, _super);
         function PanelParameter() {
-            _super.apply(this, arguments);
-            this._stack = false;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._stack = false;
+            return _this;
         }
         PanelParameter.prototype.buildUI = function () {
             var group = this._group;
@@ -6888,14 +6904,14 @@ var KIKAKU;
     var PanelEndParameter = (function (_super) {
         __extends(PanelEndParameter, _super);
         function PanelEndParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         return PanelEndParameter;
     }(ParameterBase));
     var GroupParameter = (function (_super) {
         __extends(GroupParameter, _super);
         function GroupParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         GroupParameter.prototype.buildUI = function () { };
         return GroupParameter;
@@ -6903,19 +6919,86 @@ var KIKAKU;
     var GroupEndParameter = (function (_super) {
         __extends(GroupEndParameter, _super);
         function GroupEndParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         return GroupEndParameter;
     }(ParameterBase));
     //text parameter
+    var TextBaseParameter = (function (_super) {
+        __extends(TextBaseParameter, _super);
+        function TextBaseParameter() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        TextBaseParameter.prototype.getCreationProperties = function () {
+            return {};
+        };
+        TextBaseParameter.prototype.get = function () {
+            return this._ui.text;
+        };
+        TextBaseParameter.prototype.set = function (value) {
+            var text = String(value);
+            if (text !== this.get()) {
+                this._ui.text = text;
+                this.onChange();
+            }
+        };
+        return TextBaseParameter;
+    }(SingleParameter));
+    var TextsBaseParameter = (function (_super) {
+        __extends(TextsBaseParameter, _super);
+        function TextsBaseParameter() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        TextsBaseParameter.prototype.getCreationProperties = function () {
+            return {};
+        };
+        TextsBaseParameter.prototype.init = function (obj) {
+            this.set(this._value);
+            _super.prototype.init.call(this, obj);
+        };
+        TextsBaseParameter.prototype.get = function (index) {
+            if (KIKAKU.Utils.isNumber(index)) {
+                if (index < 0 || index >= this._uis.length) {
+                    throw new RangeError;
+                }
+                return this._uis[index].text;
+            }
+            var values = [];
+            for (var _i = 0, _a = this._uis; _i < _a.length; _i++) {
+                var ui = _a[_i];
+                values.push(ui.text);
+            }
+            return values;
+        };
+        TextsBaseParameter.prototype.set = function (value_or_index, value2) {
+            var _this = this;
+            if (!KIKAKU.Utils.isUndefined(value2)) {
+                var index = value_or_index;
+                if (index < 0 || index >= this._uis.length) {
+                    throw new RangeError;
+                }
+                var value = String(value2);
+                if (value !== this.get(index)) {
+                    this._uis[index].text = value;
+                    this.onChange(index);
+                }
+            }
+            else {
+                if (KIKAKU.Utils.isArray(value_or_index)) {
+                    var value = value_or_index.slice(0, this._uis.length);
+                    KIKAKU.Utils.forEach(value, function (value, i) {
+                        _this.set(i, value);
+                    });
+                }
+            }
+        };
+        return TextsBaseParameter;
+    }(MultipleParameter));
     var TextParameter = (function (_super) {
         __extends(TextParameter, _super);
         function TextParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
-        TextParameter.prototype.getCreationProperties = function () {
-            return {};
-        };
         TextParameter.prototype.buildParameter = function (width) {
             var _this = this;
             var group = this._group;
@@ -6930,26 +7013,13 @@ var KIKAKU;
             text_ui.onActivate = function () { _this.on('onActivate', false); };
             text_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
-        TextParameter.prototype.get = function () {
-            return this._ui.text;
-        };
-        TextParameter.prototype.set = function (value) {
-            var text = String(value);
-            if (text !== this.get()) {
-                this._ui.text = text;
-                this.onChange();
-            }
-        };
         return TextParameter;
-    }(SingleParameter));
+    }(TextBaseParameter));
     var TextsParameter = (function (_super) {
         __extends(TextsParameter, _super);
         function TextsParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
-        TextsParameter.prototype.getCreationProperties = function () {
-            return {};
-        };
         TextsParameter.prototype.buildParameter = function () {
             var _this = this;
             var group = this._group;
@@ -6980,52 +7050,12 @@ var KIKAKU;
                 _this._uis.push(ui);
             });
         };
-        TextsParameter.prototype.init = function (obj) {
-            this.set(this._value);
-            _super.prototype.init.call(this, obj);
-        };
-        TextsParameter.prototype.get = function (index) {
-            if (KIKAKU.Utils.isNumber(index)) {
-                if (index < 0 || index >= this._uis.length) {
-                    throw new RangeError;
-                }
-                return this._uis[index].text;
-            }
-            var values = [];
-            for (var _i = 0, _a = this._uis; _i < _a.length; _i++) {
-                var ui = _a[_i];
-                values.push(ui.text);
-            }
-            return values;
-        };
-        TextsParameter.prototype.set = function (value_or_index, value2) {
-            var _this = this;
-            if (!KIKAKU.Utils.isUndefined(value2)) {
-                var index = value_or_index;
-                if (index < 0 || index >= this._uis.length) {
-                    throw new RangeError;
-                }
-                var value = String(value2);
-                if (value !== this.get(index)) {
-                    this._uis[index].text = value;
-                    this.onChange(index);
-                }
-            }
-            else {
-                if (KIKAKU.Utils.isArray(value_or_index)) {
-                    var value = value_or_index.slice(0, this._uis.length);
-                    KIKAKU.Utils.forEach(value, function (value, i) {
-                        _this.set(i, value);
-                    });
-                }
-            }
-        };
         return TextsParameter;
-    }(MultipleParameter));
+    }(TextsBaseParameter));
     var TextAreaParameter = (function (_super) {
         __extends(TextAreaParameter, _super);
         function TextAreaParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         TextAreaParameter.prototype.getCreationProperties = function () {
             return {
@@ -7040,13 +7070,13 @@ var KIKAKU;
             }
             return height;
         };
-        TextAreaParameter.DEFAULT_HEIGHT = 80;
         return TextAreaParameter;
     }(TextParameter));
+    TextAreaParameter.DEFAULT_HEIGHT = 80;
     var TextAreasParameter = (function (_super) {
         __extends(TextAreasParameter, _super);
         function TextAreasParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         TextAreasParameter.prototype.getCreationProperties = function () {
             return {
@@ -7061,35 +7091,35 @@ var KIKAKU;
             }
             return height;
         };
-        TextAreasParameter.DEFAULT_HEIGHT = 80;
         return TextAreasParameter;
     }(TextsParameter));
+    TextAreasParameter.DEFAULT_HEIGHT = 80;
     var StaticTextParameter = (function (_super) {
         __extends(StaticTextParameter, _super);
         function StaticTextParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         StaticTextParameter.prototype.buildParameter = function (width) {
             var group = this._group;
             var value = this._value || '';
-            var text_ui = this._ui = group.add('statictext', undefined, value);
+            var text_ui = this._ui = group.add('statictext', undefined, value, this.getCreationProperties());
             if (this._options.helpTip) {
                 text_ui.helpTip = this._options.helpTip;
             }
         };
         return StaticTextParameter;
-    }(TextParameter));
+    }(TextBaseParameter));
     var StaticTextsParameter = (function (_super) {
         __extends(StaticTextsParameter, _super);
         function StaticTextsParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         StaticTextsParameter.prototype.buildParameter = function () {
             var _this = this;
             var group = this._group;
             var help_tip = this._options.helpTip;
             KIKAKU.Utils.forEach(this._value, function (value, i) {
-                var ui = group.add('statictext', undefined, '');
+                var ui = group.add('statictext', undefined, '', _this.getCreationProperties());
                 if (KIKAKU.Utils.isString(help_tip)) {
                     ui.helpTip = help_tip;
                 }
@@ -7100,7 +7130,49 @@ var KIKAKU;
             });
         };
         return StaticTextsParameter;
-    }(TextsParameter));
+    }(TextsBaseParameter));
+    var StaticTextAreaParameter = (function (_super) {
+        __extends(StaticTextAreaParameter, _super);
+        function StaticTextAreaParameter() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        StaticTextAreaParameter.prototype.getCreationProperties = function () {
+            return {
+                multiline: true,
+                truncate: 'end'
+            };
+        };
+        StaticTextAreaParameter.prototype.getHeight = function () {
+            var height = TextAreaParameter.DEFAULT_HEIGHT;
+            if (KIKAKU.Utils.isNumber(this._options.height)) {
+                height = this._options.height;
+            }
+            return height;
+        };
+        return StaticTextAreaParameter;
+    }(StaticTextParameter));
+    StaticTextAreaParameter.DEFAULT_HEIGHT = 80;
+    var StaticTextAreasParameter = (function (_super) {
+        __extends(StaticTextAreasParameter, _super);
+        function StaticTextAreasParameter() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        StaticTextAreasParameter.prototype.getCreationProperties = function () {
+            return {
+                multiline: true,
+                truncate: 'end'
+            };
+        };
+        StaticTextAreasParameter.prototype.getHeight = function () {
+            var height = TextAreasParameter.DEFAULT_HEIGHT;
+            if (KIKAKU.Utils.isNumber(this._options.height)) {
+                height = this._options.height;
+            }
+            return height;
+        };
+        return StaticTextAreasParameter;
+    }(StaticTextsParameter));
+    StaticTextAreasParameter.DEFAULT_HEIGHT = 80;
     //number parameter
     function numberOnChange(parameter, options) {
         var _options = KIKAKU.Utils.assign({
@@ -7141,7 +7213,7 @@ var KIKAKU;
     var NumberParameter = (function (_super) {
         __extends(NumberParameter, _super);
         function NumberParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         NumberParameter.prototype.buildParameter = function (width) {
             var _this = this;
@@ -7176,10 +7248,11 @@ var KIKAKU;
     var NumbersParameter = (function (_super) {
         __extends(NumbersParameter, _super);
         function NumbersParameter() {
-            _super.apply(this, arguments);
-            this._default_values = [];
-            this._minvalues = [];
-            this._maxvalues = [];
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._default_values = [];
+            _this._minvalues = [];
+            _this._maxvalues = [];
+            return _this;
         }
         NumbersParameter.prototype.buildParameter = function () {
             var _this = this;
@@ -7277,7 +7350,7 @@ var KIKAKU;
     var SliderParameter = (function (_super) {
         __extends(SliderParameter, _super);
         function SliderParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         SliderParameter.prototype.buildParameter = function (width) {
             var _this = this;
@@ -7335,8 +7408,9 @@ var KIKAKU;
     var PointParameterBase = (function (_super) {
         __extends(PointParameterBase, _super);
         function PointParameterBase() {
-            _super.apply(this, arguments);
-            this._uis = [];
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._uis = [];
+            return _this;
         }
         PointParameterBase.prototype.getDimensions = function () {
             return 2;
@@ -7403,14 +7477,14 @@ var KIKAKU;
     var PointParameter = (function (_super) {
         __extends(PointParameter, _super);
         function PointParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         return PointParameter;
     }(PointParameterBase));
     var Point3DParameter = (function (_super) {
         __extends(Point3DParameter, _super);
         function Point3DParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         Point3DParameter.prototype.getDimensions = function () {
             return 3;
@@ -7421,7 +7495,7 @@ var KIKAKU;
     var FileParameter = (function (_super) {
         __extends(FileParameter, _super);
         function FileParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         FileParameter.prototype.buildParameter = function (width) {
             var _this = this;
@@ -7455,7 +7529,7 @@ var KIKAKU;
     var FolderParameter = (function (_super) {
         __extends(FolderParameter, _super);
         function FolderParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         FolderParameter.prototype.buildParameter = function (width) {
             var _this = this;
@@ -7508,7 +7582,7 @@ var KIKAKU;
     var CheckboxParameter = (function (_super) {
         __extends(CheckboxParameter, _super);
         function CheckboxParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         CheckboxParameter.prototype.buildParameter = function (width) {
             var _this = this;
@@ -7541,8 +7615,9 @@ var KIKAKU;
     var CheckboxesParameter = (function (_super) {
         __extends(CheckboxesParameter, _super);
         function CheckboxesParameter() {
-            _super.apply(this, arguments);
-            this._texts = [];
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._texts = [];
+            return _this;
         }
         CheckboxesParameter.prototype.buildParameter = function () {
             var _this = this;
@@ -7621,8 +7696,9 @@ var KIKAKU;
     var RadiobuttonParameter = (function (_super) {
         __extends(RadiobuttonParameter, _super);
         function RadiobuttonParameter() {
-            _super.apply(this, arguments);
-            this._uis = [];
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._uis = [];
+            return _this;
         }
         RadiobuttonParameter.prototype.buildParameter = function (width) {
             var _this = this;
@@ -7706,7 +7782,7 @@ var KIKAKU;
     var ColorParameter = (function (_super) {
         __extends(ColorParameter, _super);
         function ColorParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         ColorParameter.prototype.buildParameter = function () {
             var _this = this;
@@ -7753,8 +7829,9 @@ var KIKAKU;
     var ColorsParameter = (function (_super) {
         __extends(ColorsParameter, _super);
         function ColorsParameter() {
-            _super.apply(this, arguments);
-            this._colors = [];
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._colors = [];
+            return _this;
         }
         ColorsParameter.prototype.buildParameter = function () {
             var _this = this;
@@ -7870,6 +7947,7 @@ var KIKAKU;
             }
         }
         catch (e) {
+            //pass
         }
         finally {
             lock.lock = false;
@@ -7879,8 +7957,9 @@ var KIKAKU;
     var ItemParameter = (function (_super) {
         __extends(ItemParameter, _super);
         function ItemParameter() {
-            _super.apply(this, arguments);
-            this._lock = { lock: false };
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._lock = { lock: false };
+            return _this;
         }
         ItemParameter.prototype.init = function (obj) {
             if (this._default_value) {
@@ -7951,9 +8030,10 @@ var KIKAKU;
     var ItemsParameter = (function (_super) {
         __extends(ItemsParameter, _super);
         function ItemsParameter() {
-            _super.apply(this, arguments);
-            this._default_values = [];
-            this._locks = [];
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._default_values = [];
+            _this._locks = [];
+            return _this;
         }
         ItemsParameter.prototype.init = function (obj) {
             for (var i = 0, l = this._uis.length; i < l; i++) {
@@ -8106,7 +8186,7 @@ var KIKAKU;
     var PopupParameter = (function (_super) {
         __extends(PopupParameter, _super);
         function PopupParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         PopupParameter.prototype.buildParameter = function (width) {
             var _this = this;
@@ -8133,7 +8213,7 @@ var KIKAKU;
     var PopupsParameter = (function (_super) {
         __extends(PopupsParameter, _super);
         function PopupsParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         PopupsParameter.prototype.buildParameter = function (width) {
             var _this = this;
@@ -8171,7 +8251,7 @@ var KIKAKU;
     var ListboxParameter = (function (_super) {
         __extends(ListboxParameter, _super);
         function ListboxParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         ListboxParameter.prototype.getHeight = function () {
             var height = ListboxParameter.DEFAULT_HEIGHT;
@@ -8202,13 +8282,13 @@ var KIKAKU;
             listbox_ui.onActivate = function () { _this.on('onActivate', false); };
             listbox_ui.onDeactivate = function () { _this.on('onDeactivate', false); };
         };
-        ListboxParameter.DEFAULT_HEIGHT = 80;
         return ListboxParameter;
     }(ItemParameter));
+    ListboxParameter.DEFAULT_HEIGHT = 80;
     var ListboxesParameter = (function (_super) {
         __extends(ListboxesParameter, _super);
         function ListboxesParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         ListboxesParameter.prototype.getHeight = function () {
             var height = ListboxesParameter.DEFAULT_HEIGHT;
@@ -8255,15 +8335,16 @@ var KIKAKU;
                 _this._uis.push(ui);
             });
         };
-        ListboxesParameter.DEFAULT_HEIGHT = 80;
         return ListboxesParameter;
     }(ItemsParameter));
+    ListboxesParameter.DEFAULT_HEIGHT = 80;
     //script
     var ScriptParameter = (function (_super) {
         __extends(ScriptParameter, _super);
         function ScriptParameter() {
-            _super.apply(this, arguments);
-            this._undo = true;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._undo = true;
+            return _this;
         }
         ScriptParameter.prototype.buildUI = function () {
             var _this = this;
@@ -8366,7 +8447,7 @@ var KIKAKU;
     var HelpParameter = (function (_super) {
         __extends(HelpParameter, _super);
         function HelpParameter() {
-            _super.apply(this, arguments);
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         HelpParameter.prototype.build = function (group, builder) {
             var name = this._name;
@@ -8399,6 +8480,7 @@ var KIKAKU;
                         this._obj = this._setting_manager.get(this._name, {});
                     }
                     catch (e) {
+                        //pass
                     }
                 }
                 this._initilized = function () { return true; };
@@ -8426,9 +8508,9 @@ var KIKAKU;
             this._save();
         };
         UISettingManger.prototype._delete = function () {
-            this._setting_manager.delete(this._name);
+            this._setting_manager["delete"](this._name);
         };
-        UISettingManger.prototype.delete = function (key) {
+        UISettingManger.prototype["delete"] = function (key) {
             this._initialize();
             if (this._obj[key]) {
                 delete this._obj[key];
@@ -8472,6 +8554,7 @@ var KIKAKU;
                     data = KIKAKU.JSON.parse(data);
                 }
                 catch (e) {
+                    //pass
                 }
             }
             return data;
@@ -8483,16 +8566,16 @@ var KIKAKU;
             }
             this._file_manager.save(filename, data);
         };
-        UIFileManager.prototype.delete = function (filename) {
+        UIFileManager.prototype["delete"] = function (filename) {
             filename += '.' + this._file_type;
-            return this._file_manager.delete(filename);
-        };
-        UIFileManager.FILE_TYPE = {
-            TEXT: 'txt',
-            JSON: 'json'
+            return this._file_manager["delete"](filename);
         };
         return UIFileManager;
     }());
+    UIFileManager.FILE_TYPE = {
+        TEXT: 'txt',
+        JSON: 'json'
+    };
     var api_scripts = {};
     var API = function (script_name, api_name) {
         var args = [];
@@ -8610,6 +8693,12 @@ var KIKAKU;
                 case UIBuilder.PARAMETER_TYPE.STATICTEXTS:
                     this._parameters[name] = new StaticTextsParameter(name, value, options);
                     break;
+                case UIBuilder.PARAMETER_TYPE.STATICTEXTAREA:
+                    this._parameters[name] = new StaticTextAreaParameter(name, value, options);
+                    break;
+                case UIBuilder.PARAMETER_TYPE.STATICTEXTAREAS:
+                    this._parameters[name] = new StaticTextAreasParameter(name, value, options);
+                    break;
                 case UIBuilder.PARAMETER_TYPE.NUMBER:
                     this._parameters[name] = new NumberParameter(name, value, options);
                     break;
@@ -8713,6 +8802,12 @@ var KIKAKU;
         };
         UIBuilder.prototype.addStatictexts = function (name, initial_values, options) {
             return this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTS, name, initial_values, options);
+        };
+        UIBuilder.prototype.addStatictextArea = function (name, initial_value, options) {
+            return this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTAREA, name, initial_value, options);
+        };
+        UIBuilder.prototype.addStatictextAreas = function (name, initial_values, options) {
+            return this.add(UIBuilder.PARAMETER_TYPE.STATICTEXTAREAS, name, initial_values, options);
         };
         UIBuilder.prototype.addNumber = function (name, initial_value, options) {
             return this.add(UIBuilder.PARAMETER_TYPE.NUMBER, name, initial_value, options);
@@ -8856,7 +8951,7 @@ var KIKAKU;
             return this;
         };
         UIBuilder.prototype.deleteSetting = function (key) {
-            this._setting_manager.delete(key);
+            this._setting_manager["delete"](key);
             return this;
         };
         UIBuilder.prototype.getFileNames = function () {
@@ -8873,7 +8968,7 @@ var KIKAKU;
             return this;
         };
         UIBuilder.prototype.deleteFile = function (filename) {
-            return this._file_manager.delete(filename);
+            return this._file_manager["delete"](filename);
         };
         UIBuilder.prototype.update = function () {
             if (!this._built()) {
@@ -9040,11 +9135,13 @@ var KIKAKU;
                 }
                 _this.trigger(UIBuilder.EVENT_TYPE.INIT);
             };
-            var _loop_1 = function(event_key) {
+            var _loop_1 = function (event_key) {
                 var event_type = UIBuilder.EVENT_TYPE[event_key];
                 if (event_type !== UIBuilder.EVENT_TYPE.INIT && event_type !== UIBuilder.EVENT_TYPE.CLOSE && this_1._events[event_type]) {
                     w.addEventListener(event_type, function (ev) {
-                        _this.trigger(event_type, ev);
+                        if (!(w instanceof Panel) || ev.target === w) {
+                            _this.trigger(event_type, ev);
+                        }
                     });
                 }
             };
@@ -9066,56 +9163,58 @@ var KIKAKU;
                 init();
             }
         };
-        UIBuilder.LIBRARY_NAME = 'KikakuUIBuilder';
-        UIBuilder.ALIAS = 'Atarabi';
-        UIBuilder.PARAMETER_TYPE = {
-            HEADING: 'heading',
-            SEPARATOR: 'separator',
-            SPACE: 'space',
-            PANEL: 'panel',
-            PANEL_END: 'panelend',
-            GROUP: 'group',
-            GROUP_END: 'groupend',
-            TEXT: 'text',
-            TEXTS: 'texts',
-            TEXTAREA: 'textarea',
-            TEXTAREAS: 'textareas',
-            STATICTEXT: 'statictext',
-            STATICTEXTS: 'statictexts',
-            NUMBER: 'number',
-            NUMBERS: 'numbers',
-            SLIDER: 'slider',
-            POINT: 'point',
-            POINT3D: 'point3d',
-            FILE: 'file',
-            FOLDER: 'folder',
-            CHECKBOX: 'checkbox',
-            CHECKBOXES: 'checkboxes',
-            RADIOBUTTON: 'radiobutton',
-            COLOR: 'color',
-            COLORS: 'colors',
-            POPUP: 'popup',
-            POPUPS: 'popups',
-            LISTBOX: 'listbox',
-            LISTBOXES: 'listboxes',
-            SCRIPT: 'script',
-            HELP: 'help'
-        };
-        UIBuilder.EVENT_TYPE = {
-            INIT: 'init',
-            MOUSEDOWN: 'mousedown',
-            MOUSEUP: 'mouseup',
-            MOUSEMOVE: 'mousemove',
-            MOUSEOVER: 'mouseover',
-            MOUSEOUT: 'mouseout',
-            CLOSE: 'close'
-        };
-        UIBuilder.PARAMETERS_KEY = '__parameters__';
-        UIBuilder.SPACING_SIZE = 2;
-        UIBuilder.MARGINS_SIZE = 5;
-        UIBuilder.API = API;
         return UIBuilder;
     }());
+    UIBuilder.LIBRARY_NAME = 'KikakuUIBuilder';
+    UIBuilder.ALIAS = 'Atarabi';
+    UIBuilder.PARAMETER_TYPE = {
+        HEADING: 'heading',
+        SEPARATOR: 'separator',
+        SPACE: 'space',
+        PANEL: 'panel',
+        PANEL_END: 'panelend',
+        GROUP: 'group',
+        GROUP_END: 'groupend',
+        TEXT: 'text',
+        TEXTS: 'texts',
+        TEXTAREA: 'textarea',
+        TEXTAREAS: 'textareas',
+        STATICTEXT: 'statictext',
+        STATICTEXTS: 'statictexts',
+        STATICTEXTAREA: 'statictextarea',
+        STATICTEXTAREAS: 'statictextareas',
+        NUMBER: 'number',
+        NUMBERS: 'numbers',
+        SLIDER: 'slider',
+        POINT: 'point',
+        POINT3D: 'point3d',
+        FILE: 'file',
+        FOLDER: 'folder',
+        CHECKBOX: 'checkbox',
+        CHECKBOXES: 'checkboxes',
+        RADIOBUTTON: 'radiobutton',
+        COLOR: 'color',
+        COLORS: 'colors',
+        POPUP: 'popup',
+        POPUPS: 'popups',
+        LISTBOX: 'listbox',
+        LISTBOXES: 'listboxes',
+        SCRIPT: 'script',
+        HELP: 'help'
+    };
+    UIBuilder.EVENT_TYPE = {
+        INIT: 'init',
+        MOUSEDOWN: 'mousedown',
+        MOUSEUP: 'mouseup',
+        MOUSEMOVE: 'mousemove',
+        MOUSEOVER: 'mouseover',
+        MOUSEOUT: 'mouseout',
+        CLOSE: 'close'
+    };
+    UIBuilder.PARAMETERS_KEY = '__parameters__';
+    UIBuilder.SPACING_SIZE = 2;
+    UIBuilder.MARGINS_SIZE = 5;
+    UIBuilder.API = API;
     KIKAKU.UIBuilder = UIBuilder;
 })(KIKAKU || (KIKAKU = {}));
 var KIKAKU;
@@ -9286,6 +9385,7 @@ var KIKAKU;
                         this._items[name].remove();
                     }
                     catch (e) {
+                        //pass
                     }
                     delete this._items[name];
                 }
@@ -9393,6 +9493,7 @@ var KIKAKU;
                         }
                     }
                     catch (e) {
+                        //pass
                     }
                     delete this._layers[name];
                 }
@@ -9437,7 +9538,7 @@ var KIKAKU;
                     proto[name] = function () {
                         var args = [];
                         for (var _i = 0; _i < arguments.length; _i++) {
-                            args[_i - 0] = arguments[_i];
+                            args[_i] = arguments[_i];
                         }
                         $.writeln(name + " in: " + args.join());
                         $.hiresTimer;
@@ -9459,7 +9560,7 @@ var KIKAKU;
                 proto[name] = function () {
                     var args = [];
                     for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
+                        args[_i] = arguments[_i];
                     }
                     app.beginUndoGroup("" + text);
                     var _a = wrap.apply(void 0, [fn, this].concat(args)), result = _a.result, err = _a.err;
@@ -9494,9 +9595,9 @@ var KIKAKU;
             return mn + this._w / Xorshift.MAX * (mx - mn);
             var _b;
         };
-        Xorshift.MAX = Math.pow(2, 31);
         return Xorshift;
     }());
+    Xorshift.MAX = Math.pow(2, 31);
     KIKAKU.Xorshift = Xorshift;
 })(KIKAKU || (KIKAKU = {}));
 /// <reference path="KikakuConfig.ts" />

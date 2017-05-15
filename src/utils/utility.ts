@@ -4,7 +4,7 @@ namespace KIKAKU.Utils {
     return Object.prototype.toString.call(arg) === '[object Object]';
   }
 
-  export function isArray<T>(arg): arg is T[] {
+  export function isArray(arg) {
     return Object.prototype.toString.call(arg) === '[object Array]';
   }
 
@@ -115,7 +115,7 @@ namespace KIKAKU.Utils {
     }
 
     while (i < l) {
-      value = fn(value, arr[i], i, arr);
+      value = fn(value as U, arr[i], i, arr);
       ++i;
     }
 
